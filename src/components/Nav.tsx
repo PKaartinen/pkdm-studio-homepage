@@ -1,13 +1,21 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { navLinks } from "@/data/site";
 import MagneticButton from "./ui/MagneticButton";
 import { ArrowRight } from "./ui/icons";
 
+function isActive(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(href + "/");
+}
+
 export default function Nav() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -17,6 +25,11 @@ export default function Nav() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Close the mobile menu whenever the route changes
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   // Lock body scroll while the mobile menu is open
   useEffect(() => {
@@ -36,7 +49,7 @@ export default function Nav() {
         }`}
       >
         <nav className="shell flex h-16 items-center justify-between md:h-20">
-          <a href="#top" aria-label="PKDM Studio home" className="relative z-10">
+          <Link href="/" aria-label="PKDM Studio home" className="relative z-10">
             <Image
               src="/logo/wordmark.svg"
               alt="PKDM Studio"
@@ -45,25 +58,34 @@ export default function Nav() {
               priority
               className="h-8 w-auto md:h-9"
             />
-          </a>
+          </Link>
 
           {/* Desktop links */}
           <ul className="hidden items-center gap-8 md:flex">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="group relative text-sm font-medium text-haze transition-colors hover:text-white"
-                >
-                  {link.label}
-                  <span className="absolute -bottom-1 left-0 h-px w-0 bg-accent-soft transition-all duration-300 group-hover:w-full" />
-                </a>
-              </li>
-            ))}
+            {navLinks.map((link) => {
+              const active = isActive(pathname, link.href);
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className={`group relative text-sm font-medium transition-colors ${
+                      active ? "text-white" : "text-haze hover:text-white"
+                    }`}
+                  >
+                    {link.label}
+                    <span
+                      className={`absolute -bottom-1 left-0 h-px bg-accent transition-all duration-300 ${
+                        active ? "w-full" : "w-0 group-hover:w-full"
+                      }`}
+                    />
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
 
           <div className="hidden md:block">
-            <MagneticButton href="#contact">
+            <MagneticButton href="/contact">
               Let&apos;s Talk
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </MagneticButton>
@@ -112,13 +134,13 @@ export default function Nav() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.08 * i + 0.1 }}
                   >
-                    <a
+                    <Link
                       href={link.href}
                       onClick={() => setOpen(false)}
-                      className="font-display text-4xl font-semibold text-white/90 transition-colors hover:text-accent-soft"
+                      className="text-4xl font-semibold tracking-tight text-white/90 transition-colors hover:text-accent"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </motion.li>
                 ))}
               </ul>
@@ -128,7 +150,7 @@ export default function Nav() {
                 transition={{ delay: 0.45 }}
                 className="mt-10"
               >
-                <MagneticButton href="#contact">
+                <MagneticButton href="/contact">
                   Let&apos;s Talk
                   <ArrowRight />
                 </MagneticButton>

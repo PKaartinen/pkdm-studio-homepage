@@ -1,9 +1,30 @@
-# PKDM Studio — Homepage
+# PKDM Studio — Website
 
-A fast, motion-rich single-page homepage for **PKDM Studio**, a founder-led web
-design & Webflow development studio. Dark deep-blue aesthetic, a lightweight
-animated background, smooth scrolling, and tasteful micro-interactions — built
-to load fast and stay smooth.
+A fast, motion-rich website for **PKDM Studio**, a founder-led web design &
+Webflow development studio. Signature deep near-black `#000206` background,
+electric-cyan brand accent, DM Sans typography, a lightweight animated
+background, light/responsive smooth scrolling, and tasteful micro-interactions —
+built to load fast and stay smooth.
+
+## Pages
+
+A true multi-page site (App Router):
+
+| Route | Description |
+|---|---|
+| `/` | Homepage — hero, clients, services, featured work, process, insights, testimonials, contact |
+| `/about` | Founder story, beliefs, pillars, process |
+| `/services` | Full services + process |
+| `/projects` | All projects |
+| `/projects/[slug]` | Per-project case study (hero, overview, gallery, live link, next project) |
+| `/insights` | Article list |
+| `/insights/[slug]` | Article page |
+| `/contact` | Contact form |
+
+Project and insight detail pages are statically generated via
+`generateStaticParams`. Add a new project/insight by editing
+`src/data/projects.ts` / `src/data/content.ts` — its page is created
+automatically.
 
 ## Tech stack
 
@@ -87,15 +108,15 @@ All content lives in plain config/data files — no need to touch components:
 | What | File |
 |---|---|
 | Site name, email, address, **nav links**, **social links** | `src/data/site.ts` |
-| **Projects** (cards, categories, **live URLs**), client logos | `src/data/projects.ts` |
-| Services, pillars, insights, process steps, testimonials, stats | `src/data/content.ts` |
+| **Projects** (cards, slugs, galleries, **live URLs**), client logos | `src/data/projects.ts` |
+| Services, pillars, **insights/articles**, process steps, testimonials, stats | `src/data/content.ts` |
 
 ### Project live URLs
 
 Open `src/data/projects.ts` and set each project's `url` to its full
-`https://…` address. An **empty string (`""`)** renders the card with **no
-outbound link** (no broken/`#` links). Links open in a new tab with
-`rel="noopener noreferrer"`.
+`https://…` address. An **empty string (`""`)** renders the card and case-study
+page with **no outbound "Visit live site" link** (no broken/`#` links). Links
+open in a new tab with `rel="noopener noreferrer"`.
 
 ### Social links
 
@@ -113,13 +134,16 @@ Supported `platform` values: `linkedin`, `instagram`, `x`, `dribbble`,
 `behance`, `github`. Only entries with a valid, non-empty URL render — if the
 array is empty, **no social row is shown at all** (no placeholders, no gap).
 
-## Internal links / stub routes
+## Adding content
 
-The nav links (Home, About, Projects, Services, Insights) currently point to
-**in-page anchors** on this single homepage. The "View all projects" and
-"Read more" insight links are stubs (anchors) for now. To add real pages later,
-create routes under `src/app/` (e.g. `src/app/projects/page.tsx`) and update the
-`href`s in `src/data/site.ts` and the relevant components.
+- **New project / case study:** add an entry to `projects` in
+  `src/data/projects.ts` (with a unique `slug`, card `image`, optional
+  `gallery`, and optional live `url`). Drop the screenshots in
+  `public/projects/`. The `/projects/[slug]` page is generated automatically.
+- **New article:** add an entry to `insights` in `src/data/content.ts` (unique
+  `slug`, `body` paragraphs). The `/insights/[slug]` page is generated
+  automatically.
+- **Nav:** edit `navLinks` in `src/data/site.ts`.
 
 ## Performance & accessibility
 

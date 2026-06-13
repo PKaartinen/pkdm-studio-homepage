@@ -8,25 +8,26 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Deep navy foundation — the signature PKDM look
+        // Deep near-black foundation — matches the live site (#000206)
         ink: {
-          950: "#04060f",
-          900: "#070b1c",
-          800: "#0b1228",
-          700: "#101a3a",
-          600: "#16234f",
+          950: "#000206",
+          900: "#03060e",
+          800: "#070c1a",
+          700: "#0c1430",
+          600: "#111e44",
         },
         accent: {
-          // Electric blue glow accent
-          DEFAULT: "#4d7cff",
-          soft: "#7aa0ff",
-          glow: "#2f5bff",
+          // Signature electric cyan + brand blue gradient stops
+          DEFAULT: "#69edfe",
+          soft: "#a6f4ff",
+          deep: "#0167b4",
+          glow: "#1f9fd6",
         },
-        haze: "#aeb9da",
+        haze: "#8fa1b8",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
-        display: ["var(--font-display)", "system-ui", "sans-serif"],
+        display: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
       maxWidth: {
         shell: "1240px",

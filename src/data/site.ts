@@ -14,11 +14,11 @@ export const site = {
 } as const;
 
 export const navLinks = [
-  { label: "Home", href: "#top" },
-  { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Services", href: "#services" },
-  { label: "Insights", href: "#insights" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Projects", href: "/projects" },
+  { label: "Services", href: "/services" },
+  { label: "Insights", href: "/insights" },
 ] as const;
 
 // ---------------------------------------------------------------------------

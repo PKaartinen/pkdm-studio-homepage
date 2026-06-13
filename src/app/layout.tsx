@@ -1,21 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Sora } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { site } from "@/data/site";
 import SmoothScroll from "@/components/SmoothScroll";
 import Background from "@/components/Background";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 
-const inter = Inter({
+// DM Sans — matches the live PKDM Studio site, with tight tracking for a
+// premium, modern feel.
+const dmSans = DM_Sans({
   subsets: ["latin"],
   display: "swap",
+  weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
-});
-
-const sora = Sora({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-display",
 });
 
 const title = "PKDM Studio — Websites Built to Convert";
@@ -74,17 +72,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${sora.variable}`}>
+    <html lang="en" className={dmSans.variable}>
       <body className="font-sans antialiased">
         <SmoothScroll />
         <Background />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-white"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-ink-950"
         >
           Skip to content
         </a>
+        <Nav />
         {children}
+        <Footer />
       </body>
     </html>
   );

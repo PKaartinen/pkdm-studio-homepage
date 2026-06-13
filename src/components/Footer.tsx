@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { navLinks, socialLinks, site } from "@/data/site";
 import { socialIcons } from "./ui/icons";
 
@@ -68,12 +69,12 @@ export default function Footer() {
             <ul className="mt-5 flex flex-col gap-3">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <a
+                  <Link
                     href={link.href}
                     className="text-sm text-haze transition-colors hover:text-white"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

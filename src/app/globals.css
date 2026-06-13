@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #04060f;
-  --foreground: #eef1fb;
+  --background: #000206;
+  --foreground: #eef3f7;
 }
 
 * {
@@ -38,7 +38,7 @@ body {
 }
 
 ::selection {
-  background: rgba(77, 124, 255, 0.35);
+  background: rgba(105, 237, 254, 0.3);
   color: #fff;
 }
 
@@ -50,11 +50,11 @@ body {
   background: #04060f;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1b2748;
+  background: #14203c;
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #27365f;
+  background: #1f3358;
 }
 
 @layer components {
@@ -70,17 +70,24 @@ body {
 
   /* Gradient text for headline accents */
   .text-gradient {
-    background: linear-gradient(180deg, #ffffff 0%, #b9c5ef 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #aebfce 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
+  /* Signature cyan -> brand-blue gradient (from the live site) */
   .text-glow {
-    background: linear-gradient(110deg, #7aa0ff, #4d7cff 50%, #9bb4ff);
+    background: linear-gradient(100deg, #a6f4ff 0%, #69edfe 38%, #1f9fd6 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+  }
+
+  /* Display headings: tight, premium tracking like the live site */
+  .display {
+    font-feature-settings: "ss01";
+    letter-spacing: -0.02em;
   }
 
   /* White-tinted logo treatment for the client strip */
@@ -94,14 +101,14 @@ body {
   }
 
   .glass {
-    background: rgba(11, 18, 40, 0.55);
+    background: rgba(7, 12, 26, 0.55);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(122, 160, 255, 0.12);
+    border: 1px solid rgba(105, 237, 254, 0.12);
   }
 
   .hairline {
-    border-color: rgba(122, 160, 255, 0.12);
+    border-color: rgba(105, 237, 254, 0.12);
   }
 }
 

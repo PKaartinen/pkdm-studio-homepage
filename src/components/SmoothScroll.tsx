@@ -14,11 +14,13 @@ export default function SmoothScroll() {
     ).matches;
     if (prefersReduced) return;
 
+    // Light, responsive smoothing — prioritises snappy scroll over a heavy
+    // floaty feel. `lerp` keeps the view tightly coupled to the wheel.
     const lenis = new Lenis({
-      duration: 1.05,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      lerp: 0.14,
+      wheelMultiplier: 1,
       smoothWheel: true,
-      touchMultiplier: 1.6,
+      syncTouch: false,
     });
 
     let rafId: number;

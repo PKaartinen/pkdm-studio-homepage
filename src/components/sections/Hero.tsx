@@ -67,11 +67,11 @@ export default function Hero() {
             variants={item}
             className="flex flex-col items-start gap-4 sm:flex-row sm:items-center"
           >
-            <MagneticButton href="#contact">
+            <MagneticButton href="/contact">
               Let&apos;s talk about your website
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </MagneticButton>
-            <MagneticButton href="#projects" variant="ghost">
+            <MagneticButton href="/projects" variant="ghost">
               See our work
             </MagneticButton>
           </motion.div>

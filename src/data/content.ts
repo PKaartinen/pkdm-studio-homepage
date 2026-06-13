@@ -51,26 +51,63 @@ export const pillars = [
   },
 ];
 
-export const insights = [
+export type Insight = {
+  slug: string;
+  title: string;
+  tag: string;
+  excerpt: string;
+  readTime: string;
+  body: string[];
+};
+
+export const insights: Insight[] = [
   {
+    slug: "webflow-seo-performance-checklist",
     title: "The Webflow SEO & Performance Checklist",
     tag: "Performance",
     excerpt:
       "The technical and on-page essentials we ship on every build so sites rank and load fast.",
+    readTime: "6 min read",
+    body: [
+      "A fast site isn't a nice-to-have — it's the baseline for ranking and converting. Here's the checklist we run on every Webflow build before launch.",
+      "Performance: compress and serve modern image formats, lazy-load below-the-fold media, keep third-party scripts to a minimum, and avoid layout shift by reserving space for media. On Webflow that means clean structure, sensible interactions, and no bloated embeds.",
+      "On-page SEO: a single clear H1 per page, descriptive titles and meta descriptions, semantic headings, alt text on every meaningful image, clean slugs, and Open Graph tags so links look right when shared.",
+      "Technical: a valid sitemap and robots file, canonical URLs, fast server response, and structured data where it helps. Get these right and you've removed most of the reasons a good site underperforms.",
+    ],
   },
   {
+    slug: "conversion-focused-landing-page-framework",
     title: "A Framework for Conversion-Focused Landing Pages",
     tag: "Conversion",
     excerpt:
       "How we structure a landing page around one offer and one action to turn visitors into customers.",
+    readTime: "5 min read",
+    body: [
+      "A landing page should do one job. The moment it tries to do five, it does none of them well. Our framework starts by naming the single action we want a visitor to take.",
+      "Above the fold: a clear promise, a supporting line that explains the value, and one obvious call to action. No clever headlines that hide what you actually do.",
+      "Then we earn trust: proof, results, and objection-handling in the order a real visitor would ask their questions. Every section moves them one step closer to acting.",
+      "Finally, we remove friction. Short forms, fast loads, and a single path to the goal. Conversion isn't a trick — it's clarity plus momentum.",
+    ],
   },
   {
+    slug: "designing-websites-that-build-trust",
     title: "Designing Websites That Build Trust",
     tag: "Design",
     excerpt:
       "The design and content decisions that make first-time visitors feel confident enough to reach out.",
+    readTime: "4 min read",
+    body: [
+      "Most visitors decide whether they trust you in seconds — long before they read your copy. Trust is built through craft, clarity, and consistency.",
+      "Craft: clean typography, generous spacing, considered colour, and zero jank. A site that feels well-built signals a business that is well-run.",
+      "Clarity: say what you do in plain language, show real proof, and make the next step obvious. Confusion is the fastest way to lose a lead.",
+      "Consistency: a coherent visual system across every page tells visitors you pay attention to detail — which is exactly what they're hoping a partner will do.",
+    ],
   },
 ];
+
+export function getInsight(slug: string) {
+  return insights.find((i) => i.slug === slug);
+}
 
 export const processSteps = [
   {

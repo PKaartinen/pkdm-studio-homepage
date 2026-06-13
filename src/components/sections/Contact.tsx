@@ -155,7 +155,7 @@ export default function Contact() {
               {status === "success" ? (
                 <Reveal>
                   <div className="flex h-full min-h-[320px] flex-col items-center justify-center gap-4 rounded-2xl border border-accent-soft/20 bg-accent/5 p-10 text-center">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-white">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-ink-950">
                       <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none">
                         <path
                           d="m5 13 4 4L19 7"
@@ -259,7 +259,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={status === "loading"}
-                    className="group mt-1 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_rgba(77,124,255,0.7)] transition-all duration-300 hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-soft focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+                    className="group mt-1 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-ink-950 shadow-[0_8px_30px_-8px_rgba(105,237,254,0.65)] transition-all duration-300 hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-soft focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
                   >
                     {status === "loading" ? (
                       <>

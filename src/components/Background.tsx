@@ -72,7 +72,7 @@ export default function Background() {
         // glow dot
         ctx!.beginPath();
         ctx!.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx!.fillStyle = "rgba(122, 160, 255, 0.55)";
+        ctx!.fillStyle = "rgba(105, 237, 254, 0.6)";
         ctx!.fill();
 
         // links to nearby particles
@@ -82,8 +82,8 @@ export default function Background() {
           const dy = p.y - q.y;
           const dist = Math.hypot(dx, dy);
           if (dist < LINK_DIST) {
-            const alpha = (1 - dist / LINK_DIST) * 0.18;
-            ctx!.strokeStyle = `rgba(77, 124, 255, ${alpha})`;
+            const alpha = (1 - dist / LINK_DIST) * 0.16;
+            ctx!.strokeStyle = `rgba(105, 237, 254, ${alpha})`;
             ctx!.lineWidth = 1;
             ctx!.beginPath();
             ctx!.moveTo(p.x, p.y);
@@ -124,13 +124,13 @@ export default function Background() {
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-ink-950"
     >
       {/* Deep base gradient */}
-      <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_-10%,#0d1a40_0%,#070b1c_45%,#04060f_100%)]" />
-      {/* Accent glows */}
-      <div className="absolute -left-40 top-[-10%] h-[520px] w-[520px] rounded-full bg-accent-glow/20 blur-[140px]" />
-      <div className="absolute right-[-10%] top-[30%] h-[460px] w-[460px] rounded-full bg-accent/10 blur-[150px]" />
-      <div className="absolute bottom-[-10%] left-1/3 h-[420px] w-[420px] rounded-full bg-[#1b2c6b]/30 blur-[150px]" />
+      <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_-10%,#062033_0%,#03070f_42%,#000206_100%)]" />
+      {/* Accent glows — signature cyan + brand blue */}
+      <div className="absolute -left-40 top-[-10%] h-[520px] w-[520px] rounded-full bg-accent/20 blur-[150px]" />
+      <div className="absolute right-[-10%] top-[28%] h-[460px] w-[460px] rounded-full bg-accent-deep/25 blur-[150px]" />
+      <div className="absolute bottom-[-10%] left-1/3 h-[420px] w-[420px] rounded-full bg-[#0a2b48]/40 blur-[150px]" />
       {/* Subtle grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(122,160,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(122,160,255,0.04)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(100%_60%_at_50%_0%,#000_30%,transparent_75%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(105,237,254,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(105,237,254,0.04)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(100%_60%_at_50%_0%,#000_30%,transparent_75%)]" />
       {/* Particle canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
       {/* Vignette / fade to base at bottom */}
