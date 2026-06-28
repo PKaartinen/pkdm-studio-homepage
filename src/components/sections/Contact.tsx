@@ -15,16 +15,12 @@ import { site } from "@/data/site";
 //   KEY_1  -> form configured to deliver to madebypietu@gmail.com
 //   KEY_2  -> form configured to deliver to webco.owners@gmail.com
 //
-// We fire one submission per available key (so both inboxes get every
-// message). We also pass `ccemail` (a Web3Forms PRO feature) as a fallback so
-// a single PRO key still copies the second inbox. If only one key is set, the
-// form still works and delivers to that one inbox.
+// We fire one submission per available key, so each configured inbox receives
+// every message. If only one key is set, the form still works and delivers to
+// that one inbox. (The PRO-only `ccemail` parameter is intentionally not used.)
 // ---------------------------------------------------------------------------
 const KEY_1 = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ?? "";
 const KEY_2 = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY_2 ?? "";
-
-const INBOX_1 = "madebypietu@gmail.com";
-const INBOX_2 = "webco.owners@gmail.com";
 
 const helpOptions = [
   "New website or redesign",
@@ -82,10 +78,11 @@ export default function Contact() {
     };
 
     try {
-      // Map each key to its primary inbox so we can cc the *other* one.
-      const submissions = keys.map((key) => {
-        const cc = key === KEY_1 ? INBOX_2 : INBOX_1;
-        return fetch("https://api.web3forms.com/submit", {
+      // Fire one submission per key. On the free tier each key delivers to its
+      // own configured inbox, so adding a second key (KEY_2) is how you reach a
+      // second inbox — no PRO-only `ccemail` needed.
+      const submissions = keys.map((key) =>
+        fetch("https://api.web3forms.com/submit", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -93,11 +90,10 @@ export default function Contact() {
           },
           body: JSON.stringify({
             access_key: key,
-            ccemail: cc, // PRO fallback; ignored on free tier
             ...basePayload,
           }),
-        }).then((r) => r.json());
-      });
+        }).then((r) => r.json())
+      );
 
       const results = await Promise.allSettled(submissions);
       const anyOk = results.some(
