@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Outfit } from "next/font/google";
+import { DM_Sans, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { site } from "@/data/site";
@@ -16,8 +16,8 @@ const dmSans = DM_Sans({
   variable: "--font-sans",
 });
 
-// Outfit — headings. Clean geometric sans for a stronger, modern, premium feel.
-const outfit = Outfit({
+// Space Grotesk — headings. Geometric, techy character for a stronger, premium feel.
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   display: "swap",
   weight: ["500", "600", "700"],
@@ -80,7 +80,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${outfit.variable}`}>
+    <html lang="en" className={`${dmSans.variable} ${spaceGrotesk.variable}`}>
       <body className="font-sans antialiased">
         <SmoothScroll />
         <Background />
