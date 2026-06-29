@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans } from "next/font/google";
+import { DM_Sans, Outfit } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { site } from "@/data/site";
@@ -8,13 +8,20 @@ import Background from "@/components/Background";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 
-// DM Sans — matches the live PKDM Studio site, with tight tracking for a
-// premium, modern feel.
+// DM Sans — body copy. Warm, readable, matches the live PKDM Studio site.
 const dmSans = DM_Sans({
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
+});
+
+// Outfit — headings. Clean geometric sans for a stronger, modern, premium feel.
+const outfit = Outfit({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
 });
 
 const title = "PKDM Studio — Websites Built to Convert";
@@ -73,7 +80,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={dmSans.variable}>
+    <html lang="en" className={`${dmSans.variable} ${outfit.variable}`}>
       <body className="font-sans antialiased">
         <SmoothScroll />
         <Background />
