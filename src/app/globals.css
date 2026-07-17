@@ -146,6 +146,21 @@ body:has(.showcase-root) > div.pointer-events-none.fixed.-z-10 {
   );
 }
 
+/* T-315 — static fallback (mobile + reduced-motion), .showcase-static-* only */
+.showcase-static-poster {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.showcase-static-fade {
+  /* Blend the baked poster's bottom edge into the void gradient below it */
+  pointer-events: none;
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 18%;
+  background: linear-gradient(180deg, rgba(0, 3, 8, 0) 0%, #010409 100%);
+}
+
 /* Scroll-hint dot (transform-only; disabled under reduced motion) */
 @keyframes showcase-scroll-dot {
   0%, 100% { transform: translateY(0); opacity: 1; }
