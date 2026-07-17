@@ -56,13 +56,17 @@ export default function CanvasRoot({
   );
 }
 
-/** Dev-only: expose renderer info for perf/leak checks. */
+/** Expose renderer info for perf/leak checks — dev always; production only
+ *  behind ?qa=1 (T-316 memory QA runs against production builds, v6 canon). */
 function FrameloopGuard() {
   const gl = useThree((s) => s.gl);
   const ref = useRef(gl);
   ref.current = gl;
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
+    const qa =
+      process.env.NODE_ENV !== "production" ||
+      new URLSearchParams(window.location.search).has("qa");
+    if (!qa) return;
     (window as unknown as { __showcaseInfo?: unknown }).__showcaseInfo =
       ref.current.info;
   }, []);
