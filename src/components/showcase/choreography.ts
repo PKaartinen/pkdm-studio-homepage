@@ -141,10 +141,12 @@ export function cursorViewportOffset(v: number): { vw: number; vh: number } {
   return { vw: splineTrack(OFFSET_VW, v), vh: splineTrack(OFFSET_VH, v) };
 }
 
-/** §3b.1 — hero cursor sits ~10vh lower so its bottom half catches the
+/** §3b.1 — hero cursor sits lower so its bottom half catches the
  *  grid/caustic refraction on the first frame (applied to the word anchor
- *  in CursorRig as an exact screen-space shift). */
-export const HERO_DROP_VH = 10;
+ *  in CursorRig as an exact screen-space shift). Founder pre-record note
+ *  2026-07-18: +15vh further down and 10vw left of the §3b.1 position. */
+export const HERO_DROP_VH = 25;
+export const HERO_SHIFT_VW = -10; // vw > 0 = right, < 0 = left
 
 /** 0 = hero word-anchor, 1 = choreography track (blend over hero scroll-away).
  *  §3b.6: the blend starts EARLY — the cursor lets go of the headline as soon

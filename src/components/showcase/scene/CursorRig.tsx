@@ -11,6 +11,7 @@ import {
   cursorViewportOffset,
   heroBlend,
   HERO_DROP_VH,
+  HERO_SHIFT_VW,
 } from "../choreography";
 import { syncState } from "../sync-store";
 import { tourState } from "../tour-store";
@@ -108,9 +109,14 @@ export default function CursorRig({
     let heroY = 0;
     let hasRect = false;
     if (rect && rect.width > 0) {
-      const px = rect.left + rect.width / 2 + rect.fontSize * 0.95;
-      // §3b.1 — hero cursor sits ~10vh lower so its bottom half catches the
-      // grid/caustic refraction on the very first frame.
+      const px =
+        rect.left +
+        rect.width / 2 +
+        rect.fontSize * 0.95 +
+        size.width * (HERO_SHIFT_VW / 100);
+      // §3b.1 (+ founder pre-record note 2026-07-18) — hero cursor sits lower
+      // and further left so its bottom half catches the grid/caustic
+      // refraction on the very first frame.
       const py =
         rect.top +
         rect.height / 2 +
