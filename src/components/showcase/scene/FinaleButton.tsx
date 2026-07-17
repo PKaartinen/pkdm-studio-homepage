@@ -230,12 +230,12 @@ export default function FinaleButton() {
       const r = MathUtils.clamp((dt - 0.06) / 1.1, 0, 1);
       fin.ripple2.r = 20 * (1 - (1 - r) * (1 - r));
       fin.ripple2.amp =
-        r <= 0 ? 0 : Math.pow(1 - r, 1.4) * 0.26;
+        r <= 0 ? 0 : Math.pow(1 - r, 1.4) * 0.17;
     } else if (fin.ripple2.amp !== 0) {
       const dt = fin.pressAt ? (performance.now() - fin.pressAt) / 1000 : 99;
       const r = MathUtils.clamp((dt - 0.06) / 1.1, 0, 1);
       fin.ripple2.r = 20 * (1 - (1 - r) * (1 - r));
-      fin.ripple2.amp = r >= 1 ? 0 : Math.pow(1 - r, 1.4) * 0.26;
+      fin.ripple2.amp = r >= 1 ? 0 : Math.pow(1 - r, 1.4) * 0.17;
     }
 
     const visible = pose.grow > 0.001;
