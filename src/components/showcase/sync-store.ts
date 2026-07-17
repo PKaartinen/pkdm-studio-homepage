@@ -43,4 +43,14 @@ export const syncState = {
     opacity: number;
     chars: number;
   }[],
+  /** Act 2 — per-panel screen-space bounding rects for the clickable link
+   * overlays (§3b.3: panels open their internal /projects/[slug] pages).
+   * `active` gates pointer events + tab order to visible panels only. */
+  panelHits: [] as {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    active: boolean;
+  }[],
 };

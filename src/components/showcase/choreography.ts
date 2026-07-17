@@ -199,16 +199,27 @@ export function focusPlanePose(v: number) {
   return { p, x, opacity, radius };
 }
 
-// --- Act 2 — The Work (T-311) ------------------------------------------------
-// Six panels, right-to-left arc queue. Equal hover holds by construction:
-// each panel k holds centered under the cursor for HOLD_FRACTION of its slot.
+// --- Act 2 — The Work (T-311 + T-331 rebuild) --------------------------------
+// Six panels, right-to-left arc queue. §3b.3 Ciao-Energy feel: the act's
+// scrub distance DOUBLED (390svh — one deliberate scroll gesture per panel,
+// ~65svh per slot), each switch is a LONG continuously-eased glide
+// (smoothstep over ~33svh of scroll — gentler peak velocity than cubic),
+// and the damped store keeps every frame of it animating — no snapping,
+// no oversensitive switches. Equal hover holds by construction: each panel
+// k holds centered under the cursor for HOLD_FRACTION of its slot
+// (50% ≥ 40% — founder rule: EQUAL treatment, all six).
 export const WORK_QUEUE = {
-  intro: 0.06,
-  outro: 0.94,
-  holdFraction: 0.58,
+  intro: 0.05,
+  outro: 0.95,
+  holdFraction: 0.5,
   panelCount: 6,
   spacing: 3.4,
 } as const;
+
+const glideEase = (t: number) => {
+  const c = t < 0 ? 0 : t > 1 ? 1 : t;
+  return c * c * (3 - 2 * c); // smoothstep — heavy, damped, deliberate
+};
 
 /** Continuous "focused panel index": panel k sits centered while g ≈ k. */
 export function workFocusIndex(v: number): number {
@@ -217,9 +228,9 @@ export function workFocusIndex(v: number): number {
   const bp = actProgress("build", v);
   let g: number;
   if (p <= intro) {
-    g = -1.5 + 1.5 * easeInOutCubic(remap(p, 0, intro));
+    g = -1.5 + 1.5 * glideEase(remap(p, 0, intro));
   } else if (p >= outro) {
-    g = panelCount - 1 + 1.6 * easeInOutCubic(remap(p, outro, 1));
+    g = panelCount - 1 + 1.6 * glideEase(remap(p, outro, 1));
   } else {
     const span = (outro - intro) / panelCount;
     const u = (p - intro) / span;
@@ -229,10 +240,10 @@ export function workFocusIndex(v: number): number {
       k +
       (f <= holdFraction
         ? 0
-        : easeInOutCubic((f - holdFraction) / (1 - holdFraction)));
+        : glideEase((f - holdFraction) / (1 - holdFraction)));
   }
   // Panels keep exiting left as the build act begins (act hand-off).
-  g += 2.6 * easeInOutCubic(remap(bp, 0, 0.18));
+  g += 2.6 * glideEase(remap(bp, 0, 0.18));
   return g;
 }
 

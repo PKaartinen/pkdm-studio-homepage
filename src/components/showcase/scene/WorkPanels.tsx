@@ -116,6 +116,7 @@ const FRAG = /* glsl */ `
 `;
 
 const anchor = new Vector3();
+const corner = new Vector3();
 
 export default function WorkPanels() {
   const { camera, size } = useThree();
@@ -163,11 +164,19 @@ export default function WorkPanels() {
   );
   useEffect(() => () => materials.forEach((m) => m.dispose()), [materials]);
 
-  // Sync store slots for the DOM tag layer
+  // Sync store slots for the DOM tag + clickable-link layers
   useEffect(() => {
     syncState.panelTags = PANELS.map(() => ({ x: 0, y: 0, opacity: 0, chars: 0 }));
+    syncState.panelHits = PANELS.map(() => ({
+      x: 0,
+      y: 0,
+      w: 0,
+      h: 0,
+      active: false,
+    }));
     return () => {
       syncState.panelTags = [];
+      syncState.panelHits = [];
     };
   }, []);
 
@@ -189,11 +198,15 @@ export default function WorkPanels() {
       const x = (i - g) * WORK_QUEUE.spacing;
       const visible = actGate > 0.001 && Math.abs(x) < 8;
       node.visible = visible;
-      if (tag && !visible) {
-        tag.opacity = 0;
-        tag.chars = 0;
+      const hit = syncState.panelHits[i];
+      if (!visible) {
+        if (tag) {
+          tag.opacity = 0;
+          tag.chars = 0;
+        }
+        if (hit) hit.active = false;
+        continue;
       }
-      if (!visible) continue;
 
       // Hover-lift: purely position-derived → fires at fixed scroll
       // positions, equal holds for all six (queue plateaus in choreography)
@@ -213,6 +226,37 @@ export default function WorkPanels() {
 
       if (mat.uniforms.uMap.value !== textures[i]) {
         mat.uniforms.uMap.value = textures[i];
+      }
+
+      // --- clickable link overlay rect (§3b.3 — /projects/[slug]) -------
+      // Project the panel's four corners; the DOM layer places an <a>
+      // over the bounding box. Only clearly-visible panels are active
+      // (pointer events + tab order gated in PanelLinksLayer).
+      if (hit) {
+        node.updateMatrixWorld();
+        let minX = Infinity;
+        let minY = Infinity;
+        let maxX = -Infinity;
+        let maxY = -Infinity;
+        for (let cy = -1; cy <= 1; cy += 2) {
+          for (let cx = -1; cx <= 1; cx += 2) {
+            corner
+              .set((cx * PANEL_W) / 2, (cy * PANEL_H) / 2, 0)
+              .applyMatrix4(node.matrixWorld)
+              .project(camera);
+            const sx = ((corner.x + 1) / 2) * size.width;
+            const sy = ((1 - corner.y) / 2) * size.height;
+            if (sx < minX) minX = sx;
+            if (sy < minY) minY = sy;
+            if (sx > maxX) maxX = sx;
+            if (sy > maxY) maxY = sy;
+          }
+        }
+        hit.x = minX;
+        hit.y = minY;
+        hit.w = maxX - minX;
+        hit.h = maxY - minY;
+        hit.active = mat.uniforms.uOpacity.value > 0.35;
       }
 
       // --- mono tag anchor (below the panel's front face) ---------------

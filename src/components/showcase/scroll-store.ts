@@ -18,7 +18,7 @@ export type ActName = (typeof ACT_ORDER)[number];
 export const ACT_SCRUB_SVH: Record<ActName, number> = {
   hero: 90,
   focus: 150,
-  work: 195,
+  work: 390, // §3b.3 rebuild — was 195; one deliberate scroll gesture per panel
   build: 150,
   click: 165,
 };

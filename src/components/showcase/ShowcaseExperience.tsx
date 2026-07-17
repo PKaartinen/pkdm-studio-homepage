@@ -9,6 +9,7 @@ import { syncState } from "./sync-store";
 import Loader from "./Loader";
 import AnnotationLayer from "./AnnotationLayer";
 import PanelTagsLayer from "./PanelTagsLayer";
+import PanelLinksLayer from "./PanelLinksLayer";
 
 type CanvasRootType = ComponentType<{
   onContextLost: () => void;
@@ -111,6 +112,9 @@ export default function ShowcaseExperience() {
       {/* Act 2 — panel tags pinned beneath the glass work panels */}
       <PanelTagsLayer />
 
+      {/* Act 2 — clickable panel overlays → internal /projects/[slug] pages */}
+      <PanelLinksLayer />
+
       {/* Scrolling DOM story — native scroll, selectable text */}
       <div className="relative z-10">
         {/* Hero */}
@@ -155,9 +159,11 @@ export default function ShowcaseExperience() {
         </section>
 
         {/* Act 1 — Focus
-            T-308: section heights are act-range-proportional (total scrollable
-            = 750svh) so DOM boundaries land exactly on act boundaries:
-            hero 100 / focus 150 / work 195 / build 180 / finale 225.
+            T-308/T-331: section heights are act-range-proportional (total
+            scrollable = 945svh, ACT_SCRUB_SVH in scroll-store.ts) so DOM
+            boundaries land exactly on act boundaries:
+            hero 100 / focus 150 / work 390 (§3b.3 long scrub) / build 180 /
+            finale 225.
             Copy blocks enter at their act start (pt-[90svh]), pin via sticky
             through the act's money hold, and release near the act's end —
             position:sticky is layout only; all animation stays transform/
@@ -175,8 +181,8 @@ export default function ShowcaseExperience() {
           </div>
         </section>
 
-        {/* Act 2 — The Work */}
-        <section className="relative min-h-[195svh] pt-[90svh]">
+        {/* Act 2 — The Work (§3b.3: section grown for the long per-panel scrub) */}
+        <section className="relative min-h-[390svh] pt-[90svh]">
           <div className="sticky top-[26svh]">
             <div className="shell">
               <h2 className="display max-w-3xl font-display text-4xl font-bold text-white md:text-5xl">
