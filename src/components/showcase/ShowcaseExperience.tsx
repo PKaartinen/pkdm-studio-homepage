@@ -19,6 +19,8 @@ import { socialIcons } from "@/components/ui/icons";
 import { startScrollStore, subscribe } from "./scroll-store";
 import { clickPose, scrollHintOpacity, statsProgress } from "./choreography";
 import { syncState } from "./sync-store";
+import { tourState } from "./tour-store";
+import TourController from "./TourController";
 import Loader from "./Loader";
 import AnnotationLayer from "./AnnotationLayer";
 import PanelTagsLayer from "./PanelTagsLayer";
@@ -103,7 +105,14 @@ export default function ShowcaseExperience() {
 
   return (
     <main id="main" className="relative">
-      <Loader />
+      <Loader
+        onDone={() => {
+          tourState.loaderDone = true;
+        }}
+      />
+
+      {/* T-317 — ?tour=1 scripted take + ?fps=1 readout */}
+      <TourController />
 
       {/* Fixed 3D layer behind the scrolling DOM */}
       <div className="fixed inset-0 z-0" aria-hidden="true">
@@ -475,7 +484,10 @@ function ScrollHint() {
   useEffect(
     () =>
       subscribe((v) => {
-        if (ref.current) ref.current.style.opacity = String(scrollHintOpacity(v));
+        if (ref.current)
+          ref.current.style.opacity = tourState.active
+            ? "0"
+            : String(scrollHintOpacity(v));
       }),
     []
   );
