@@ -146,6 +146,15 @@ body:has(.showcase-root) > div.pointer-events-none.fixed.-z-10 {
   );
 }
 
+/* Scroll-hint dot (transform-only; disabled under reduced motion) */
+@keyframes showcase-scroll-dot {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  55% { transform: translateY(8px); opacity: 0.45; }
+}
+.showcase-scroll-dot {
+  animation: showcase-scroll-dot 1.7s ease-in-out infinite;
+}
+
 /* Respect reduced motion globally */
 @media (prefers-reduced-motion: reduce) {
   *,

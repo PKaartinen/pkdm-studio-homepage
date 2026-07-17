@@ -5,8 +5,10 @@ import { useFrame } from "@react-three/fiber";
 import type { Group } from "three";
 import { Environment, Lightformer } from "@react-three/drei";
 import { markSceneReady } from "../loader-signal";
-import GlassCursor from "./GlassCursor";
 import Stage from "./Stage";
+import RefractedWord from "./RefractedWord";
+import AnnotationTracker from "./AnnotationTracker";
+import CursorRig from "./CursorRig";
 
 /**
  * Scene root — "The Click".
@@ -34,49 +36,61 @@ export default function Scene({ variant = 0 }: { variant?: number }) {
       {/* Procedural studio env — drives glass reflections/refraction */}
       <Environment resolution={256} frames={1}>
         <color attach="background" args={["#01040a"]} />
-        {/* Overhead key strip — white-hot core */}
+        {/* Overhead key strip — thin, white-hot core */}
         <Lightformer
           form="rect"
-          intensity={6}
+          intensity={9}
           color="#ffffff"
-          position={[0, 4.5, 0]}
+          position={[0, 4.5, 1]}
           rotation={[-Math.PI / 2, 0, 0]}
-          scale={[6, 1.6, 1]}
+          scale={[5.5, 0.8, 1]}
         />
         {/* Deep-blue left fill */}
         <Lightformer
           form="rect"
-          intensity={3.2}
+          intensity={4.5}
           color="#0167b4"
           position={[-5, 1, 1]}
           rotation={[0, Math.PI / 2, 0]}
-          scale={[5, 2.4, 1]}
+          scale={[5, 2.2, 1]}
         />
-        {/* Electric-cyan right rim */}
+        {/* Electric-cyan right rim — thin hot strip */}
         <Lightformer
           form="rect"
-          intensity={4.2}
+          intensity={8}
           color="#69edfe"
-          position={[5, 1.6, 1]}
+          position={[5, 1.8, 1.5]}
           rotation={[0, -Math.PI / 2, 0]}
-          scale={[4.5, 2, 1]}
+          scale={[3.5, 0.9, 1]}
+        />
+        {/* Cyan-soft diagonal accent for fresnel sparkle */}
+        <Lightformer
+          form="rect"
+          intensity={5}
+          color="#a6f4ff"
+          position={[3, 4, -2]}
+          rotation={[-Math.PI / 3, -Math.PI / 6, 0]}
+          scale={[1.2, 3.5, 1]}
         />
         {/* Soft cyan-white bounce below-front for edge definition */}
         <Lightformer
           form="rect"
-          intensity={1.4}
+          intensity={2}
           color="#a6f4ff"
           position={[0, -3.5, 4]}
           rotation={[Math.PI / 3, 0, 0]}
-          scale={[7, 1.2, 1]}
+          scale={[7, 1, 1]}
         />
       </Environment>
 
       <Stage cursorRef={cursorGroup} />
 
-      <group ref={cursorGroup} position={[1.85, 0.3, 0]} rotation={[0.06, -0.28, -0.12]}>
-        <GlassCursor variant={variant} />
-      </group>
+      {/* In-canvas SDF "convert." — pixel-mirrored to the DOM twin */}
+      <RefractedWord />
+
+      <CursorRig cursorRef={cursorGroup} variant={variant} />
+
+      <AnnotationTracker cursorRef={cursorGroup} />
     </>
   );
 }

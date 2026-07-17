@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ComponentType } from "react";
 import { hero, act1, act2, act3, finale } from "./config";
 import { startScrollStore } from "./scroll-store";
+import { syncState } from "./sync-store";
 import Loader from "./Loader";
+import AnnotationLayer from "./AnnotationLayer";
 
 type CanvasRootType = ComponentType<{
   onContextLost: () => void;
@@ -22,6 +24,40 @@ export default function ShowcaseExperience() {
   const [CanvasRoot, setCanvasRoot] = useState<CanvasRootType | null>(null);
   const [canvasKey, setCanvasKey] = useState(0);
   const [variant, setVariant] = useState(0);
+  const [alignQA, setAlignQA] = useState(false);
+  const wordRef = useRef<HTMLSpanElement>(null);
+
+  // Pixel-mirror measurement: the transparent DOM twin's rect → sync store,
+  // read by the in-canvas SDF word every frame (buffer never sees the DOM).
+  useEffect(() => {
+    let raf = 0;
+    let fontSize = 0;
+    const readFont = () => {
+      if (wordRef.current)
+        fontSize = parseFloat(getComputedStyle(wordRef.current).fontSize);
+    };
+    readFont();
+    window.addEventListener("resize", readFont);
+    const tick = () => {
+      const el = wordRef.current;
+      if (el) {
+        const r = el.getBoundingClientRect();
+        syncState.wordRect = {
+          left: r.left,
+          top: r.top,
+          width: r.width,
+          height: r.height,
+          fontSize,
+        };
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", readFont);
+    };
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -36,10 +72,12 @@ export default function ShowcaseExperience() {
   // The single scroll-damping source (scroll-store.ts) for DOM + 3D.
   useEffect(() => startScrollStore(), []);
 
-  // Material-variant switch for Checkpoint A (?variant=1..N)
+  // Material-variant switch for Checkpoint A (?variant=1..N) + ?align=1 QA
   useEffect(() => {
-    const v = new URLSearchParams(window.location.search).get("variant");
+    const params = new URLSearchParams(window.location.search);
+    const v = params.get("variant");
     if (v) setVariant(Math.max(0, parseInt(v, 10) - 1) || 0);
+    if (params.has("align")) setAlignQA(true);
   }, []);
 
   const handleContextLost = useCallback(
@@ -65,22 +103,53 @@ export default function ShowcaseExperience() {
       {/* CSS vignette (postprocessing banned) */}
       <div className="showcase-vignette" aria-hidden="true" />
 
+      {/* 3D-pinned mono annotations (DOM text, transform-only tracking) */}
+      <AnnotationLayer />
+
       {/* Scrolling DOM story — native scroll, selectable text */}
       <div className="relative z-10">
         {/* Hero */}
-        <section className="relative flex min-h-[100svh] items-center">
+        <section className="relative flex min-h-[100svh] flex-col justify-center pb-16">
           <div className="shell">
             <p className="font-mono text-xs uppercase tracking-[0.22em] text-accent-soft">
               {hero.eyebrow}
             </p>
-            <h1 className="display mt-6 font-display text-[11vw] font-bold leading-[1.02] text-white md:text-[10vw]">
+            <h1 className="display mt-6 font-display text-[clamp(3rem,9vw,8.4rem)] font-bold leading-[1.04] text-white">
               {hero.h1Line1}
               <br />
-              {hero.h1Line2}
+              <span className="inline-block pl-[1.5em]">
+                {hero.h1Line2.slice(0, hero.h1Line2.length - hero.refractedWord.length)}
+                {/* Transparent DOM twin — SEO/selection; drawn in-canvas as SDF */}
+                <span
+                  ref={wordRef}
+                  className="inline-block"
+                  style={{
+                    color: alignQA ? "rgba(255,60,60,0.55)" : "transparent",
+                  }}
+                >
+                  {hero.refractedWord}
+                </span>
+              </span>
             </h1>
-            <p className="mt-8 max-w-xl text-lg leading-relaxed text-haze">
-              {hero.sub}
-            </p>
+            <div className="mt-10 flex max-w-xl flex-col gap-7">
+              <p className="text-lg leading-relaxed text-haze">{hero.sub}</p>
+              <div className="flex flex-col items-start gap-3">
+                <a
+                  href="/contact"
+                  className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-semibold text-ink-950 shadow-[0_8px_30px_-8px_rgba(105,237,254,0.65)] transition-colors duration-300 hover:bg-accent-soft"
+                >
+                  {hero.cta}
+                </a>
+                <p className="text-sm text-haze/70">{hero.reassurance}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Scroll hint */}
+          <div className="absolute bottom-7 left-1/2 hidden -translate-x-1/2 md:block">
+            <div className="flex h-9 w-5 items-start justify-center rounded-full border border-white/20 p-1">
+              <span className="showcase-scroll-dot h-1.5 w-1.5 rounded-full bg-accent-soft" />
+            </div>
           </div>
         </section>
 
