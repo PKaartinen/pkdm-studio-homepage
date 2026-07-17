@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { heroAnnotations } from "./config";
+import { act1, act3, heroAnnotations } from "./config";
 import { syncState } from "./sync-store";
 
 /**
@@ -12,21 +12,25 @@ import { syncState } from "./sync-store";
 export default function AnnotationLayer() {
   const founderRef = useRef<HTMLDivElement>(null);
   const replyRef = useRef<HTMLDivElement>(null);
+  const focusRef = useRef<HTMLDivElement>(null);
+  const buildRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let raf = 0;
+    const apply = (
+      el: HTMLDivElement | null,
+      a: { x: number; y: number; visible: boolean; opacity: number }
+    ) => {
+      if (!el) return;
+      el.style.transform = `translate3d(${a.x}px, ${a.y}px, 0)`;
+      el.style.opacity = a.visible ? String(a.opacity) : "0";
+    };
     const tick = () => {
       const a = syncState.annotations;
-      const f = founderRef.current;
-      const r = replyRef.current;
-      if (f) {
-        f.style.transform = `translate3d(${a.founderLed.x}px, ${a.founderLed.y}px, 0)`;
-        f.style.opacity = a.founderLed.visible ? String(a.founderLed.opacity) : "0";
-      }
-      if (r) {
-        r.style.transform = `translate3d(${a.reply.x}px, ${a.reply.y}px, 0)`;
-        r.style.opacity = a.reply.visible ? String(a.reply.opacity) : "0";
-      }
+      apply(founderRef.current, a.founderLed);
+      apply(replyRef.current, a.reply);
+      apply(focusRef.current, a.focus);
+      apply(buildRef.current, a.build);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -71,6 +75,36 @@ export default function AnnotationLayer() {
           }}
         >
           {heroAnnotations.reply}
+        </span>
+      </div>
+
+      {/* UNDER 5 SECONDS — pinned to the Act 1 focus plane (T-309) */}
+      <div ref={focusRef} className="absolute left-0 top-0 will-change-transform" style={{ opacity: 0 }}>
+        <span className="absolute -ml-[2.5px] -mt-[2.5px] block h-[5px] w-[5px] rounded-full bg-accent-soft shadow-[0_0_6px_rgba(166,244,255,0.9)]" />
+        <span
+          className="absolute block h-px origin-left bg-gradient-to-r from-accent-soft/70 to-accent-soft/25"
+          style={{ width: 96, transform: "rotate(-30deg)" }}
+        />
+        <span
+          className="absolute block whitespace-nowrap font-mono text-[10px] font-normal tracking-[0.22em] text-haze"
+          style={{ left: 88, top: -60 }}
+        >
+          {act1.annotation}
+        </span>
+      </div>
+
+      {/* A 24/7 SALES REP — pinned to the finished Act 3 skeleton (T-312) */}
+      <div ref={buildRef} className="absolute left-0 top-0 will-change-transform" style={{ opacity: 0 }}>
+        <span className="absolute -ml-[2.5px] -mt-[2.5px] block h-[5px] w-[5px] rounded-full bg-accent-soft shadow-[0_0_6px_rgba(166,244,255,0.9)]" />
+        <span
+          className="absolute block h-px origin-left bg-gradient-to-r from-accent-soft/70 to-accent-soft/25"
+          style={{ width: 96, transform: "rotate(-30deg)" }}
+        />
+        <span
+          className="absolute block whitespace-nowrap font-mono text-[10px] font-normal tracking-[0.22em] text-haze"
+          style={{ left: 88, top: -60 }}
+        >
+          {act3.annotation}
         </span>
       </div>
     </div>

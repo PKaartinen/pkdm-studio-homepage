@@ -6,6 +6,7 @@ import type { Group } from "three";
 import { Environment, Lightformer } from "@react-three/drei";
 import { markSceneReady } from "../loader-signal";
 import Stage from "./Stage";
+import FocusPlane from "./FocusPlane";
 import RefractedWord from "./RefractedWord";
 import AnnotationTracker from "./AnnotationTracker";
 import CursorRig from "./CursorRig";
@@ -90,6 +91,9 @@ export default function Scene({ variant = 0 }: { variant?: number }) {
 
       {/* In-canvas SDF "convert." — pixel-mirrored to the DOM twin */}
       <RefractedWord />
+
+      {/* Act 1 — the blurred type plane that resolves to "why you?" */}
+      <FocusPlane />
 
       <CursorRig cursorRef={cursorGroup} variant={variant} />
 

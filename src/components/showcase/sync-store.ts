@@ -25,5 +25,16 @@ export const syncState = {
   annotations: {
     founderLed: { x: 0, y: 0, visible: false, opacity: 0 } as AnnotationAnchor,
     reply: { x: 0, y: 0, visible: false, opacity: 0 } as AnnotationAnchor,
+    /** Act 1 — pinned to the focus type plane (`UNDER 5 SECONDS`). */
+    focus: { x: 0, y: 0, visible: false, opacity: 0 } as AnnotationAnchor,
+    /** Act 3 — pinned to the finished skeleton (`A 24/7 SALES REP`). */
+    build: { x: 0, y: 0, visible: false, opacity: 0 } as AnnotationAnchor,
   },
+  /** Act 2 — per-panel mono tags (screen px + typed-on character count). */
+  panelTags: [] as {
+    x: number;
+    y: number;
+    opacity: number;
+    chars: number;
+  }[],
 };
