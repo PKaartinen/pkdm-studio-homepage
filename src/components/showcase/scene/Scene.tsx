@@ -6,6 +6,7 @@ import type { Group } from "three";
 import { Environment, Lightformer } from "@react-three/drei";
 import { markSceneReady } from "../loader-signal";
 import GlassCursor from "./GlassCursor";
+import Stage from "./Stage";
 
 /**
  * Scene root — "The Click".
@@ -21,7 +22,8 @@ export default function Scene({ variant = 0 }: { variant?: number }) {
 
   return (
     <>
-      <color attach="background" args={["#000206"]} />
+      {/* No solid background: the CSS void gradient (#000206→#03060e) shows
+          through the alpha canvas — vertical gradient per spec §2b. */}
 
       {/* Studio lighting — cool key above, deep-blue left rim, cyan right rim */}
       <ambientLight intensity={0.12} color="#0c1430" />
@@ -69,6 +71,8 @@ export default function Scene({ variant = 0 }: { variant?: number }) {
           scale={[7, 1.2, 1]}
         />
       </Environment>
+
+      <Stage cursorRef={cursorGroup} />
 
       <group ref={cursorGroup} position={[1.85, 0.3, 0]} rotation={[0.06, -0.28, -0.12]}>
         <GlassCursor variant={variant} />
