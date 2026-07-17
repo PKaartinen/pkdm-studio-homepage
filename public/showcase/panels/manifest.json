@@ -1,0 +1,85 @@
+{
+  "generated": "2026-07-17",
+  "task": "T-310",
+  "note": "Tags are script-extracted verbatim from src/data/projects.ts (featured: true, source order). GPU estimate = width*height*4 bytes RGBA at load size * 4/3 mipmap overhead.",
+  "budget": {
+    "totalGpuBytes": 19802794,
+    "totalGpuMB": 18.89,
+    "limitMB": 24,
+    "withinBudget": true
+  },
+  "panels": [
+    {
+      "slug": "skillful-traders",
+      "tag": "Skillful Traders — Prop Trading Firm",
+      "name": "Skillful Traders",
+      "category": "Prop Trading Firm",
+      "file": "/showcase/panels/skillful-traders.webp",
+      "sourceImage": "/projects/skillful-traders-1.png",
+      "width": 1024,
+      "height": 576,
+      "fileBytes": 30084,
+      "gpuBytesRGBAWithMips": 3145728
+    },
+    {
+      "slug": "privatebyright-vpn",
+      "tag": "PrivateByRight VPN — VPN Website",
+      "name": "PrivateByRight VPN",
+      "category": "VPN Website",
+      "file": "/showcase/panels/privatebyright-vpn.webp",
+      "sourceImage": "/projects/privatebyright-1.png",
+      "width": 1024,
+      "height": 560,
+      "fileBytes": 29072,
+      "gpuBytesRGBAWithMips": 3058347
+    },
+    {
+      "slug": "breakthrough-capital",
+      "tag": "Breakthrough Capital — Financial Services",
+      "name": "Breakthrough Capital",
+      "category": "Financial Services",
+      "file": "/showcase/panels/breakthrough-capital.webp",
+      "sourceImage": "/projects/breakthrough-1.png",
+      "width": 1024,
+      "height": 511,
+      "fileBytes": 45732,
+      "gpuBytesRGBAWithMips": 2790741
+    },
+    {
+      "slug": "unifolio",
+      "tag": "Unifolio — University Matching Quiz",
+      "name": "Unifolio",
+      "category": "University Matching Quiz",
+      "file": "/showcase/panels/unifolio.webp",
+      "sourceImage": "/projects/unifolio-1.png",
+      "width": 1024,
+      "height": 870,
+      "fileBytes": 32594,
+      "gpuBytesRGBAWithMips": 4751360
+    },
+    {
+      "slug": "clearpen",
+      "tag": "ClearPen — SaaS Marketing Site",
+      "name": "ClearPen",
+      "category": "SaaS Marketing Site",
+      "file": "/showcase/panels/clearpen.webp",
+      "sourceImage": "/projects/clearpen-1.png",
+      "width": 1024,
+      "height": 511,
+      "fileBytes": 29108,
+      "gpuBytesRGBAWithMips": 2790741
+    },
+    {
+      "slug": "ecommerce-lander",
+      "tag": "eCommerce Lander — Conversion Landing Page",
+      "name": "eCommerce Lander",
+      "category": "Conversion Landing Page",
+      "file": "/showcase/panels/ecommerce-lander.webp",
+      "sourceImage": "/projects/ecom-lander-1.png",
+      "width": 1024,
+      "height": 598,
+      "fileBytes": 42944,
+      "gpuBytesRGBAWithMips": 3265877
+    }
+  ]
+}
