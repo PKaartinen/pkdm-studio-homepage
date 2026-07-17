@@ -1,13 +1,31 @@
-import Hero from "@/components/sections/Hero";
-import Marquee from "@/components/sections/Marquee";
-import Services from "@/components/sections/Services";
-import Projects from "@/components/sections/Projects";
-import Pillars from "@/components/sections/Pillars";
-import Insights from "@/components/sections/Insights";
-import Process from "@/components/sections/Process";
-import Testimonials from "@/components/sections/Testimonials";
-import Contact from "@/components/sections/Contact";
+import { headers } from "next/headers";
+import { DM_Mono } from "next/font/google";
+import ShowcaseDeviceGate from "@/components/showcase/device-gate";
+import ShowcaseStaticPage from "@/components/showcase/static-page";
 import { site } from "@/data/site";
+
+// ---------------------------------------------------------------------------
+// The homepage IS the 3D showcase ("The Click") — promoted from /showcase per
+// founder decision F-3 (2026-07-18). /showcase now permanently redirects here
+// (see next.config.mjs), so shared links and ?tour=1 keep working.
+// ---------------------------------------------------------------------------
+
+// DM Mono — showcase annotations + loader counter (founder-confirmed F-5).
+// next/font self-hosts at build time; scoped via the .showcase-root wrapper.
+const dmMono = DM_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["300", "400", "500"],
+  variable: "--font-mono",
+});
+
+// Two-stage gate, stage 1 (server UA hint, v6 canon): mobile UAs get the pure
+// Server Component static page, so a phone's tree never references any 3D
+// client code. iPad is deliberately NOT matched here — iPadOS reports a macOS
+// UA; stage 2 (device-gate.tsx: reduced-motion / max-width 767px / hover:none
+// / pointer:coarse) catches it on the client.
+const MOBILE_UA =
+  /iPhone|iPod|Windows Phone|IEMobile|Opera Mini|BlackBerry|webOS|Android.+Mobile/i;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -30,24 +48,21 @@ const jsonLd = {
   founder: { "@type": "Person", name: "Pietari Kaartinen" },
 };
 
-export default function Home() {
+export default async function Home() {
+  const ua = (await headers()).get("user-agent") ?? "";
+  const content = MOBILE_UA.test(ua) ? (
+    <ShowcaseStaticPage />
+  ) : (
+    <ShowcaseDeviceGate />
+  );
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main id="main">
-        <Hero />
-        <Marquee />
-        <Services />
-        <Projects />
-        <Pillars />
-        <Process />
-        <Insights />
-        <Testimonials />
-        <Contact />
-      </main>
+      <div className={`showcase-root ${dmMono.variable}`}>{content}</div>
     </>
   );
 }
