@@ -83,3 +83,14 @@ export const finale = {
   reassurance: hero.reassurance,
   cta: hero.cta,
 } as const;
+
+// --- CTAs (spec §3b.4 + §3b.7 — canonical strings ONLY) ---------------------
+// "View all projects" is the existing Projects-section CTA
+// (source: src/components/sections/Projects.tsx); the contact CTA is the
+// hero/primary CTA (live site). No new copy.
+export const ctas = {
+  viewAllProjects: "View all projects",
+  viewAllProjectsHref: "/projects",
+  contact: hero.cta,
+  contactHref: "/contact",
+} as const;

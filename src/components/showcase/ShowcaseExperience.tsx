@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ComponentType } from "react";
-import { hero, act1, act2, act3, finale } from "./config";
+import { hero, act1, act2, act3, finale, ctas } from "./config";
+import MagneticButton from "@/components/ui/MagneticButton";
 import { startScrollStore, subscribe } from "./scroll-store";
 import { scrollHintOpacity, statsProgress } from "./choreography";
 import { syncState } from "./sync-store";
@@ -189,6 +190,17 @@ export default function ShowcaseExperience() {
                 {act2.headline}
               </h2>
               <p className="mt-6 max-w-xl text-haze">{act2.subline}</p>
+              {/* §3b.4 — CTAs under the Act 2 text (canonical strings only).
+                  Stacked column: stays inside the left copy lane, clear of
+                  the panel queue (9:16-crop and panel-crowding checked). */}
+              <div className="mt-8 flex flex-col items-start gap-4">
+                <MagneticButton href={ctas.viewAllProjectsHref} variant="ghost">
+                  {ctas.viewAllProjects}
+                </MagneticButton>
+                <MagneticButton href={ctas.contactHref}>
+                  {ctas.contact}
+                </MagneticButton>
+              </div>
             </div>
           </div>
         </section>
@@ -206,20 +218,42 @@ export default function ShowcaseExperience() {
           </div>
         </section>
 
-        {/* Finale — The Click (Phase 3 builds the finale; this DOM section is
-            the canonical-copy stub + the stable seam through 0.78–1.00) */}
-        <section className="relative min-h-[225svh] pt-[90svh]">
-          <div className="sticky top-[26svh]">
-            <div className="shell">
-              <h2 className="display max-w-3xl font-display text-4xl font-bold text-white md:text-5xl">
-                {finale.headline}
-              </h2>
-              <p className="mt-6 max-w-xl text-haze">
-                {finale.pillar.title} — {finale.pillar.description}
-              </p>
-              <p className="mt-4 max-w-xl text-sm text-haze/70">
-                {finale.reassurance}
-              </p>
+        {/* Finale — The Click (Phase 3 builds the click; this DOM section is
+            the canonical-copy stub + the stable seam through 0.78–1.00).
+            §3b.7: the prominent finale CTA lands NOW, centered over the 3D
+            CTA pill (~65vw/76svh at the click seam) so it becomes the 3D
+            click target in Phase 3's T-313. */}
+        <section className="relative min-h-[225svh] pt-[40svh]">
+          {/* pt-40svh → the full-viewport sticky engages at v≈0.91, so the
+              CTA is already parked on the pill through the click money shot
+              and stays pixel-stable to the very end (T-313 hand-off). */}
+          <div className="sticky top-0 h-[100svh]">
+            <div className="pt-[26svh]">
+              <div className="shell">
+                <h2 className="display max-w-3xl font-display text-4xl font-bold text-white md:text-5xl">
+                  {finale.headline}
+                </h2>
+                <p className="mt-6 max-w-xl text-haze">
+                  {finale.pillar.title} — {finale.pillar.description}
+                </p>
+                <p className="mt-4 max-w-xl text-sm text-haze/70">
+                  {finale.reassurance}
+                </p>
+              </div>
+            </div>
+            {/* The finale CTA — pixel-parked on the 3D pill's screen position
+                (T-313 hand-off). Real link, canonical copy, MagneticButton. */}
+            <div className="absolute left-[65vw] top-[76svh] hidden -translate-x-1/2 -translate-y-1/2 md:block">
+              <MagneticButton
+                href={ctas.contactHref}
+                className="px-10 py-5 text-base shadow-[0_10px_44px_-8px_rgba(105,237,254,0.75)]"
+              >
+                {finale.cta}
+              </MagneticButton>
+            </div>
+            {/* Mobile/stacked fallback CTA (the absolute pill target is md+) */}
+            <div className="shell mt-10 md:hidden">
+              <MagneticButton href={ctas.contactHref}>{finale.cta}</MagneticButton>
             </div>
           </div>
         </section>
