@@ -19,6 +19,12 @@ export const syncState = {
   /** Idle hover-bob phase (−1..1), written by CursorRig; Stage syncs the
    * caustic pool pulse to it so light and motion breathe together. */
   bob: 0,
+  /** Cursor world position on the z=0 plane (written by CursorRig every
+   * frame) — read by FocusPlane so the focus wake follows the §3b-moved
+   * cursor exactly. */
+  cursorWorld: { x: 0, y: 0 },
+  /** Cursor projected screen position in px (QA path-trace evidence). */
+  cursorScreen: { x: 0, y: 0 },
   /** Screen rect + font size of the transparent DOM "convert." twin. */
   wordRect: null as { left: number; top: number; width: number; height: number; fontSize: number } | null,
   /** 3D-tracked anchors projected to screen px (written by the Scene). */

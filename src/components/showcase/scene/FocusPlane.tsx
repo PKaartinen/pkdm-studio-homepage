@@ -150,9 +150,13 @@ export default function FocusPlane() {
     }
     m.uniforms.uOpacity.value = pose.opacity;
     m.uniforms.uRadius.value = pose.radius;
-    // Wake front = the cursor's floor-track position in plane-local space
-    // (cursor holds x≈0 while the plane glides left beneath it).
-    const localCursorX = Math.max(-2.6, Math.min(2.6, -pose.x));
+    // Wake front = the cursor's ACTUAL position in plane-local space
+    // (T-330: the Act 1 cursor moved +30vh/+20vw — the wake follows the
+    // cursor's real world x, written by CursorRig every frame).
+    const localCursorX = Math.max(
+      -2.6,
+      Math.min(2.6, syncState.cursorWorld.x - pose.x)
+    );
     m.uniforms.uWakeB.value.set(localCursorX, 0.1);
 
     // --- `UNDER 5 SECONDS` annotation — pinned to the plane's right edge ---

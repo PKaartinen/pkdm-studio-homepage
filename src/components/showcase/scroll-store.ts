@@ -8,16 +8,38 @@
 // framer-motion DOM — keeping them in lockstep and perfectly reversible.
 // ---------------------------------------------------------------------------
 
-/** Act ranges as fractions of total scroll (spec §3). */
-export const ACTS = {
-  hero: [0.0, 0.12],
-  focus: [0.12, 0.32],
-  work: [0.32, 0.58],
-  build: [0.58, 0.78],
-  click: [0.78, 1.0],
-} as const;
+/** Act order + per-act scrub distances in svh of scrollable page (spec §3 +
+ * §3b.3 — the work act got a Ciao-style LONG per-panel scrub distance, so
+ * ranges are derived from these distances instead of hand-tuned fractions.
+ * Section heights in ShowcaseExperience.tsx must stay in lockstep. */
+const ACT_ORDER = ["hero", "focus", "work", "build", "click"] as const;
+export type ActName = (typeof ACT_ORDER)[number];
 
-export type ActName = keyof typeof ACTS;
+export const ACT_SCRUB_SVH: Record<ActName, number> = {
+  hero: 90,
+  focus: 150,
+  work: 195,
+  build: 150,
+  click: 165,
+};
+
+/** Act ranges as fractions of total scroll — derived, cumulative. */
+export const ACTS = (() => {
+  const total = ACT_ORDER.reduce((s, a) => s + ACT_SCRUB_SVH[a], 0);
+  let acc = 0;
+  const out = {} as Record<ActName, readonly [number, number]>;
+  for (const a of ACT_ORDER) {
+    out[a] = [acc / total, (acc + ACT_SCRUB_SVH[a]) / total] as const;
+    acc += ACT_SCRUB_SVH[a];
+  }
+  return out;
+})();
+
+/** Global progress value at act-local progress p (0–1 inside the act). */
+export function actAt(act: ActName, p: number): number {
+  const [a, b] = ACTS[act];
+  return a + (b - a) * p;
+}
 
 type Listener = (value: number) => void;
 
