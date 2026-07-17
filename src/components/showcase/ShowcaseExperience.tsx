@@ -8,6 +8,7 @@ import { scrollHintOpacity } from "./choreography";
 import { syncState } from "./sync-store";
 import Loader from "./Loader";
 import AnnotationLayer from "./AnnotationLayer";
+import PanelTagsLayer from "./PanelTagsLayer";
 
 type CanvasRootType = ComponentType<{
   onContextLost: () => void;
@@ -106,6 +107,9 @@ export default function ShowcaseExperience() {
 
       {/* 3D-pinned mono annotations (DOM text, transform-only tracking) */}
       <AnnotationLayer />
+
+      {/* Act 2 — panel tags pinned beneath the glass work panels */}
+      <PanelTagsLayer />
 
       {/* Scrolling DOM story — native scroll, selectable text */}
       <div className="relative z-10">

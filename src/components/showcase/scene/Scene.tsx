@@ -7,6 +7,7 @@ import { Environment, Lightformer } from "@react-three/drei";
 import { markSceneReady } from "../loader-signal";
 import Stage from "./Stage";
 import FocusPlane from "./FocusPlane";
+import WorkPanels from "./WorkPanels";
 import RefractedWord from "./RefractedWord";
 import AnnotationTracker from "./AnnotationTracker";
 import CursorRig from "./CursorRig";
@@ -94,6 +95,9 @@ export default function Scene({ variant = 0 }: { variant?: number }) {
 
       {/* Act 1 — the blurred type plane that resolves to "why you?" */}
       <FocusPlane />
+
+      {/* Act 2 — six glass work panels in a right-to-left arc queue */}
+      <WorkPanels />
 
       <CursorRig cursorRef={cursorGroup} variant={variant} />
 
