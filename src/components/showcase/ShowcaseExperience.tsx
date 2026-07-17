@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { ComponentType } from "react";
 import { hero, act1, act2, act3, finale } from "./config";
 import { startScrollStore } from "./scroll-store";
+import Loader from "./Loader";
 
 type CanvasRootType = ComponentType<{
   onContextLost: () => void;
@@ -48,6 +49,8 @@ export default function ShowcaseExperience() {
 
   return (
     <main id="main" className="relative">
+      <Loader />
+
       {/* Fixed 3D layer behind the scrolling DOM */}
       <div className="fixed inset-0 z-0" aria-hidden="true">
         {CanvasRoot && (

@@ -4,12 +4,15 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import type { Group } from "three";
 import { progress, actProgress } from "../scroll-store";
+import { markSceneReady } from "../loader-signal";
 
 /**
  * Scene root. T-302: placeholder mesh proving the scroll→3D binding.
  * The glass cursor, stage and hero type replace/extend this in T-304+.
  */
 export default function Scene({ variant = 0 }: { variant?: number }) {
+  // First rendered frame = shaders compiled → release the loader gate.
+  useFrame(() => markSceneReady());
   return (
     <>
       <color attach="background" args={["#000206"]} />
