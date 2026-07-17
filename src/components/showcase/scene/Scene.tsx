@@ -8,6 +8,7 @@ import { markSceneReady } from "../loader-signal";
 import Stage from "./Stage";
 import FocusPlane from "./FocusPlane";
 import WorkPanels from "./WorkPanels";
+import BuildSkeleton from "./BuildSkeleton";
 import RefractedWord from "./RefractedWord";
 import AnnotationTracker from "./AnnotationTracker";
 import CursorRig from "./CursorRig";
@@ -98,6 +99,10 @@ export default function Scene({ variant = 0 }: { variant?: number }) {
 
       {/* Act 2 — six glass work panels in a right-to-left arc queue */}
       <WorkPanels />
+
+      {/* Act 3 — wireframe page skeleton draws, then glass-fills; the CTA
+          pill holds stable through the click act (Phase-3 finale seam) */}
+      <BuildSkeleton />
 
       <CursorRig cursorRef={cursorGroup} variant={variant} />
 

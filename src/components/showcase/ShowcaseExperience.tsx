@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ComponentType } from "react";
 import { hero, act1, act2, act3, finale } from "./config";
 import { startScrollStore, subscribe } from "./scroll-store";
-import { scrollHintOpacity } from "./choreography";
+import { scrollHintOpacity, statsProgress } from "./choreography";
 import { syncState } from "./sync-store";
 import Loader from "./Loader";
 import AnnotationLayer from "./AnnotationLayer";
@@ -195,6 +195,7 @@ export default function ShowcaseExperience() {
                 {act3.pillar.title}
               </h2>
               <p className="mt-6 max-w-xl text-haze">{act3.pillar.description}</p>
+              <BuildStats />
             </div>
           </div>
         </section>
@@ -218,6 +219,63 @@ export default function ShowcaseExperience() {
         </section>
       </div>
     </main>
+  );
+}
+
+/**
+ * T-312 — the three canonical stats scrub-tick with scroll (value derived
+ * from the damped store → pausing holds it; reversible). Tabular numerals,
+ * fixed-width value slots — zero width jitter. Only the numeric prefix
+ * animates; the canonical strings render exactly at rest.
+ */
+function BuildStats() {
+  const valueRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  // Canonical stat strings split into numeric target + suffix ("97" + "%")
+  const parsed = act3.stats.map((s) => {
+    const m = /^(\d+)(.*)$/.exec(s.value);
+    return { target: m ? parseInt(m[1], 10) : 0, suffix: m ? m[2] : "" };
+  });
+
+  useEffect(
+    () =>
+      subscribe((v) => {
+        const e = statsProgress(v);
+        for (let i = 0; i < parsed.length; i++) {
+          const el = valueRefs.current[i];
+          if (!el) continue;
+          const text = `${Math.round(parsed[i].target * e)}${parsed[i].suffix}`;
+          if (el.textContent !== text) el.textContent = text;
+        }
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  return (
+    <div className="mt-12 flex gap-12 md:gap-16">
+      {act3.stats.map((s, i) => (
+        <div key={s.label}>
+          <div
+            className="font-display text-4xl font-bold text-white md:text-5xl"
+            style={{
+              fontVariantNumeric: "tabular-nums",
+              minWidth: `${s.value.length + 0.5}ch`,
+            }}
+          >
+            <span
+              ref={(el) => {
+                valueRefs.current[i] = el;
+              }}
+            >
+              {s.value}
+            </span>
+          </div>
+          <div className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-haze">
+            {s.label}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 

@@ -40,10 +40,12 @@ const CURSOR_X: Key[] = [
   { at: 0.12, v: 0 },      // focus — centered above the type plane
   { at: 0.34, v: 0 },
   { at: 0.58, v: 0 },      // work — panels pass beneath, cursor steady
-  { at: 0.61, v: -0.6 },   // build — subtle drift following the line draw
-  { at: 0.68, v: 0.6 },
-  { at: 0.73, v: 0 },      // settle centered; HOLD through the click seam
-  { at: 1.0, v: 0 },
+  { at: 0.61, v: 0.6 },    // build — subtle drift following the line draw
+  { at: 0.68, v: 2.0 },    //   (skeleton sits right-of-center at x=1.3)
+  { at: 0.73, v: 1.3 },    // settle over the skeleton; HOLD into the click
+  { at: 0.82, v: 1.3 },
+  { at: 0.9, v: 1.3 },     // click seam — centered above the CTA pill
+  { at: 1.0, v: 1.3 },
 ];
 const CURSOR_Y: Key[] = [
   { at: 0.12, v: 0.55 },   // focus — hovering above the type plane
