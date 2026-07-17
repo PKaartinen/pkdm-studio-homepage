@@ -10,6 +10,7 @@ import {
   Vector2,
 } from "three";
 import type { Group } from "three";
+import { syncState } from "../sync-store";
 
 export const FLOOR_Y = -1.42;
 
@@ -43,6 +44,8 @@ export default function Stage({
     const m = matRef.current;
     if (!m) return;
     m.uniforms.uTime.value = state.clock.elapsedTime;
+    // Pulse synced to the hover-bob (T-307): light breathes with the motion.
+    m.uniforms.uPulse.value = 1 + syncState.bob * 0.14;
     const g = cursorRef.current;
     if (g) {
       m.uniforms.uCursor.value.set(g.position.x, g.position.z);

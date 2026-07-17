@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { MathUtils, Vector3 } from "three";
 import type { Group } from "three";
@@ -9,10 +9,32 @@ import GlassCursor from "./GlassCursor";
 
 const ray = new Vector3();
 
+// -------------------------------------------------------------------------
+// GLIDE RULE (hard canon, asserted): a cursor GLIDES. It never rolls, never
+// flips, never goes upside-down. Total tilt on any axis stays ≤ 15°.
+// Pointer lean is damped and capped at ±5°.
+// -------------------------------------------------------------------------
+const MAX_TILT = MathUtils.degToRad(15);
+const LEAN_CAP = MathUtils.degToRad(5);
+
+// Base pose chosen so pose + max lean + breathing stays inside MAX_TILT.
+const BASE_ROT = { x: 0.06, y: -0.17, z: -0.1 };
+
+function clampTilt(v: number): number {
+  const c = MathUtils.clamp(v, -MAX_TILT, MAX_TILT);
+  if (process.env.NODE_ENV !== "production") {
+    console.assert(
+      Math.abs(v) <= MAX_TILT + 1e-6,
+      `Glide rule violated: tilt ${MathUtils.radToDeg(v).toFixed(2)}° > 15°`
+    );
+  }
+  return c;
+}
+
 /**
- * Cursor rig — owns the glass cursor's hero anchor: positioned relative to
- * the measured "convert." rect so the overlap holds at every viewport width.
- * T-307 layers idle bob + pointer lean on top; Phase 2 adds choreography.
+ * Cursor rig — hero anchor follows the measured "convert." rect (overlap
+ * holds at every viewport width) + T-307 idle motion: two-phase hover-bob,
+ * damped pointer lean (≤±5°), caustic pulse sync. Reduced motion → static.
  */
 export default function CursorRig({
   cursorRef,
@@ -21,39 +43,80 @@ export default function CursorRig({
   cursorRef: React.RefObject<Group | null>;
   variant: number;
 }) {
-  const { camera, size } = useThree();
+  const { camera, size, pointer } = useThree();
   const innerRef = useRef<Group>(null);
+  const lean = useRef({ x: 0, y: 0 });
 
-  useFrame(() => {
+  const reduceMotion = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    []
+  );
+
+  useFrame((state, delta) => {
     const g = cursorRef.current;
     const rect = syncState.wordRect;
     if (!g || !rect || rect.width === 0) return;
+    const t = state.clock.elapsedTime;
 
-    // Word center + offset in em of the headline font → screen px
+    // --- Hero anchor from the DOM twin (layout-follow) --------------------
     const px = rect.left + rect.width / 2 + rect.fontSize * 0.95;
     const py = rect.top + rect.height / 2 + rect.fontSize * 0.55;
-
-    // Unproject onto the cursor's z = 0 plane
     const ndcX = (px / size.width) * 2 - 1;
     const ndcY = -((py / size.height) * 2 - 1);
     ray.set(ndcX, ndcY, 0.5).unproject(camera);
     ray.sub(camera.position).normalize();
     const dist = (0 - camera.position.z) / ray.z;
-    const tx = camera.position.x + ray.x * dist;
-    const ty = camera.position.y + ray.y * dist;
+    let tx = camera.position.x + ray.x * dist;
+    let ty = camera.position.y + ray.y * dist;
 
-    // Damped settle (store-damped scroll drives choreography later; this is
-    // only layout-follow, so a gentle lerp avoids resize pops)
+    // --- Idle hover-bob: two offset sine phases (house organic motion) ----
+    let bob = 0;
+    if (!reduceMotion) {
+      bob = Math.sin(t * 0.8) * 0.7 + Math.sin(t * 1.31 + 1.7) * 0.3;
+      ty += bob * 0.075;
+      tx += Math.sin(t * 0.53 + 0.6) * 0.03;
+    }
+    syncState.bob = bob;
+
     g.position.x = MathUtils.lerp(g.position.x, tx, 0.18);
     g.position.y = MathUtils.lerp(g.position.y, ty, 0.18);
+
+    // --- Damped lean toward the real pointer (≤ ±5°) ----------------------
+    const k = 1 - Math.exp(-delta / 0.28); // heavy damping, no jitter
+    const targetLeanY = reduceMotion
+      ? 0
+      : MathUtils.clamp(pointer.x * LEAN_CAP, -LEAN_CAP, LEAN_CAP);
+    const targetLeanX = reduceMotion
+      ? 0
+      : MathUtils.clamp(-pointer.y * LEAN_CAP * 0.7, -LEAN_CAP, LEAN_CAP);
+    lean.current.y += (targetLeanY - lean.current.y) * k;
+    lean.current.x += (targetLeanX - lean.current.x) * k;
+
+    // --- Compose rotation; breathing micro-tilt; CLAMP (glide rule) -------
+    const breathZ = reduceMotion ? 0 : Math.sin(t * 0.66 + 0.9) * 0.02;
+    g.rotation.x = clampTilt(BASE_ROT.x + lean.current.x);
+    g.rotation.y = clampTilt(BASE_ROT.y + lean.current.y);
+    g.rotation.z = clampTilt(BASE_ROT.z + breathZ);
+
+    if (process.env.NODE_ENV !== "production") {
+      // QA probe: max observed |rotation| in degrees (tilt-clamp evidence)
+      const w = window as unknown as { __cursorMaxTiltDeg?: number };
+      const m = Math.max(
+        Math.abs(g.rotation.x),
+        Math.abs(g.rotation.y),
+        Math.abs(g.rotation.z)
+      );
+      w.__cursorMaxTiltDeg = Math.max(
+        w.__cursorMaxTiltDeg ?? 0,
+        MathUtils.radToDeg(m)
+      );
+    }
   });
 
   return (
-    <group
-      ref={cursorRef}
-      position={[1.18, -0.18, 0]}
-      rotation={[0.06, -0.22, -0.1]}
-    >
+    <group ref={cursorRef} position={[1.18, -0.18, 0]} rotation={[BASE_ROT.x, BASE_ROT.y, BASE_ROT.z]}>
       <group ref={innerRef} scale={0.85}>
         <GlassCursor variant={variant} />
       </group>

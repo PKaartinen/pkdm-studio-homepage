@@ -16,6 +16,9 @@ export type AnnotationAnchor = {
 };
 
 export const syncState = {
+  /** Idle hover-bob phase (−1..1), written by CursorRig; Stage syncs the
+   * caustic pool pulse to it so light and motion breathe together. */
+  bob: 0,
   /** Screen rect + font size of the transparent DOM "convert." twin. */
   wordRect: null as { left: number; top: number; width: number; height: number; fontSize: number } | null,
   /** 3D-tracked anchors projected to screen px (written by the Scene). */
