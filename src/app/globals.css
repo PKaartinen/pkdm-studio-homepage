@@ -112,6 +112,40 @@ body {
   }
 }
 
+/* ---------------------------------------------------------------------------
+   /showcase scoped styles (.showcase-root block only — see showcase spec §4)
+   --------------------------------------------------------------------------- */
+/* The showcase is a full-bleed immersive route: hide the site chrome
+   (root-layout Nav / Footer / decorative Background) while it is mounted. */
+body:has(.showcase-root) > header,
+body:has(.showcase-root) > footer,
+body:has(.showcase-root) > div.pointer-events-none.fixed.-z-10 {
+  display: none;
+}
+
+.showcase-root {
+  /* Void gradient per spec §2b — vertical #000206 -> #03060e */
+  background: linear-gradient(180deg, #000206 0%, #03060e 100%);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.showcase-root .font-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+/* CSS vignette (postprocessing is banned — spec §4) */
+.showcase-vignette {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: radial-gradient(
+    120% 90% at 50% 45%,
+    transparent 62%,
+    rgba(0, 2, 6, 0.55) 100%
+  );
+}
+
 /* Respect reduced motion globally */
 @media (prefers-reduced-motion: reduce) {
   *,
