@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ComponentType } from "react";
 import { hero, act1, act2, act3, finale } from "./config";
-import { startScrollStore } from "./scroll-store";
+import { startScrollStore, subscribe } from "./scroll-store";
+import { scrollHintOpacity } from "./choreography";
 import { syncState } from "./sync-store";
 import Loader from "./Loader";
 import AnnotationLayer from "./AnnotationLayer";
@@ -145,61 +146,97 @@ export default function ShowcaseExperience() {
             </div>
           </div>
 
-          {/* Scroll hint */}
-          <div className="absolute bottom-7 left-1/2 hidden -translate-x-1/2 md:block">
-            <div className="flex h-9 w-5 items-start justify-center rounded-full border border-white/20 p-1">
-              <span className="showcase-scroll-dot h-1.5 w-1.5 rounded-full bg-accent-soft" />
+          {/* Scroll hint (fades out as the story starts moving — T-308) */}
+          <ScrollHint />
+        </section>
+
+        {/* Act 1 — Focus
+            T-308: section heights are act-range-proportional (total scrollable
+            = 750svh) so DOM boundaries land exactly on act boundaries:
+            hero 100 / focus 150 / work 195 / build 180 / finale 225.
+            Copy blocks enter at their act start (pt-[90svh]), pin via sticky
+            through the act's money hold, and release near the act's end —
+            position:sticky is layout only; all animation stays transform/
+            opacity in the store-driven layers. */}
+        <section className="relative min-h-[150svh] pt-[90svh]">
+          <div className="sticky top-[26svh]">
+            <div className="shell">
+              <h2 className="display max-w-3xl font-display text-4xl font-bold text-white md:text-5xl">
+                {act1.headline}
+              </h2>
+              <p className="mt-6 max-w-xl text-haze">
+                {act1.pillar.title} — {act1.pillar.description}
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Act 1 — Focus */}
-        <section className="relative flex min-h-[170svh] items-start pt-[35svh]">
-          <div className="shell">
-            <h2 className="display max-w-3xl font-display text-4xl font-bold text-white md:text-5xl">
-              {act1.headline}
-            </h2>
-            <p className="mt-6 max-w-xl text-haze">
-              {act1.pillar.title} — {act1.pillar.description}
-            </p>
-          </div>
-        </section>
-
         {/* Act 2 — The Work */}
-        <section className="relative flex min-h-[220svh] items-start pt-[35svh]">
-          <div className="shell">
-            <h2 className="display max-w-3xl font-display text-4xl font-bold text-white md:text-5xl">
-              {act2.headline}
-            </h2>
-            <p className="mt-6 max-w-xl text-haze">{act2.subline}</p>
+        <section className="relative min-h-[195svh] pt-[90svh]">
+          <div className="sticky top-[26svh]">
+            <div className="shell">
+              <h2 className="display max-w-3xl font-display text-4xl font-bold text-white md:text-5xl">
+                {act2.headline}
+              </h2>
+              <p className="mt-6 max-w-xl text-haze">{act2.subline}</p>
+            </div>
           </div>
         </section>
 
         {/* Act 3 — The Build */}
-        <section className="relative flex min-h-[170svh] items-start pt-[35svh]">
-          <div className="shell">
-            <h2 className="display max-w-3xl font-display text-4xl font-bold text-white md:text-5xl">
-              {act3.pillar.title}
-            </h2>
-            <p className="mt-6 max-w-xl text-haze">{act3.pillar.description}</p>
+        <section className="relative min-h-[180svh] pt-[90svh]">
+          <div className="sticky top-[26svh]">
+            <div className="shell">
+              <h2 className="display max-w-3xl font-display text-4xl font-bold text-white md:text-5xl">
+                {act3.pillar.title}
+              </h2>
+              <p className="mt-6 max-w-xl text-haze">{act3.pillar.description}</p>
+            </div>
           </div>
         </section>
 
-        {/* Finale — The Click */}
-        <section className="relative flex min-h-[190svh] items-start pt-[40svh]">
-          <div className="shell">
-            <h2 className="display max-w-3xl font-display text-4xl font-bold text-white md:text-5xl">
-              {finale.headline}
-            </h2>
-            <p className="mt-6 max-w-xl text-haze">
-              {finale.pillar.title} — {finale.pillar.description}
-            </p>
-            <p className="mt-4 max-w-xl text-sm text-haze/70">
-              {finale.reassurance}
-            </p>
+        {/* Finale — The Click (Phase 3 builds the finale; this DOM section is
+            the canonical-copy stub + the stable seam through 0.78–1.00) */}
+        <section className="relative min-h-[225svh] pt-[90svh]">
+          <div className="sticky top-[26svh]">
+            <div className="shell">
+              <h2 className="display max-w-3xl font-display text-4xl font-bold text-white md:text-5xl">
+                {finale.headline}
+              </h2>
+              <p className="mt-6 max-w-xl text-haze">
+                {finale.pillar.title} — {finale.pillar.description}
+              </p>
+              <p className="mt-4 max-w-xl text-sm text-haze/70">
+                {finale.reassurance}
+              </p>
+            </div>
           </div>
         </section>
       </div>
     </main>
+  );
+}
+
+/** Hero scroll hint — opacity driven by the shared damped store (T-308). */
+function ScrollHint() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(
+    () =>
+      subscribe((v) => {
+        if (ref.current) ref.current.style.opacity = String(scrollHintOpacity(v));
+      }),
+    []
+  );
+
+  return (
+    <div
+      ref={ref}
+      className="absolute bottom-7 left-1/2 hidden -translate-x-1/2 md:block"
+    >
+      <div className="flex h-9 w-5 items-start justify-center rounded-full border border-white/20 p-1">
+        <span className="showcase-scroll-dot h-1.5 w-1.5 rounded-full bg-accent-soft" />
+      </div>
+    </div>
   );
 }

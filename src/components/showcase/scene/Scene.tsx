@@ -9,6 +9,7 @@ import Stage from "./Stage";
 import RefractedWord from "./RefractedWord";
 import AnnotationTracker from "./AnnotationTracker";
 import CursorRig from "./CursorRig";
+import CameraRig from "./CameraRig";
 
 /**
  * Scene root — "The Click".
@@ -82,6 +83,8 @@ export default function Scene({ variant = 0 }: { variant?: number }) {
           scale={[7, 1, 1]}
         />
       </Environment>
+
+      <CameraRig />
 
       <Stage cursorRef={cursorGroup} />
 

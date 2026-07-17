@@ -4,6 +4,8 @@ import { useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { MathUtils, Vector3 } from "three";
 import type { Group } from "three";
+import { progress } from "../scroll-store";
+import { cursorTarget, heroBlend } from "../choreography";
 import { syncState } from "../sync-store";
 import GlassCursor from "./GlassCursor";
 
@@ -57,19 +59,34 @@ export default function CursorRig({
   useFrame((state, delta) => {
     const g = cursorRef.current;
     const rect = syncState.wordRect;
-    if (!g || !rect || rect.width === 0) return;
+    if (!g) return;
     const t = state.clock.elapsedTime;
+    const v = progress();
 
     // --- Hero anchor from the DOM twin (layout-follow) --------------------
-    const px = rect.left + rect.width / 2 + rect.fontSize * 0.95;
-    const py = rect.top + rect.height / 2 + rect.fontSize * 0.55;
-    const ndcX = (px / size.width) * 2 - 1;
-    const ndcY = -((py / size.height) * 2 - 1);
-    ray.set(ndcX, ndcY, 0.5).unproject(camera);
-    ray.sub(camera.position).normalize();
-    const dist = (0 - camera.position.z) / ray.z;
-    let tx = camera.position.x + ray.x * dist;
-    let ty = camera.position.y + ray.y * dist;
+    let heroX = 0;
+    let heroY = 0;
+    let hasRect = false;
+    if (rect && rect.width > 0) {
+      const px = rect.left + rect.width / 2 + rect.fontSize * 0.95;
+      const py = rect.top + rect.height / 2 + rect.fontSize * 0.55;
+      const ndcX = (px / size.width) * 2 - 1;
+      const ndcY = -((py / size.height) * 2 - 1);
+      ray.set(ndcX, ndcY, 0.5).unproject(camera);
+      ray.sub(camera.position).normalize();
+      const dist = (0 - camera.position.z) / ray.z;
+      heroX = camera.position.x + ray.x * dist;
+      heroY = camera.position.y + ray.y * dist;
+      hasRect = true;
+    }
+
+    // --- T-308 master choreography: blend hero anchor → keyframe track ----
+    // (the floor-world moves past the cursor; its own XY drifts stay subtle)
+    const ct = cursorTarget(v);
+    const w = hasRect ? heroBlend(v) : 1;
+    let tx = MathUtils.lerp(heroX, ct.x, w);
+    let ty = MathUtils.lerp(heroY, ct.y, w);
+    if (!hasRect && w < 1) return; // hero not measured yet — wait one frame
 
     // --- Idle hover-bob: two offset sine phases (house organic motion) ----
     let bob = 0;

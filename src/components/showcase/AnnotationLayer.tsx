@@ -57,9 +57,18 @@ export default function AnnotationLayer() {
           className="absolute block h-px origin-left bg-gradient-to-r from-accent-soft/70 to-accent-soft/25"
           style={{ width: 110, transform: "rotate(28deg)" }}
         />
+        {/* Subtle dark backing plate — keeps contrast over bright caustic
+            patches (Checkpoint-A carry-over fix) */}
         <span
-          className="absolute block whitespace-nowrap font-mono text-[10px] font-normal tracking-[0.22em] text-haze"
-          style={{ left: 100, top: 56 }}
+          className="absolute block whitespace-nowrap rounded-[3px] font-mono text-[10px] font-normal tracking-[0.22em] text-haze"
+          style={{
+            left: 100,
+            top: 56,
+            padding: "3px 8px 3px 7px",
+            margin: "-3px -8px -3px -7px",
+            background: "rgba(0, 2, 6, 0.62)",
+            boxShadow: "0 0 14px 6px rgba(0, 2, 6, 0.45)",
+          }}
         >
           {heroAnnotations.reply}
         </span>
