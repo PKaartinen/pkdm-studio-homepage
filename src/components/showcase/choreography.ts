@@ -146,7 +146,7 @@ export function cursorViewportOffset(v: number): { vw: number; vh: number } {
  *  in CursorRig as an exact screen-space shift). Founder pre-record note
  *  2026-07-18: +15vh further down and 10vw left of the §3b.1 position. */
 export const HERO_DROP_VH = 25;
-export const HERO_SHIFT_VW = -10; // vw > 0 = right, < 0 = left
+export const HERO_SHIFT_VW = 5; // vw > 0 = right, < 0 = left (founder 2026-07-18: +15 right of the -10 note)
 
 /** 0 = hero word-anchor, 1 = choreography track (blend over hero scroll-away).
  *  §3b.6: the blend starts EARLY — the cursor lets go of the headline as soon
