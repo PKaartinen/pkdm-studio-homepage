@@ -24,17 +24,20 @@ export const navLinks = [
 // ---------------------------------------------------------------------------
 // SOCIAL LINKS
 // ---------------------------------------------------------------------------
-// Add the studio's social profiles here once they exist. Each entry only
-// renders if `href` is a non-empty, valid URL. Leave this array empty (or
-// leave an href blank) and NO social row is shown — no placeholder/dead links.
+// The studio's social profiles. Each entry only renders if `href` is a
+// non-empty, valid URL. Leave this array empty (or leave an href blank) and
+// NO social row is shown — no placeholder/dead links.
 //
 //   Supported `platform` values (used to pick the icon):
-//   "linkedin" | "instagram" | "x" | "dribbble" | "behance" | "github"
+//   "linkedin" | "instagram" | "x" | "dribbble" | "behance" | "github" |
+//   "youtube" | "tiktok"
 //
 // Example:
 //   { platform: "linkedin", href: "https://linkedin.com/in/your-handle" },
 // ---------------------------------------------------------------------------
+// Founder-confirmed accounts (decision F-2, 2026-07-17):
 export const socialLinks: { platform: string; href: string }[] = [
-  // { platform: "linkedin", href: "" },
-  // { platform: "instagram", href: "" },
+  { platform: "youtube", href: "https://www.youtube.com/@pkdmstudio" },
+  { platform: "tiktok", href: "https://www.tiktok.com/@pkdmstudio.com" },
+  { platform: "instagram", href: "https://www.instagram.com/pkdmstudio/" },
 ];

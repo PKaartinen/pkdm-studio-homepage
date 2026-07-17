@@ -13,7 +13,7 @@ import {
   Vector3,
 } from "three";
 import { progress } from "../scroll-store";
-import { buildAnnotationOpacity, buildPose } from "../choreography";
+import { buildAnnotationOpacity, buildPose, clickPose } from "../choreography";
 import { syncState } from "../sync-store";
 
 // ---------------------------------------------------------------------------
@@ -206,6 +206,7 @@ export default function BuildSkeleton() {
     () => ({
       uDraw: { value: 0 },
       uDim: { value: 0 },
+      uPillFade: { value: 0 },
       uCyan: { value: new Color("#69edfe") },
       uCyanSoft: { value: new Color("#a6f4ff") },
       uBlue: { value: new Color("#1f9fd6") },
@@ -216,6 +217,7 @@ export default function BuildSkeleton() {
     () => ({
       uFill: { value: 0 },
       uDim: { value: 0 },
+      uPillFade: { value: 0 },
       uTime: { value: 0 },
       uCyan: { value: new Color("#69edfe") },
       uDeep: { value: new Color("#0167b4") },
@@ -228,16 +230,20 @@ export default function BuildSkeleton() {
     if (!g) return;
     const v = progress();
     const pose = buildPose(v);
+    // T-313 — the flat pill fades out as the FinaleButton grows out of it
+    const pillFade = clickPose(v).pillFade;
 
     g.visible = pose.appear > 0.001;
 
     if (strokeMat.current) {
       strokeMat.current.uniforms.uDraw.value = pose.draw;
       strokeMat.current.uniforms.uDim.value = pose.dim;
+      strokeMat.current.uniforms.uPillFade.value = pillFade;
     }
     if (faceMat.current) {
       faceMat.current.uniforms.uFill.value = pose.fill;
       faceMat.current.uniforms.uDim.value = pose.dim;
+      faceMat.current.uniforms.uPillFade.value = pillFade;
       faceMat.current.uniforms.uTime.value = state.clock.elapsedTime;
     }
 
@@ -303,6 +309,7 @@ export default function BuildSkeleton() {
             varying float vPill;
             uniform float uFill;
             uniform float uDim;
+            uniform float uPillFade;
             uniform float uTime;
             uniform vec3 uCyan;
             uniform vec3 uDeep;
@@ -326,6 +333,7 @@ export default function BuildSkeleton() {
               vec3 col = uDeep * 0.16 + uCyan * (rim * 0.28 + sheen * 0.05);
               float alpha = f * (0.16 + rim * 0.3);
               float dimK = 1.0 - uDim * (1.0 - vPill);
+              dimK *= 1.0 - uPillFade * vPill; // T-313 hand-off fade
               gl_FragColor = vec4(col * dimK, alpha * dimK);
             }
           `}
@@ -362,6 +370,7 @@ export default function BuildSkeleton() {
             varying float vPill;
             uniform float uDraw;
             uniform float uDim;
+            uniform float uPillFade;
             uniform vec3 uCyan;
             uniform vec3 uCyanSoft;
             uniform vec3 uBlue;
@@ -386,6 +395,7 @@ export default function BuildSkeleton() {
 
               float intensity = (glow * 0.35 + core * 1.25) * vis + tip * 1.2;
               float dimK = 1.0 - uDim * (1.0 - vPill);
+              dimK *= 1.0 - uPillFade * vPill; // T-313 hand-off fade
               gl_FragColor = vec4(col * intensity * dimK, intensity * dimK);
             }
           `}

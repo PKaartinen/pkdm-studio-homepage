@@ -53,4 +53,22 @@ export const syncState = {
     h: number;
     active: boolean;
   }[],
+  /** Finale — The Click (T-313/T-314). Written by FinaleButton each frame. */
+  finale: {
+    /** Projected screen center of the 3D glass button (px) — the DOM CTA
+     * pixel-parks on this every frame (resolves B2-Q4). */
+    button: { x: 0, y: 0, opacity: 0, visible: false },
+    /** Button world position (ripple center + cursor press target). */
+    buttonWorld: { x: 1.3, y: -1.2113, z: 0.3283 },
+    /** T-314 — real-cursor sync: last interactive press timestamp (ms,
+     * performance.now() clock; 0 = never) + engagement 0..1. */
+    pressAt: 0,
+    engaged: 0,
+    /** Interactive press envelope (computed once per frame in FinaleButton,
+     * read by CursorRig + Stage so all three stay in sync). */
+    interactivePress: 0,
+    /** Interactive ripple (time-based, event-driven — separate from the
+     * scrubbed ripple so scrub reversibility is untouched). */
+    ripple2: { r: 0, amp: 0 },
+  },
 };

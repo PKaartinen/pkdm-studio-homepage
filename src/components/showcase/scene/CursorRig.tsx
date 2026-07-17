@@ -6,6 +6,7 @@ import { MathUtils, Vector3 } from "three";
 import type { Group } from "three";
 import { progress } from "../scroll-store";
 import {
+  clickPose,
   cursorTarget,
   cursorViewportOffset,
   heroBlend,
@@ -114,6 +115,25 @@ export default function CursorRig({
       ty = ndcTmp.y;
     }
 
+    // --- T-313 finale: hover micro magnetic pull + the CLICK press-down ---
+    // Pure function of the damped value (+ the T-314 interactive envelope,
+    // which is time-based and NEVER touches the scrubbed choreography).
+    let pressTilt = 0;
+    const pose = clickPose(v);
+    if (pose.grow > 0) {
+      const fin = syncState.finale;
+      // micro magnetic pull toward the button center during the hover state
+      tx += (fin.buttonWorld.x - tx) * 0.1 * pose.hover;
+      const press = MathUtils.clamp(
+        pose.press + fin.interactivePress,
+        -0.35,
+        1
+      );
+      // press DOWN toward the button; slight lift on the spring overshoot
+      ty -= Math.max(0, press) * 0.52 + Math.min(0, press) * 0.18;
+      pressTilt = Math.max(0, press) * 0.08; // stays inside the 15° clamp
+    }
+
     // --- Idle hover-bob: two offset sine phases (house organic motion) ----
     let bob = 0;
     if (!reduceMotion) {
@@ -151,7 +171,7 @@ export default function CursorRig({
 
     // --- Compose rotation; breathing micro-tilt; CLAMP (glide rule) -------
     const breathZ = reduceMotion ? 0 : Math.sin(t * 0.66 + 0.9) * 0.02;
-    g.rotation.x = clampTilt(BASE_ROT.x + lean.current.x);
+    g.rotation.x = clampTilt(BASE_ROT.x + lean.current.x + pressTilt);
     g.rotation.y = clampTilt(BASE_ROT.y + lean.current.y);
     g.rotation.z = clampTilt(BASE_ROT.z + breathZ);
 

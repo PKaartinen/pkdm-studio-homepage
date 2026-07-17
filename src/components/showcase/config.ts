@@ -13,10 +13,10 @@
 
 import { pillars, stats } from "@/data/content";
 import { projects } from "@/data/projects";
-import { site, socialLinks } from "@/data/site";
+import { navLinks, site, socialLinks } from "@/data/site";
 
 // Re-exports from src/data/* (canonical sources — do not duplicate)
-export { pillars, stats, projects, site, socialLinks };
+export { navLinks, pillars, stats, projects, site, socialLinks };
 
 const pillarByTitle = (title: string) => {
   const p = pillars.find((p) => p.title === title);
@@ -93,4 +93,12 @@ export const ctas = {
   viewAllProjectsHref: "/projects",
   contact: hero.cta,
   contactHref: "/contact",
+} as const;
+
+// --- Footer band (T-313 — source: src/components/Footer.tsx, verbatim) ------
+// Links/socials/email come from site.ts (canonical, re-exported above); the
+// two closing lines are the existing site footer's exact strings.
+export const footerLines = {
+  copyright: "© 2026 PKDM Services. All rights reserved.",
+  credit: "Designed & built by PKDM Studio.",
 } as const;

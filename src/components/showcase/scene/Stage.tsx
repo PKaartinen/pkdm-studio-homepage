@@ -11,6 +11,8 @@ import {
 } from "three";
 import type { Group } from "three";
 import { syncState } from "../sync-store";
+import { progress } from "../scroll-store";
+import { clickPose } from "../choreography";
 
 export const FLOOR_Y = -1.42;
 
@@ -36,6 +38,12 @@ export default function Stage({
       uCyanSoft: { value: new Color("#a6f4ff") },
       uBlue: { value: new Color("#1f9fd6") },
       uDeep: { value: new Color("#0167b4") },
+      // T-313 — click ripple shockwave (vertex displacement, NO fluid sim).
+      // Ripple 1 = the scrubbed finale click (pure function of the store).
+      // Ripple 2 = the interactive real-click ripple (T-314, time-based).
+      uRippleC: { value: new Vector2(1.3, 0.33) },
+      uRipple1: { value: new Vector2(0, 0) }, // (radius, amplitude)
+      uRipple2: { value: new Vector2(0, 0) },
     }),
     []
   );
@@ -50,11 +58,18 @@ export default function Stage({
     if (g) {
       m.uniforms.uCursor.value.set(g.position.x, g.position.z);
     }
+    // T-313 — the scrubbed click ripple, reversible by construction
+    const pose = clickPose(progress());
+    const fin = syncState.finale;
+    m.uniforms.uRippleC.value.set(fin.buttonWorld.x, fin.buttonWorld.z);
+    m.uniforms.uRipple1.value.set(pose.rippleR, pose.rippleAmp);
+    // T-314 — interactive ripple (event-driven; zero when idle)
+    m.uniforms.uRipple2.value.set(fin.ripple2.r, fin.ripple2.amp);
   });
 
   return (
     <mesh position={[0, FLOOR_Y, -2]} rotation={[-Math.PI / 2, 0, 0]}>
-      <planeGeometry args={[70, 44]} />
+      <planeGeometry args={[70, 44, 300, 190]} />
       <shaderMaterial
         ref={matRef}
         uniforms={uniforms}
@@ -64,8 +79,26 @@ export default function Stage({
         side={DoubleSide}
         vertexShader={/* glsl */ `
           varying vec2 vWorld;
+          varying float vRipple;
+          uniform vec2 uRippleC;
+          uniform vec2 uRipple1;
+          uniform vec2 uRipple2;
+
+          // Expanding ring wave packet — crest at dist == radius
+          float ringWave(float d, vec2 rip, out float glow) {
+            float x = d - rip.x;
+            float env = exp(-x * x * 3.2) * rip.y;
+            glow = env;
+            return env * cos(x * 3.4);
+          }
+
           void main() {
             vec4 wp = modelMatrix * vec4(position, 1.0);
+            float d = distance(wp.xz, uRippleC);
+            float g1; float g2;
+            wp.y += ringWave(d, uRipple1, g1);
+            wp.y += ringWave(d, uRipple2, g2);
+            vRipple = g1 + g2;
             vWorld = wp.xz;
             gl_Position = projectionMatrix * viewMatrix * wp;
           }
@@ -73,6 +106,7 @@ export default function Stage({
         fragmentShader={/* glsl */ `
           precision highp float;
           varying vec2 vWorld;
+          varying float vRipple;
           uniform float uTime;
           uniform vec2 uCursor;
           uniform float uPulse;
@@ -124,6 +158,13 @@ export default function Stage({
             // Gentle deep-blue ambient so the floor plane reads (no murk)
             float amb = exp(-dist * 0.22) * 0.05;
             col += amb * uDeep;
+
+            // T-313 — the ripple ring lights the grid it rolls across:
+            // cyan front with a white-hot crest (defined edges, no fog)
+            float ring = clamp(vRipple * 3.2, 0.0, 1.2);
+            vec3 ringCol = mix(uCyan, uCyanSoft, ring * 0.6);
+            col += ring * ringCol * (0.5 + line * 1.6);
+            col += pow(ring, 3.0) * vec3(1.0) * 0.35;
 
             float alpha = clamp(max(max(col.r, col.g), col.b), 0.0, 1.0);
             gl_FragColor = vec4(col, alpha);

@@ -19,7 +19,13 @@
 // fixed scroll positions (see MONEY_SHOTS — used for recording + QA).
 // ---------------------------------------------------------------------------
 
-import { actAt, actProgress, easeInOutCubic, remap } from "./scroll-store";
+import {
+  actAt,
+  actProgress,
+  easeInOutCubic,
+  remap,
+  smoothstep,
+} from "./scroll-store";
 
 type Key = { at: number; v: number };
 
@@ -274,6 +280,72 @@ export function statsProgress(v: number): number {
   return easeInOutCubic(remap(actProgress("build", v), 0.12, 0.62));
 }
 
+// --- Finale — The Click (T-313) ----------------------------------------------
+// The skeleton's CTA pill grows into the giant glass button, rim light
+// converges, hover state swells, then the CLICK: cursor press-down, button
+// depress + spring-back with eased overshoot, cyan ripple ring across the
+// floor grid, footer band lights up. ALL of it is a pure function of the
+// damped store value — scrubbing the click is reversible by construction.
+export const FINALE = {
+  /** DOM CTA park point (B2-Q4 — the accepted click seam, ~65vw/76svh). */
+  parkVW: 65,
+  parkVH: 76,
+  /** BuildSkeleton CTA pill world transform (group [1.3,-0.3,0.2] rotX -0.14
+   *  scale 0.92 × local (0,-1,0)) — the grow starts EXACTLY here so the
+   *  flat-pill → glass-button hand-off is seamless. */
+  pillWorld: { x: 1.3, y: -1.2113, z: 0.3283, rotX: -0.14 },
+  /** Flat pill dimensions in local units (pre-group-scale). */
+  pillW: 1.35,
+  pillH: 0.36,
+  handoffScale: 0.92,
+  /** Giant-button scale multiplier at full growth. */
+  growScale: 1.5,
+} as const;
+
+export function clickPose(v: number) {
+  const p = actProgress("click", v);
+  // The pill grows into the giant glass button…
+  const grow = easeInOutCubic(remap(p, 0.04, 0.34));
+  // …the flat skeleton pill hands off (fades) while the 3D button fades in
+  const pillFade = easeInOutCubic(remap(p, 0.06, 0.26));
+  // Rim-light convergence onto the button
+  const converge = easeInOutCubic(remap(p, 0.18, 0.5));
+  // Hover state: glow swell + micro magnetic pull (holds through the beat
+  // of stillness and the money shot at p=0.55)
+  const hover = easeInOutCubic(remap(p, 0.36, 0.54));
+
+  // THE CLICK — press-down, then spring-back with eased overshoot.
+  const down = easeInOutCubic(remap(p, 0.58, 0.655));
+  const rel = remap(p, 0.655, 0.86);
+  const spring =
+    rel <= 0 ? 1 : Math.cos(rel * Math.PI * 2.2) * Math.exp(-rel * 4.2);
+  const press = down * spring; // 0→1 (down) → −0.2ish (overshoot) → 0
+
+  // Cyan ripple ring shockwave — radius decelerates outward, amp decays
+  const r = remap(p, 0.645, 0.985);
+  const rippleR = 24 * (1 - (1 - r) * (1 - r));
+  const rippleAmp =
+    smoothstep(remap(r, 0, 0.05)) * Math.pow(1 - r, 1.35) * 0.34;
+
+  // Footer band lights up as the ripple reaches it
+  const footerGlow = easeInOutCubic(remap(p, 0.78, 0.93));
+  // DOM CTA screen-fix envelope (pixel-parked over the 3D button)
+  const ctaOpacity = remap(p, 0.22, 0.38);
+
+  return {
+    p,
+    grow,
+    pillFade,
+    converge,
+    hover,
+    press,
+    rippleR,
+    rippleAmp,
+    footerGlow,
+    ctaOpacity,
+  };
+}
+
 // --- Annotation visibility envelopes ----------------------------------------
 export function focusAnnotationOpacity(v: number): number {
   const p = actProgress("focus", v);
@@ -297,5 +369,8 @@ export const MONEY_SHOTS = {
   focus: actAt("focus", 0.65), // "why you?" fully resolved, held
   work: workPanelHoldProgress(2), // a mid-queue panel hover-lift, held
   build: actAt("build", 0.85), // skeleton drawn + glass filled, held
-  click: actAt("click", 0.55), // pill stable, cursor centered above (Phase-3 seam)
+  click: actAt("click", 0.55), // giant button + hover swell, cursor centered (money shot)
+  press: actAt("click", 0.645), // mid-press — cursor down, button depressed
+  ripple: actAt("click", 0.78), // ripple ring rolling across the floor grid
+  footer: actAt("click", 0.97), // footer band lit, final frame territory
 } as const;

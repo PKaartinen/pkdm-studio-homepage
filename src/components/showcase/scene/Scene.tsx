@@ -9,6 +9,7 @@ import Stage from "./Stage";
 import FocusPlane from "./FocusPlane";
 import WorkPanels from "./WorkPanels";
 import BuildSkeleton from "./BuildSkeleton";
+import FinaleButton from "./FinaleButton";
 import RefractedWord from "./RefractedWord";
 import AnnotationTracker from "./AnnotationTracker";
 import CursorRig from "./CursorRig";
@@ -103,6 +104,10 @@ export default function Scene({ variant = 0 }: { variant?: number }) {
       {/* Act 3 — wireframe page skeleton draws, then glass-fills; the CTA
           pill holds stable through the click act (Phase-3 finale seam) */}
       <BuildSkeleton />
+
+      {/* Finale — the giant glass button (grows from the skeleton pill; the
+          DOM CTA pixel-parks on its projected center — T-313) */}
+      <FinaleButton />
 
       <CursorRig cursorRef={cursorGroup} variant={variant} />
 

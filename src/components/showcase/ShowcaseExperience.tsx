@@ -2,10 +2,22 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ComponentType } from "react";
-import { hero, act1, act2, act3, finale, ctas } from "./config";
+import {
+  hero,
+  act1,
+  act2,
+  act3,
+  finale,
+  ctas,
+  footerLines,
+  navLinks,
+  site,
+  socialLinks,
+} from "./config";
 import MagneticButton from "@/components/ui/MagneticButton";
+import { socialIcons } from "@/components/ui/icons";
 import { startScrollStore, subscribe } from "./scroll-store";
-import { scrollHintOpacity, statsProgress } from "./choreography";
+import { clickPose, scrollHintOpacity, statsProgress } from "./choreography";
 import { syncState } from "./sync-store";
 import Loader from "./Loader";
 import AnnotationLayer from "./AnnotationLayer";
@@ -218,15 +230,12 @@ export default function ShowcaseExperience() {
           </div>
         </section>
 
-        {/* Finale — The Click (Phase 3 builds the click; this DOM section is
-            the canonical-copy stub + the stable seam through 0.78–1.00).
-            §3b.7: the prominent finale CTA lands NOW, centered over the 3D
-            CTA pill (~65vw/76svh at the click seam) so it becomes the 3D
-            click target in Phase 3's T-313. */}
+        {/* Finale — The Click (T-313). The DOM CTA is no longer parked by
+            layout: it lives in the fixed FinaleCta layer below, pixel-locked
+            to the 3D glass button's projected center every frame through the
+            WHOLE click act (resolves B2-Q4). This section carries the
+            canonical copy + the footer band in its final viewport. */}
         <section className="relative min-h-[225svh] pt-[40svh]">
-          {/* pt-40svh → the full-viewport sticky engages at v≈0.91, so the
-              CTA is already parked on the pill through the click money shot
-              and stays pixel-stable to the very end (T-313 hand-off). */}
           <div className="sticky top-0 h-[100svh]">
             <div className="pt-[26svh]">
               <div className="shell">
@@ -241,24 +250,164 @@ export default function ShowcaseExperience() {
                 </p>
               </div>
             </div>
-            {/* The finale CTA — pixel-parked on the 3D pill's screen position
-                (T-313 hand-off). Real link, canonical copy, MagneticButton. */}
-            <div className="absolute left-[65vw] top-[76svh] hidden -translate-x-1/2 -translate-y-1/2 md:block">
-              <MagneticButton
-                href={ctas.contactHref}
-                className="px-10 py-5 text-base shadow-[0_10px_44px_-8px_rgba(105,237,254,0.75)]"
-              >
-                {finale.cta}
-              </MagneticButton>
-            </div>
-            {/* Mobile/stacked fallback CTA (the absolute pill target is md+) */}
+            {/* Mobile/stacked fallback CTA (the pixel-locked target is md+) */}
             <div className="shell mt-10 md:hidden">
               <MagneticButton href={ctas.contactHref}>{finale.cta}</MagneticButton>
             </div>
+
+            {/* T-313 — footer band: lights up as the click ripple reaches it */}
+            <FooterBand />
           </div>
         </section>
       </div>
+
+      {/* T-313 — the real DOM CTA, screen-fixed + pixel-aligned over the 3D
+          glass button through the whole click act (B2-Q4). Real link,
+          canonical copy, real click-through. */}
+      <FinaleCta />
     </main>
+  );
+}
+
+/**
+ * T-313 — the finale CTA. A fixed-position layer that parks the real
+ * MagneticButton on the 3D button's projected screen center every frame
+ * (written by FinaleButton into the sync store). transform/opacity only.
+ */
+function FinaleCta() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let raf = 0;
+    const tick = () => {
+      const el = ref.current;
+      if (el) {
+        const b = syncState.finale.button;
+        el.style.transform = `translate3d(${b.x}px, ${b.y}px, 0)`;
+        el.style.opacity = b.visible ? String(b.opacity) : "0";
+        el.style.pointerEvents =
+          b.visible && b.opacity > 0.4 ? "auto" : "none";
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className="fixed left-0 top-0 z-20 hidden will-change-transform md:block"
+      style={{ opacity: 0, pointerEvents: "none" }}
+    >
+      <div className="-translate-x-1/2 -translate-y-1/2">
+        <MagneticButton
+          href={ctas.contactHref}
+          className="px-10 py-5 text-base shadow-[0_10px_44px_-8px_rgba(105,237,254,0.75)]"
+        >
+          {finale.cta}
+        </MagneticButton>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * T-313 — the footer band. Compact single band pinned to the bottom of the
+ * finale's final viewport (page height unchanged — act math stays exact).
+ * Links/socials/email flow from site.ts via the config re-exports; it
+ * "lights up" as the click ripple rolls out (opacity + hairline glow driven
+ * by the same clickPose the 3D scene reads — lockstep by construction).
+ */
+function FooterBand() {
+  const bandRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
+
+  useEffect(
+    () =>
+      subscribe((v) => {
+        const glow = clickPose(v).footerGlow;
+        if (bandRef.current)
+          bandRef.current.style.opacity = String(0.25 + 0.75 * glow);
+        if (glowRef.current) glowRef.current.style.opacity = String(glow);
+      }),
+    []
+  );
+
+  return (
+    <div
+      ref={bandRef}
+      className="absolute inset-x-0 bottom-0"
+      style={{ opacity: 0.25 }}
+    >
+      {/* Hairline that flares cyan as the ripple hits */}
+      <div className="h-px w-full bg-white/10" />
+      <div
+        ref={glowRef}
+        className="pointer-events-none -mt-px h-px w-full bg-accent"
+        style={{
+          opacity: 0,
+          boxShadow:
+            "0 0 12px rgba(105,237,254,0.9), 0 0 34px rgba(105,237,254,0.45)",
+        }}
+      />
+      <div className="shell flex flex-col gap-4 py-5 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo/wordmark.svg"
+            alt="PKDM Studio"
+            className="h-6 w-auto"
+          />
+          <span className="hidden text-xs text-haze/60 lg:inline">
+            {footerLines.copyright}
+          </span>
+        </div>
+
+        <nav aria-label="Footer">
+          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className="text-sm text-haze transition-colors hover:text-white"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="flex items-center gap-4">
+          <ul className="flex items-center gap-2.5">
+            {socialLinks.map((s) => {
+              const Icon = socialIcons[s.platform];
+              if (!Icon || !s.href) return null;
+              return (
+                <li key={s.platform}>
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.platform}
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-haze transition-colors hover:border-accent-soft/40 hover:text-white"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+          <a
+            href={`mailto:${site.email}`}
+            className="text-sm text-haze transition-colors hover:text-white"
+          >
+            {site.email}
+          </a>
+        </div>
+      </div>
+    </div>
   );
 }
 
