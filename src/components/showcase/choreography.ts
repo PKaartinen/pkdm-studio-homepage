@@ -205,19 +205,29 @@ export function focusPlanePose(v: number) {
   return { p, x, opacity, radius };
 }
 
-// --- Act 2 — The Work (T-311 + T-331 rebuild) --------------------------------
-// Six panels, right-to-left arc queue. §3b.3 Ciao-Energy feel: the act's
-// scrub distance DOUBLED (390svh — one deliberate scroll gesture per panel,
-// ~65svh per slot), each switch is a LONG continuously-eased glide
-// (smoothstep over ~33svh of scroll — gentler peak velocity than cubic),
-// and the damped store keeps every frame of it animating — no snapping,
-// no oversensitive switches. Equal hover holds by construction: each panel
-// k holds centered under the cursor for HOLD_FRACTION of its slot
-// (50% ≥ 40% — founder rule: EQUAL treatment, all six).
+// --- Act 2 — The Work (T-311 + T-331 + T-334 continuous carousel) -------------
+// Six panels, right-to-left arc queue. T-334 (founder note, pre-finalise):
+// the T-331 stepped hold+glide profile read as too snappy — replaced with a
+// CONTINUOUS CAROUSEL. The focus index g is a single LINEAR function of act
+// progress (a conveyor: panels track scroll continuously, smooth throughout,
+// damped ONLY by the shared store — no discrete steps, no magnetized
+// snapping, no piecewise branches). Equal treatment is by construction:
+// every panel crosses the focus position at identical velocity and spacing
+// (~50svh of scroll per slot across the 390svh act). Hover-lift, edge-light
+// swell, and the tag type-on all derive from each panel's PROXIMITY to the
+// focus position (continuous falloff in WorkPanels), never from indices.
+//
+// This also fixes the T-334 duplicate-panel bug: the old profile's interior
+// branch glided g → 6 at the last slot (as if a 7th panel existed), then the
+// outro branch reset g back to 5 — crossing outro snapped panel 5
+// (ecommerce-lander) from x≈−3.4 back to center: the "duplicate ECOMMERCE
+// LANDER" ghost. g is now strictly monotone in p, so each of the six panels
+// crosses the viewport exactly once across the entire act range.
 export const WORK_QUEUE = {
-  intro: 0.05,
-  outro: 0.95,
-  holdFraction: 0.5,
+  /** g at act start — panel 0 approaches from the right, off-screen. */
+  gStart: -1.4,
+  /** g at act end — panel 5 has crossed focus and is exiting left. */
+  gEnd: 6.4,
   panelCount: 6,
   spacing: 3.4,
 } as const;
@@ -227,37 +237,24 @@ const glideEase = (t: number) => {
   return c * c * (3 - 2 * c); // smoothstep — heavy, damped, deliberate
 };
 
-/** Continuous "focused panel index": panel k sits centered while g ≈ k. */
+/** Continuous "focused panel index": panel k crosses focus when g === k.
+ *  Strictly monotone (linear conveyor + smooth build-act exit) — the store's
+ *  damping is the only smoothing between input and motion. */
 export function workFocusIndex(v: number): number {
-  const { intro, outro, holdFraction, panelCount } = WORK_QUEUE;
+  const { gStart, gEnd } = WORK_QUEUE;
   const p = actProgress("work", v);
   const bp = actProgress("build", v);
-  let g: number;
-  if (p <= intro) {
-    g = -1.5 + 1.5 * glideEase(remap(p, 0, intro));
-  } else if (p >= outro) {
-    g = panelCount - 1 + 1.6 * glideEase(remap(p, outro, 1));
-  } else {
-    const span = (outro - intro) / panelCount;
-    const u = (p - intro) / span;
-    const k = Math.min(panelCount - 1, Math.floor(u));
-    const f = u - k;
-    g =
-      k +
-      (f <= holdFraction
-        ? 0
-        : glideEase((f - holdFraction) / (1 - holdFraction)));
-  }
-  // Panels keep exiting left as the build act begins (act hand-off).
+  let g = gStart + (gEnd - gStart) * p;
+  // Panels keep exiting left as the build act begins (act hand-off) —
+  // C1-continuous (zero-slope smoothstep ends), monotone.
   g += 2.6 * glideEase(remap(bp, 0, 0.18));
   return g;
 }
 
-/** Page-progress position of panel k's hover-hold center (recording/QA). */
+/** Page-progress position where panel k is exactly at focus (recording/QA). */
 export function workPanelHoldProgress(k: number): number {
-  const { intro, outro, holdFraction, panelCount } = WORK_QUEUE;
-  const span = (outro - intro) / panelCount;
-  return actAt("work", intro + span * (k + holdFraction / 2));
+  const { gStart, gEnd } = WORK_QUEUE;
+  return actAt("work", (k - gStart) / (gEnd - gStart));
 }
 
 // --- Act 3 — The Build (T-312) -----------------------------------------------

@@ -208,8 +208,11 @@ export default function WorkPanels() {
         continue;
       }
 
-      // Hover-lift: purely position-derived → fires at fixed scroll
-      // positions, equal holds for all six (queue plateaus in choreography)
+      // Hover-lift (T-334): a CONTINUOUS proximity falloff — the lift,
+      // edge-light swell, and tag type-on all derive from this panel's
+      // distance to the focus position (x = 0), never from stepped indices.
+      // Equal treatment by construction: the conveyor is linear, so every
+      // panel traverses the identical falloff at identical velocity.
       const hover = 1 - smooth01(remap(Math.abs(x), 0.55, 1.7));
 
       // Shallow right-to-left arc queue
