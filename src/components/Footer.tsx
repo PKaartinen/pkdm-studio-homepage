@@ -33,9 +33,10 @@ export default function Footer() {
               className="h-9 w-auto"
             />
             <p className="mt-5 text-sm leading-relaxed text-haze">
-              A founder-led web design & Webflow development studio. We build
-              unique, conversion-focused websites that build trust and are built
-              to sell.
+              A founder-led web design & development studio. We build unique,
+              conversion-focused websites — from marketing sites to AI web
+              apps, marketplaces, and eCommerce — that build trust and are
+              built to sell.
             </p>
 
             {/* Social row renders ONLY when valid links exist */}

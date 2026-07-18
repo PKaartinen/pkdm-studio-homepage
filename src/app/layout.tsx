@@ -26,7 +26,7 @@ const spaceGrotesk = Space_Grotesk({
 
 const title = "PKDM Studio — Websites Built to Convert";
 const description =
-  "PKDM Studio is a founder-led web design & Webflow development studio. We build unique, conversion-focused websites that build trust and are built to sell.";
+  "PKDM Studio is a founder-led web design & development studio. We build unique, conversion-focused websites — from marketing sites to AI web apps, marketplaces, and eCommerce — that build trust and are built to sell.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -38,10 +38,12 @@ export const metadata: Metadata = {
   applicationName: "PKDM Studio",
   keywords: [
     "web design studio",
-    "Webflow developer",
+    "web development studio",
     "conversion-focused websites",
     "landing page design",
-    "Webflow development Europe",
+    "eCommerce development",
+    "AI web apps",
+    "web development Europe",
     "Tallinn web design",
   ],
   authors: [{ name: "Pietari Kaartinen" }],

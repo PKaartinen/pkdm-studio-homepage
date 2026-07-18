@@ -9,7 +9,7 @@ import { insights } from "@/data/content";
 export const metadata: Metadata = {
   title: "Insights",
   description:
-    "Practical thinking on web design, conversion, and Webflow from PKDM Studio — no fluff.",
+    "Practical thinking on web design, conversion, and modern web development from PKDM Studio — no fluff.",
   alternates: { canonical: "/insights" },
 };
 
@@ -24,7 +24,7 @@ export default function InsightsPage() {
             <span className="text-glow">sites that perform</span>.
           </>
         }
-        description="Practical thinking on design, conversion, and Webflow — written for business owners, not just designers."
+        description="Practical thinking on design, conversion, and modern web development — written for business owners, not just designers."
       />
 
       <section className="shell pb-8">

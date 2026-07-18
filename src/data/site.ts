@@ -5,7 +5,7 @@
 
 export const site = {
   name: "PKDM Studio",
-  descriptor: "Web Design & Webflow Development Studio",
+  descriptor: "Web Design & Development Studio",
   url: "https://www.pkdmstudio.com",
   // Inboxes that receive contact-form submissions (handled in ContactForm.tsx)
   email: "madebypietu@gmail.com",

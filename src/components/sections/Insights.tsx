@@ -16,7 +16,7 @@ export default function Insights() {
               <span className="text-glow">sites that perform</span>.
             </>
           }
-          description="Practical thinking on design, conversion, and Webflow — no fluff."
+          description="Practical thinking on design, conversion, and modern web development — no fluff."
         />
 
         <div className="mt-14 grid gap-5 md:grid-cols-3">

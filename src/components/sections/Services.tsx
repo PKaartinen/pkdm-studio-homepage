@@ -17,7 +17,7 @@ export default function Services() {
               <span className="text-glow">handled by one team</span>.
             </>
           }
-          description="Design, content, and Webflow development as one system — not separate pieces bolted together."
+          description="Design, content, and development as one system — not separate pieces bolted together."
         />
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

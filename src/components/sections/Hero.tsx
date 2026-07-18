@@ -43,7 +43,7 @@ export default function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-soft opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-soft" />
             </span>
-            Founder-led web design & Webflow studio
+            Founder-led web design & development studio
           </motion.span>
 
           <motion.h1
@@ -59,7 +59,7 @@ export default function Hero() {
             className="max-w-xl text-lg leading-relaxed text-haze md:text-xl"
           >
             Your website should do more than look pretty. We design and build
-            unique, conversion-focused Webflow sites that build trust and turn
+            unique, conversion-focused websites that build trust and turn
             visitors into customers.
           </motion.p>
 

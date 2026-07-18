@@ -1,7 +1,7 @@
 # PKDM Studio — Website
 
 A fast, motion-rich website for **PKDM Studio**, a founder-led web design &
-Webflow development studio. Signature deep near-black `#000206` background,
+development studio (modern stack: Vercel, Neon, Shopify, and friends — chosen per project). Signature deep near-black `#000206` background,
 electric-cyan brand accent, DM Sans typography, a lightweight animated
 background, light/responsive smooth scrolling, and tasteful micro-interactions —
 built to load fast and stay smooth.

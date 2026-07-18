@@ -7,7 +7,7 @@ import { pillars, processSteps, stats } from "@/data/content";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "PKDM Studio is a founder-led web design & Webflow development studio run by Pietari (Pietu) Kaartinen, building unique, conversion-focused websites for digital-first businesses in Europe.",
+    "PKDM Studio is a founder-led web design & development studio run by Pietari (Pietu) Kaartinen, building unique, conversion-focused websites for digital-first businesses in Europe.",
   alternates: { canonical: "/about" },
 };
 

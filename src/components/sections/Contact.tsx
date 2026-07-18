@@ -25,7 +25,7 @@ const KEY_2 = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY_2 ?? "";
 const helpOptions = [
   "New website or redesign",
   "Landing page",
-  "Webflow maintenance",
+  "Website maintenance",
   "Something else",
 ];
 

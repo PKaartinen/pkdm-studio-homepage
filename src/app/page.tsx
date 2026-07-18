@@ -33,7 +33,7 @@ const jsonLd = {
   name: "PKDM Studio",
   legalName: "PKDM Services OÜ",
   description:
-    "Founder-led web design & Webflow development studio building unique, conversion-focused websites.",
+    "Founder-led web design & development studio building unique, conversion-focused websites — from marketing sites to AI web apps, marketplaces, and eCommerce.",
   url: site.url,
   email: site.email,
   image: `${site.url}/og.png`,

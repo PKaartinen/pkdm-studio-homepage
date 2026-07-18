@@ -8,7 +8,7 @@ import { projects } from "@/data/projects";
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Real client work from PKDM Studio — conversion-focused websites and landing pages designed and built in Webflow.",
+    "Real client work from PKDM Studio — conversion-focused websites and landing pages, designed and engineered end to end.",
   alternates: { canonical: "/projects" },
 };
 

@@ -36,8 +36,8 @@ export const hero = {
   h1Line2: "to convert.",
   /** The word that refracts through the glass (exact trailing word of the H1). */
   refractedWord: "convert.",
-  sub: "Your website should do more than look pretty. We design and build unique, conversion-focused Webflow sites that build trust and turn visitors into customers.",
-  eyebrow: "Founder-led web design & Webflow studio",
+  sub: "Your website should do more than look pretty. We design and build unique, conversion-focused websites that build trust and turn visitors into customers.",
+  eyebrow: "Founder-led web design & development studio",
   reassurance:
     "Get a reply within 24 hours — straight from the person doing the work.",
   cta: "Let's talk about your website",
@@ -45,7 +45,7 @@ export const hero = {
 
 // Mono annotations pinned to the 3D object (spec §3.1 — derived from hero lines)
 export const heroAnnotations = {
-  founderLed: "FOUNDER-LED — WEB DESIGN & WEBFLOW STUDIO",
+  founderLed: "FOUNDER-LED — WEB DESIGN & DEVELOPMENT STUDIO",
   reply: "REPLY — WITHIN 24 HOURS",
 } as const;
 
@@ -70,7 +70,7 @@ export const act2 = {
 
 // --- Act 3 — The Build (source: content.ts pillars + stats + company.md)
 export const act3 = {
-  pillar: pillarByTitle("Reliable Webflow Systems"),
+  pillar: pillarByTitle("Reliable Engineering"),
   stats,
   /** Exact substring of the core belief line (company.md). */
   annotation: "A 24/7 SALES REP",

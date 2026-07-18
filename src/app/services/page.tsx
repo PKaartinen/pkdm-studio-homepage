@@ -7,7 +7,7 @@ import { services, processSteps } from "@/data/content";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Strategy & UX, web design, Webflow development, conversion landing pages, content, UI/UX systems, and ongoing growth — delivered as one connected system.",
+    "Strategy & UX, web design, modern web development, conversion landing pages, content, UI/UX systems, and ongoing growth — delivered as one connected system.",
   alternates: { canonical: "/services" },
 };
 
@@ -22,7 +22,7 @@ export default function ServicesPage() {
             <span className="text-glow">handled by one team</span>.
           </>
         }
-        description="Design, content, and Webflow development as one system — not separate pieces bolted together. Here's how we help."
+        description="Design, content, and development as one system — not separate pieces bolted together. Here's how we help."
       />
 
       <section className="shell pb-8">

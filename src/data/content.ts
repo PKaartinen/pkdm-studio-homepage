@@ -7,9 +7,9 @@ export const services = [
       "We start with your business goals, your customers, and the action you want them to take — then map the site around it.",
   },
   {
-    title: "Web Design & Webflow Development",
+    title: "Web Design & Development",
     description:
-      "Custom design in Figma, built into clean, fast Webflow sites you can actually edit and grow.",
+      "Custom design in Figma, engineered into fast, scalable sites on a modern stack — Vercel, Neon, Shopify, whatever your project actually needs.",
   },
   {
     title: "Conversion Landing Pages",
@@ -45,7 +45,7 @@ export const pillars = [
       "Sharp positioning, simple navigation, and obvious CTAs. People understand your offer in seconds, not minutes.",
   },
   {
-    title: "Reliable Webflow Systems",
+    title: "Reliable Engineering",
     description:
       "Stable, maintainable builds that load fast and stay easy to update long after launch day.",
   },
@@ -62,15 +62,16 @@ export type Insight = {
 
 export const insights: Insight[] = [
   {
+    // Slug kept for URL stability (indexed/linked) — title/copy are platform-agnostic post-pivot.
     slug: "webflow-seo-performance-checklist",
-    title: "The Webflow SEO & Performance Checklist",
+    title: "The Website SEO & Performance Checklist",
     tag: "Performance",
     excerpt:
       "The technical and on-page essentials we ship on every build so sites rank and load fast.",
     readTime: "6 min read",
     body: [
-      "A fast site isn't a nice-to-have — it's the baseline for ranking and converting. Here's the checklist we run on every Webflow build before launch.",
-      "Performance: compress and serve modern image formats, lazy-load below-the-fold media, keep third-party scripts to a minimum, and avoid layout shift by reserving space for media. On Webflow that means clean structure, sensible interactions, and no bloated embeds.",
+      "A fast site isn't a nice-to-have — it's the baseline for ranking and converting. Here's the checklist we run on every build before launch.",
+      "Performance: compress and serve modern image formats, lazy-load below-the-fold media, keep third-party scripts to a minimum, and avoid layout shift by reserving space for media. In practice that means clean structure, sensible interactions, and no bloated embeds.",
       "On-page SEO: a single clear H1 per page, descriptive titles and meta descriptions, semantic headings, alt text on every meaningful image, clean slugs, and Open Graph tags so links look right when shared.",
       "Technical: a valid sitemap and robots file, canonical URLs, fast server response, and structured data where it helps. Get these right and you've removed most of the reasons a good site underperforms.",
     ],
@@ -126,9 +127,9 @@ export const processSteps = [
       "Custom design in Figma, shaped around your goals — reviewed together until it feels right.",
   },
   {
-    title: "Webflow Build",
+    title: "Development & Build",
     description:
-      "We turn the design into a fast, responsive, easy-to-edit Webflow site with the integrations you need.",
+      "We turn the design into a fast, responsive site on the right stack for the job — with the integrations you need.",
   },
   {
     title: "Launch & Support",
@@ -160,7 +161,7 @@ export const testimonials = [
     name: "Lena Patel",
     role: "Agency Director",
     quote:
-      "Reliable, organized, and genuinely talented. The Webflow build is clean and easy for our team to update.",
+      "Reliable, organized, and genuinely talented. The build is clean and easy for our team to update.",
   },
   {
     name: "Marcello Russo",

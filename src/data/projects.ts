@@ -42,7 +42,7 @@ export const projects: Project[] = [
       "A high-trust marketing site for a proprietary trading firm, built to turn cautious visitors into funded traders.",
     description:
       "Skillful Traders needed a site that felt credible from the first scroll. We led with clear proof, structured the funding offer around a single obvious action, and kept the interface fast and distraction-free so visitors move straight from interest to sign-up.",
-    services: ["Strategy & UX", "Web Design", "Webflow Development"],
+    services: ["Strategy & UX", "Web Design", "Web Development"],
     url: "",
     featured: true,
   },
@@ -60,7 +60,7 @@ export const projects: Project[] = [
       "A privacy-first product site for a censorship-resistant VPN, balancing bold messaging with hard reassurance.",
     description:
       "For PrivateByRight we built a site that sells freedom without feeling vague. Sharp positioning up top, clear platform options, and trust signals throughout — all wrapped in a dark, confident interface that matches the product's mission.",
-    services: ["Web Design", "Webflow Development", "Content"],
+    services: ["Web Design", "Web Development", "Content"],
     url: "",
     featured: true,
   },
@@ -78,7 +78,7 @@ export const projects: Project[] = [
       "A polished financial-services site designed to communicate authority and make the next step obvious.",
     description:
       "Breakthrough Capital operates in a space where trust is everything. We gave them a refined, modern site with a clear narrative, strong hierarchy, and conversion paths that guide prospects toward a conversation.",
-    services: ["Strategy & UX", "Web Design", "Webflow Development"],
+    services: ["Strategy & UX", "Web Design", "Web Development"],
     url: "",
     featured: true,
   },
@@ -96,7 +96,7 @@ export const projects: Project[] = [
       "A friendly, guided product experience that helps students find the right university match.",
     description:
       "Unifolio turns a complex decision into a simple, guided quiz. We designed an approachable interface that keeps students moving through each step, with clear progress and a payoff that feels worth the effort.",
-    services: ["UI/UX Systems", "Web Design", "Webflow Development"],
+    services: ["UI/UX Systems", "Web Design", "Web Development"],
     url: "",
     featured: true,
   },
@@ -131,7 +131,7 @@ export const projects: Project[] = [
       "A focused product landing page engineered around a single offer and a single action.",
     description:
       "This landing page exists to do one thing: convert traffic into purchases. We structured it around the offer, layered in proof and objection-handling, and kept the path to checkout short and frictionless.",
-    services: ["Conversion Landing Page", "Web Design", "Webflow Development"],
+    services: ["Conversion Landing Page", "Web Design", "Web Development"],
     url: "",
     featured: true,
   },
@@ -144,7 +144,7 @@ export const projects: Project[] = [
     summary: "A crisp brand and product site with a clean, modern identity.",
     description:
       "Arctic Lab wanted a site that felt as precise as their product. We built a clean, confident interface with strong typography and clear product storytelling.",
-    services: ["Web Design", "Webflow Development"],
+    services: ["Web Design", "Web Development"],
     url: "",
     featured: false,
   },
