@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ACTS, clamp01 } from "./scroll-store";
 import { splineTrack } from "./choreography";
 import { tourState } from "./tour-store";
+import { ACT_SECONDS, TOTAL_S, resolveTourSeconds } from "./tour-timing";
 
 // ---------------------------------------------------------------------------
 // T-317 — tour mode (?tour=1) + fps readout (?fps=1). Recording is a
@@ -12,17 +13,11 @@ import { tourState } from "./tour-store";
 // (continuous velocity, zero-slope ends), waits for the loader, locks input,
 // hides the scroll hint. `&tourSec=NN` (clamp 20–120) stretches the take.
 // Inert under reduced motion. Runs on production builds for real takes.
+//
+// Timing (ACT_SECONDS / TOTAL_S / &tourSec clamp) lives in ./tour-timing so
+// the old-homepage-preview tour shares the exact same take length — a
+// before/after recording lines up start-to-finish.
 // ---------------------------------------------------------------------------
-
-/** Per-act seconds — weights the panel glides + the final click (42s total). */
-const ACT_SECONDS = {
-  hero: 5,
-  focus: 6.5,
-  work: 14,
-  build: 6.5,
-  click: 10,
-} as const;
-const TOTAL_S = Object.values(ACT_SECONDS).reduce((a, b) => a + b, 0); // 42
 
 type Lenis = {
   stop: () => void;
@@ -43,10 +38,7 @@ export default function TourController() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     // --- take duration: default 42s, &tourSec=NN clamped 20–120 -----------
-    const sec = parseFloat(params.get("tourSec") ?? "");
-    const total = Number.isFinite(sec)
-      ? Math.min(120, Math.max(20, sec))
-      : TOTAL_S;
+    const total = resolveTourSeconds(params.get("tourSec"));
     const scaleT = total / TOTAL_S;
 
     // --- monotone-cubic time→progress knots (zero-slope ends via flat
