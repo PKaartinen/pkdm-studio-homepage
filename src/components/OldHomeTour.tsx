@@ -23,10 +23,12 @@ import { runStepTour, type LenisLike } from "@/components/showcase/tour-steps";
 const STEP_VALUES = new Set(["2", "steps", "sections"]);
 
 /**
- * Progress stops from the live DOM: the top of each top-level section (nudged
- * up to clear the fixed header), plus intermediate stops through any section
- * taller than the viewport so long content pauses on the way down. Computed at
- * run time (after fonts/images settle) so offsets are final.
+ * Progress stops from the live DOM. Anchored to the top of each top-level
+ * section (nudged up to clear the fixed header), then cleaned up so the take
+ * reads evenly: stops closer than ~half a screen are merged (no darting to a
+ * thin strip like the marquee), and any gap longer than ~1.2 screens is broken
+ * into evenly spaced intermediate stops (the middle ground for long sections
+ * like the projects grid). Computed at run time so offsets are final.
  */
 function sectionStops(): number[] {
   const main = document.getElementById("main");
@@ -35,27 +37,41 @@ function sectionStops(): number[] {
 
   const vh = window.innerHeight;
   const NAV = 84; // clear the fixed <header> so section headings aren't hidden
-  const ys = new Set<number>([0]);
+  const MIN_GAP = vh * 0.55; // merge stops closer than ~half a screen
+  const MAX_GAP = vh * 1.2; // break transitions longer than ~1.2 screens
 
+  const raw = [0];
   for (const el of Array.from(main.children) as HTMLElement[]) {
-    const top = el.getBoundingClientRect().top + window.scrollY;
-    const height = el.offsetHeight;
-    const sectionTop = Math.max(0, top - NAV);
-    ys.add(sectionTop);
-
-    // Middle ground: a section taller than ~1.3 viewports gets extra stops
-    // roughly one screen apart so it reads in beats, not one long sweep.
-    if (height > vh * 1.3) {
-      const step = vh * 0.82;
-      for (let y = sectionTop + step; y < top + height - vh * 0.5; y += step)
-        ys.add(y);
-    }
+    raw.push(Math.max(0, el.getBoundingClientRect().top + window.scrollY - NAV));
   }
-  ys.add(max);
+  raw.push(max);
+  raw.sort((a, b) => a - b);
 
-  return Array.from(ys, (y) => Math.min(1, Math.max(0, y / max))).sort(
-    (a, b) => a - b
-  );
+  // Merge stops that sit too close together.
+  const merged: number[] = [];
+  for (const y of raw) {
+    if (merged.length === 0 || y - merged[merged.length - 1] >= MIN_GAP)
+      merged.push(y);
+  }
+  // Guarantee the bottom is the final stop and isn't crowded by the one before.
+  if (merged[merged.length - 1] !== max) {
+    while (merged.length && max - merged[merged.length - 1] < MIN_GAP)
+      merged.pop();
+    merged.push(max);
+  }
+
+  // Break long transitions into evenly spaced intermediate stops.
+  const out: number[] = [];
+  for (let i = 0; i < merged.length; i++) {
+    out.push(merged[i]);
+    if (i === merged.length - 1) break;
+    const a = merged[i];
+    const b = merged[i + 1];
+    const inserts = Math.max(0, Math.ceil((b - a) / MAX_GAP) - 1);
+    for (let k = 1; k <= inserts; k++) out.push(a + ((b - a) * k) / (inserts + 1));
+  }
+
+  return out.map((y) => Math.min(1, Math.max(0, y / max)));
 }
 
 export default function OldHomeTour() {

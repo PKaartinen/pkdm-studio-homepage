@@ -82,15 +82,19 @@ export function runStepTour(cfg: StepTourConfig): () => void {
   if (stops.length === 0) stops.push(0, 1);
   if (stops[0] > 1e-4) stops.unshift(0);
 
-  // --- budget: equal pause per arrival, transitions ∝ distance ------------
-  const arrivals = Math.max(1, stops.length - 1);
+  // --- budget: equal pause at EVERY stop (incl. the first — so the opening
+  //     section gets a real dwell, not an instant departure), transitions ∝
+  //     scroll distance so the pace stays even across uneven sections --------
   const pauseTotal = Math.min(0.8, Math.max(0, pauseFraction)) * totalSeconds;
-  const pausePer = pauseTotal / arrivals;
+  const pausePer = pauseTotal / stops.length; // hold count === stop count
   const moveTotal = Math.max(0, totalSeconds - pauseTotal);
   const span = stops[stops.length - 1] - stops[0] || 1;
 
   const phases: Phase[] = [];
   let t = 0;
+  // Opening dwell on the first stop.
+  phases.push({ kind: "hold", from: stops[0], to: stops[0], start: 0, end: pausePer });
+  t += pausePer;
   for (let i = 1; i < stops.length; i++) {
     const dist = stops[i] - stops[i - 1];
     const moveDur = moveTotal * (dist / span);
