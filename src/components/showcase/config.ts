@@ -64,8 +64,9 @@ export const act2 = {
   headline: "Sites we've designed and shipped.",
   subline:
     "A selection of real client projects — each built around the customer journey and a clear business goal.",
-  /** ClearPen panel outbound link — always the homepage (F-4). */
-  clearpenUrl: "https://clearpen.ai",
+  /** ClearPen panel outbound link — always the homepage (F-4).
+   *  www is ClearPen's canonical host (apex 307-redirects to it). */
+  clearpenUrl: "https://www.clearpen.ai",
 } as const;
 
 // --- Act 3 — The Build (source: content.ts pillars + stats + company.md)

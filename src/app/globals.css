@@ -115,11 +115,15 @@ body {
 /* ---------------------------------------------------------------------------
    /showcase scoped styles (.showcase-root block only — see showcase spec §4)
    --------------------------------------------------------------------------- */
-/* The showcase is a full-bleed immersive route: hide the site chrome
-   (root-layout Nav / Footer / decorative Background) while it is mounted. */
-body:has(.showcase-root) > header,
-body:has(.showcase-root) > footer,
-body:has(.showcase-root) > div.pointer-events-none.fixed.-z-10 {
+/* The 3D showcase is a full-bleed immersive route: hide the site chrome
+   (root-layout Nav / Footer / decorative Background) while it is mounted.
+   The STATIC homepage variant (.showcase-static-root — mobile / touch /
+   reduced-motion) is a normal page and keeps the chrome, so the scoping
+   below only kicks in while the 3D (or pending-gate) tree is rendered. */
+body:has(.showcase-root):not(:has(.showcase-static-root)) > header,
+body:has(.showcase-root):not(:has(.showcase-static-root)) > footer,
+body:has(.showcase-root):not(:has(.showcase-static-root))
+  > div.pointer-events-none.fixed.-z-10 {
   display: none;
 }
 
@@ -127,6 +131,12 @@ body:has(.showcase-root) > div.pointer-events-none.fixed.-z-10 {
   /* Void gradient per spec §2b — vertical #000206 -> #03060e */
   background: linear-gradient(180deg, #000206 0%, #03060e 100%);
   font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Static homepage variant: let the site-wide decorative Background show
+   through instead of painting the opaque showcase void gradient over it. */
+.showcase-root:has(.showcase-static-root) {
+  background: none;
 }
 
 .showcase-root .font-mono {
@@ -146,19 +156,11 @@ body:has(.showcase-root) > div.pointer-events-none.fixed.-z-10 {
   );
 }
 
-/* T-315 — static fallback (mobile + reduced-motion), .showcase-static-* only */
+/* Static homepage variant (mobile + reduced-motion), .showcase-static-* only */
 .showcase-static-poster {
   display: block;
   width: 100%;
   height: auto;
-}
-.showcase-static-fade {
-  /* Blend the baked poster's bottom edge into the void gradient below it */
-  pointer-events: none;
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 18%;
-  background: linear-gradient(180deg, rgba(0, 3, 8, 0) 0%, #010409 100%);
 }
 
 /* Scroll-hint dot (transform-only; disabled under reduced motion) */

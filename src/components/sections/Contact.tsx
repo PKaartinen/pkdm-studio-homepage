@@ -12,7 +12,7 @@ import { site } from "@/data/site";
 // Every submission must reach BOTH inboxes. On Web3Forms' free tier each
 // access key delivers to exactly one inbox, so the reliable approach is:
 //
-//   KEY_1  -> form configured to deliver to madebypietu@gmail.com
+//   KEY_1  -> form configured to deliver to hello@pkdmstudio.com
 //   KEY_2  -> form configured to deliver to webco.owners@gmail.com
 //
 // We fire one submission per available key, so each configured inbox receives

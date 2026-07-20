@@ -8,7 +8,7 @@ export const site = {
   descriptor: "Web Design & Development Studio",
   url: "https://www.pkdmstudio.com",
   // Inboxes that receive contact-form submissions (handled in ContactForm.tsx)
-  email: "madebypietu@gmail.com",
+  email: "hello@pkdmstudio.com",
   address: "Juhkentali tn 8, 10132 Tallinn, Estonia",
   legalEntity: "PKDM Services OÜ",
 } as const;

@@ -25,7 +25,10 @@ export default function Background() {
       "(prefers-reduced-motion: reduce)"
     ).matches;
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    if (reduced || isMobile) return;
+    // Touch devices (phones with large viewports, tablets) don't get the
+    // particle loop either — it's a desktop-only garnish.
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    if (reduced || isMobile || isTouch) return;
 
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
@@ -125,10 +128,13 @@ export default function Background() {
     >
       {/* Deep base gradient */}
       <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_-10%,#062033_0%,#03070f_42%,#000206_100%)]" />
-      {/* Accent glows — signature cyan + brand blue */}
-      <div className="absolute -left-40 top-[-10%] h-[520px] w-[520px] rounded-full bg-accent/20 blur-[150px]" />
-      <div className="absolute right-[-10%] top-[28%] h-[460px] w-[460px] rounded-full bg-accent-deep/25 blur-[150px]" />
-      <div className="absolute bottom-[-10%] left-1/3 h-[420px] w-[420px] rounded-full bg-[#0a2b48]/40 blur-[150px]" />
+      {/* Accent glows — signature cyan + brand blue. Rendered as radial
+          gradients instead of blur() filters: visually equivalent soft glows,
+          but pre-composited by the browser (no per-frame GPU filter cost —
+          the blur-[150px] versions were tanking scroll perf on phones). */}
+      <div className="absolute -left-72 top-[-18%] h-[840px] w-[840px] bg-[radial-gradient(closest-side,rgba(105,237,254,0.14),transparent_70%)]" />
+      <div className="absolute right-[-18%] top-[20%] h-[780px] w-[780px] bg-[radial-gradient(closest-side,rgba(1,103,180,0.18),transparent_70%)]" />
+      <div className="absolute bottom-[-16%] left-1/4 h-[720px] w-[720px] bg-[radial-gradient(closest-side,rgba(10,43,72,0.30),transparent_70%)]" />
       {/* Subtle grid */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(105,237,254,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(105,237,254,0.04)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(100%_60%_at_50%_0%,#000_30%,transparent_75%)]" />
       {/* Particle canvas */}

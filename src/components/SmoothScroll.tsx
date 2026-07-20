@@ -26,7 +26,11 @@ export default function SmoothScroll() {
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
-    if (prefersReduced) return;
+    // Touch devices scroll natively (syncTouch is off, so Lenis adds nothing
+    // there) — skip the instance and its permanent rAF loop entirely on
+    // phones/tablets. Native momentum scrolling is both smoother and cheaper.
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    if (prefersReduced || isTouch) return;
 
     // Light, responsive smoothing — prioritises snappy scroll over a heavy
     // floaty feel. `lerp` keeps the view tightly coupled to the wheel.
