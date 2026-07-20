@@ -28,19 +28,22 @@ const STEP_VALUES = new Set(["2", "steps", "sections"]);
 
 /** Natural stopping points for the stepped take — the choreography money shots
  *  plus one stop per project panel through the long work-act scroller. Sorted
- *  / deduped / bottom-anchored by the step engine. */
+ *  / deduped / bottom-anchored by the step engine.
+ *  - Hero isn't a separate stop: the engine's opening dwell at 0 already holds
+ *    on the hero, so a near-identical hero money-shot stop (right after it) is
+ *    dropped — it read as "pausing just after the hero for nothing".
+ *  - The take ends at 1 (footer lit, true page bottom); the footer money shot
+ *    is ~0.5% before that, so it's folded into the final stop. */
 function showcaseStops(): number[] {
   const work = [0, 1, 2, 3, 4, 5].map(workPanelHoldProgress);
   return [
     0,
-    MONEY_SHOTS.hero,
     MONEY_SHOTS.focus,
     ...work,
     MONEY_SHOTS.build,
-    MONEY_SHOTS.click,
-    MONEY_SHOTS.ripple,
-    MONEY_SHOTS.footer,
-    1,
+    MONEY_SHOTS.click, // giant glass button, hover swell
+    MONEY_SHOTS.ripple, // the click + ripple rolls out (press plays on the way in)
+    1, // footer lit, resting at the page bottom
   ];
 }
 
@@ -134,8 +137,11 @@ export default function TourController() {
       ];
       if (keys.includes(e.key)) e.preventDefault();
     };
+    // NOTE: intentionally NOT calling lenis.stop() — its `.lenis-stopped`
+    // sets `overflow:hidden` on <html>, which unsticks position:sticky (the
+    // footer band jumps to the top, then snaps back at the end). Lenis stays
+    // running; the per-frame scrollTo below pins the scroll, input is blocked.
     const lock = () => {
-      lenis?.stop();
       window.addEventListener("wheel", block, { passive: false });
       window.addEventListener("touchmove", block, { passive: false });
       window.addEventListener("keydown", blockKeys);
@@ -144,7 +150,6 @@ export default function TourController() {
       window.removeEventListener("wheel", block);
       window.removeEventListener("touchmove", block);
       window.removeEventListener("keydown", blockKeys);
-      lenis?.start();
     };
 
     const run = () => {

@@ -122,7 +122,12 @@ export function runStepTour(cfg: StepTourConfig): () => void {
   let cancelled = false;
   let locked = false;
 
-  // --- input lock (wheel/touch via Lenis stop + key/wheel blockers) -------
+  // --- input lock: block user scroll, but DON'T call lenis.stop() ----------
+  // Lenis's `.lenis-stopped` sets `overflow:hidden` on <html>, which unsticks
+  // position:sticky descendants — the showcase footer band drops to the top of
+  // the viewport during held stops, then snaps back when the take ends. So we
+  // keep Lenis running (sticky stays pinned) and pin the scroll by writing the
+  // target every frame via scrollTo() (below), blocking user input here.
   const block = (e: Event) => e.preventDefault();
   const blockKeys = (e: KeyboardEvent) => {
     const keys = [
@@ -139,7 +144,6 @@ export function runStepTour(cfg: StepTourConfig): () => void {
   const lock = () => {
     if (locked) return;
     locked = true;
-    lenis?.stop();
     window.addEventListener("wheel", block, { passive: false });
     window.addEventListener("touchmove", block, { passive: false });
     window.addEventListener("keydown", blockKeys);
@@ -150,7 +154,6 @@ export function runStepTour(cfg: StepTourConfig): () => void {
     window.removeEventListener("wheel", block);
     window.removeEventListener("touchmove", block);
     window.removeEventListener("keydown", blockKeys);
-    lenis?.start();
   };
 
   const applyP = (p: number) => {
