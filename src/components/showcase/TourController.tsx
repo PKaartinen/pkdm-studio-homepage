@@ -2,22 +2,47 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ACTS, clamp01 } from "./scroll-store";
-import { splineTrack } from "./choreography";
+import { splineTrack, MONEY_SHOTS, workPanelHoldProgress } from "./choreography";
 import { tourState } from "./tour-store";
 import { ACT_SECONDS, TOTAL_S, resolveTourSeconds } from "./tour-timing";
+import { runStepTour } from "./tour-steps";
 
 // ---------------------------------------------------------------------------
-// T-317 — tour mode (?tour=1) + fps readout (?fps=1). Recording is a
-// first-class requirement (spec §4): the tour is a scripted auto-scroll —
-// per-act ACT_SECONDS budget → monotone-cubic easing across act boundaries
-// (continuous velocity, zero-slope ends), waits for the loader, locks input,
-// hides the scroll hint. `&tourSec=NN` (clamp 20–120) stretches the take.
-// Inert under reduced motion. Runs on production builds for real takes.
+// T-317 — tour mode (?tour=…) + fps readout (?fps=1). Recording is a
+// first-class requirement (spec §4). Two take styles, both loader-gated,
+// input-locked, inert under reduced motion, and sharing the same duration
+// (tour-timing → default 42s, &tourSec=NN clamp 20–120) so a before/after
+// against the old homepage lines up:
 //
-// Timing (ACT_SECONDS / TOTAL_S / &tourSec clamp) lives in ./tour-timing so
-// the old-homepage-preview tour shares the exact same take length — a
-// before/after recording lines up start-to-finish.
+//   ?tour=1  — continuous glide: per-act ACT_SECONDS budget → monotone-cubic
+//              easing across act boundaries (the original cinematic take).
+//   ?tour=2  — section-by-section (also `steps`/`sections`): eases to each
+//              choreography beat and PAUSES, the way a person reads the page.
+//              The long "work" act stops on every project panel (the middle
+//              ground for a long scroller). Runs on the shared tour-steps
+//              engine so the old-homepage-preview ?tour=2 matches beat-for-beat.
 // ---------------------------------------------------------------------------
+
+/** ?tour values that select the section-by-section step take. */
+const STEP_VALUES = new Set(["2", "steps", "sections"]);
+
+/** Natural stopping points for the stepped take — the choreography money shots
+ *  plus one stop per project panel through the long work-act scroller. Sorted
+ *  / deduped / bottom-anchored by the step engine. */
+function showcaseStops(): number[] {
+  const work = [0, 1, 2, 3, 4, 5].map(workPanelHoldProgress);
+  return [
+    0,
+    MONEY_SHOTS.hero,
+    MONEY_SHOTS.focus,
+    ...work,
+    MONEY_SHOTS.build,
+    MONEY_SHOTS.click,
+    MONEY_SHOTS.ripple,
+    MONEY_SHOTS.footer,
+    1,
+  ];
+}
 
 type Lenis = {
   stop: () => void;
@@ -34,11 +59,51 @@ export default function TourController() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.has("fps")) setFpsOn(true);
-    if (params.get("tour") !== "1") return;
+    const tourParam = params.get("tour");
+    const stepped = STEP_VALUES.has(tourParam ?? "");
+    if (tourParam !== "1" && !stepped) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     // --- take duration: default 42s, &tourSec=NN clamped 20–120 -----------
     const total = resolveTourSeconds(params.get("tourSec"));
+
+    const lenisStep = (window as unknown as { __pkdmLenis?: Lenis }).__pkdmLenis;
+
+    // --- ?tour=2 — section-by-section via the shared step engine ----------
+    if (stepped) {
+      let cancelledStep = false;
+      let pollStep = 0;
+      let cancelStep: (() => void) | null = null;
+      const startStep = () => {
+        if (cancelledStep) return;
+        cancelStep = runStepTour({
+          stops: showcaseStops(),
+          totalSeconds: total,
+          lenis: lenisStep,
+          getMax: () =>
+            document.documentElement.scrollHeight - window.innerHeight,
+          onActiveChange: (a) => {
+            tourState.active = a;
+          },
+        });
+      };
+      const waitLoaderStep = () => {
+        if (cancelledStep) return;
+        if (tourState.loaderDone) {
+          window.scrollTo(0, 0);
+          startStep();
+        } else {
+          pollStep = window.setTimeout(waitLoaderStep, 100);
+        }
+      };
+      waitLoaderStep();
+      return () => {
+        cancelledStep = true;
+        clearTimeout(pollStep);
+        cancelStep?.();
+      };
+    }
+
     const scaleT = total / TOTAL_S;
 
     // --- monotone-cubic time→progress knots (zero-slope ends via flat

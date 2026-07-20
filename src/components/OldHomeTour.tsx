@@ -2,121 +2,104 @@
 
 import { useEffect } from "react";
 import { resolveTourSeconds } from "@/components/showcase/tour-timing";
+import { runStepTour, type LenisLike } from "@/components/showcase/tour-steps";
 
 // ---------------------------------------------------------------------------
-// ?tour=1 for the retired homepage (/old-homepage-preview) — the before/after
-// counterpart to the 3D homepage tour (showcase/TourController.tsx). It runs
-// for the exact same wall-clock duration (shared ./showcase/tour-timing, so
-// the default and the &tourSec=NN override match), auto-scrolling top→bottom
-// with an ease-in/out so a split-screen recording lines up start-to-finish.
+// ?tour=… for the retired homepage (/old-homepage-preview) — the before/after
+// counterpart to the 3D homepage tour (showcase/TourController.tsx), sharing
+// the same duration (tour-timing → default 42s, &tourSec=NN) and the same
+// step engine (tour-steps) so the two takes line up:
 //
-// Because the two pages have different total heights, "same duration" means
-// they finish together (founder call) — the pixel velocity differs, but the
-// scripted take begins and ends in lockstep. Inert under reduced motion,
-// mirroring the showcase tour. Input is locked for the length of the take.
+//   ?tour=1  — one continuous ease-in/out glide top→bottom.
+//   ?tour=2  — section-by-section (also `steps`/`sections`): eases to each
+//              page section and PAUSES, the way a person reads a site. Tall
+//              sections get intermediate viewport-sized stops (the middle
+//              ground for long scrollers), so nothing is skimmed in one blur.
+//
+// Inert under reduced motion. Input is locked for the length of the take.
 // ---------------------------------------------------------------------------
 
-type Lenis = {
-  stop: () => void;
-  start: () => void;
-  scrollTo: (
-    target: number,
-    opts?: { immediate?: boolean; force?: boolean }
-  ) => void;
-};
+/** ?tour values that select the section-by-section step take. */
+const STEP_VALUES = new Set(["2", "steps", "sections"]);
 
-/** Smootherstep (zero velocity + acceleration at both ends) → clean 0→1. */
-const easeInOut = (x: number) => {
-  const t = Math.min(1, Math.max(0, x));
-  return t * t * t * (t * (t * 6 - 15) + 10);
-};
+/**
+ * Progress stops from the live DOM: the top of each top-level section (nudged
+ * up to clear the fixed header), plus intermediate stops through any section
+ * taller than the viewport so long content pauses on the way down. Computed at
+ * run time (after fonts/images settle) so offsets are final.
+ */
+function sectionStops(): number[] {
+  const main = document.getElementById("main");
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  if (!main || max <= 0) return [0, 1];
+
+  const vh = window.innerHeight;
+  const NAV = 84; // clear the fixed <header> so section headings aren't hidden
+  const ys = new Set<number>([0]);
+
+  for (const el of Array.from(main.children) as HTMLElement[]) {
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    const height = el.offsetHeight;
+    const sectionTop = Math.max(0, top - NAV);
+    ys.add(sectionTop);
+
+    // Middle ground: a section taller than ~1.3 viewports gets extra stops
+    // roughly one screen apart so it reads in beats, not one long sweep.
+    if (height > vh * 1.3) {
+      const step = vh * 0.82;
+      for (let y = sectionTop + step; y < top + height - vh * 0.5; y += step)
+        ys.add(y);
+    }
+  }
+  ys.add(max);
+
+  return Array.from(ys, (y) => Math.min(1, Math.max(0, y / max))).sort(
+    (a, b) => a - b
+  );
+}
 
 export default function OldHomeTour() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("tour") !== "1") return;
+    const tourParam = params.get("tour");
+    const stepped = STEP_VALUES.has(tourParam ?? "");
+    if (tourParam !== "1" && !stepped) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    // Identical take length to the showcase tour (default 42s, &tourSec=NN
-    // clamped 20–120) so the before/after clips finish together.
     const total = resolveTourSeconds(params.get("tourSec"));
+    const lenis =
+      (window as unknown as { __pkdmLenis?: LenisLike }).__pkdmLenis ?? null;
 
-    let raf = 0;
-    let poll = 0;
     let cancelled = false;
-    let locked = false;
-    const lenis = (window as unknown as { __pkdmLenis?: Lenis }).__pkdmLenis;
+    let settle = 0;
+    let cancelTour: (() => void) | null = null;
 
-    // --- input lock (wheel/touch via Lenis stop + key/wheel blockers) -----
-    const block = (e: Event) => e.preventDefault();
-    const blockKeys = (e: KeyboardEvent) => {
-      const keys = [
-        " ",
-        "ArrowDown",
-        "ArrowUp",
-        "PageDown",
-        "PageUp",
-        "Home",
-        "End",
-      ];
-      if (keys.includes(e.key)) e.preventDefault();
-    };
-    const lock = () => {
-      if (locked) return;
-      locked = true;
-      lenis?.stop();
-      window.addEventListener("wheel", block, { passive: false });
-      window.addEventListener("touchmove", block, { passive: false });
-      window.addEventListener("keydown", blockKeys);
-    };
-    const unlock = () => {
-      if (!locked) return;
-      locked = false;
-      window.removeEventListener("wheel", block);
-      window.removeEventListener("touchmove", block);
-      window.removeEventListener("keydown", blockKeys);
-      lenis?.start();
-    };
-
-    const run = () => {
-      if (cancelled) return;
-      lock();
-      const t0 = performance.now();
-      // Shared instrumentation flag with the showcase tour (shot-list timing).
-      (window as unknown as { __tourT0?: number }).__tourT0 = t0;
-      const tick = (now: number) => {
-        if (cancelled) return;
-        const ts = (now - t0) / 1000;
-        // Recompute max each frame — lazy media/fonts can shift page height.
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        const p = easeInOut(ts / total);
-        if (lenis) lenis.scrollTo(p * max, { immediate: true, force: true });
-        else window.scrollTo(0, p * max);
-        if (ts < total) {
-          raf = requestAnimationFrame(tick);
-        } else {
-          unlock();
-        }
-      };
-      raf = requestAnimationFrame(tick);
-    };
-
-    // --- wait for a settled layout (fonts/images) before rolling ----------
     const start = () => {
       if (cancelled) return;
       window.scrollTo(0, 0);
-      // Settle beat mirrors the showcase tour's post-loader pause.
-      poll = window.setTimeout(run, 600);
+      // Let layout settle (fonts/images) so section offsets are final.
+      settle = window.setTimeout(() => {
+        if (cancelled) return;
+        cancelTour = runStepTour({
+          stops: stepped ? sectionStops() : [0, 1],
+          totalSeconds: total,
+          pauseFraction: stepped ? 0.34 : 0, // 0 → one continuous glide
+          settleMs: 0, // already settled above
+          lenis,
+          getMax: () =>
+            document.documentElement.scrollHeight - window.innerHeight,
+        });
+      }, 400);
     };
+
     if (document.readyState === "complete") start();
     else window.addEventListener("load", start, { once: true });
 
     return () => {
       cancelled = true;
-      clearTimeout(poll);
-      cancelAnimationFrame(raf);
+      clearTimeout(settle);
+      cancelTour?.();
       window.removeEventListener("load", start);
-      unlock();
     };
   }, []);
 
