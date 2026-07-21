@@ -24,6 +24,10 @@ type ApiData = {
   elements: { target: string; text: string; clicks: number }[];
 };
 
+// inputCls sets w-full, which wins over an appended w-auto in Tailwind's
+// cascade — swap it out for the inline filter selects.
+const selCls = inputCls.replace("w-full", "w-auto");
+
 const DEVICE_WIDTHS: Record<string, number> = {
   all: 1280,
   desktop: 1280,
@@ -112,6 +116,9 @@ export default function HeatmapPage() {
   }, [draw]);
 
   const frameWidth = DEVICE_WIDTHS[device] ?? 1280;
+  // pkdm_preview=1 forces the embedded page into preview mode: static
+  // homepage instead of the WebGL showcase, no Lenis, no analytics recorded.
+  const previewSrc = `${path}${path.includes("?") ? "&" : "?"}pkdm_preview=1`;
 
   return (
     <>
@@ -121,14 +128,14 @@ export default function HeatmapPage() {
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <select value={path} onChange={(e) => setPath(e.target.value)} className={`${inputCls} w-auto`}>
+        <select value={path} onChange={(e) => setPath(e.target.value)} className={selCls}>
           {(data?.paths?.length ? data.paths : [{ path: "/", clicks: 0 }]).map((p) => (
             <option key={p.path} value={p.path}>
               {p.path} {p.clicks ? `(${p.clicks} clicks)` : ""}
             </option>
           ))}
         </select>
-        <select value={device} onChange={(e) => setDevice(e.target.value)} className={`${inputCls} w-auto`}>
+        <select value={device} onChange={(e) => setDevice(e.target.value)} className={selCls}>
           <option value="all">All devices</option>
           <option value="desktop">Desktop</option>
           <option value="tablet">Tablet</option>
@@ -137,7 +144,7 @@ export default function HeatmapPage() {
         <select
           value={range}
           onChange={(e) => setRange(Number(e.target.value))}
-          className={`${inputCls} w-auto`}
+          className={selCls}
         >
           <option value={7}>Last 7 days</option>
           <option value={30}>Last 30 days</option>
@@ -157,7 +164,7 @@ export default function HeatmapPage() {
             >
               <iframe
                 ref={iframeRef}
-                src={path}
+                src={previewSrc}
                 onLoad={draw}
                 title="Page preview"
                 className="w-full border-0 bg-ink-950"

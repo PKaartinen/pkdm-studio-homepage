@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { isPreviewEmbed } from "@/lib/previewEmbed";
 
 /**
  * First-party analytics tracker.
@@ -86,6 +87,8 @@ export default function Tracker() {
   // as fresh pageviews and close out the previous page's scroll/time metrics.
   useEffect(() => {
     if (pathname?.startsWith("/admin")) return;
+    // Embed previews (admin heatmap iframe etc.) are not real visits.
+    if (isPreviewEmbed()) return;
     try {
       if (localStorage.getItem("pkdm_no_track") === "1") {
         disabled.current = true;

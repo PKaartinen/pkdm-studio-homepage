@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
+import { isPreviewEmbed } from "@/lib/previewEmbed";
 
 /**
  * Smooth scrolling via Lenis. Disabled when the user prefers reduced motion.
@@ -30,7 +31,7 @@ export default function SmoothScroll() {
     // there) — skip the instance and its permanent rAF loop entirely on
     // phones/tablets. Native momentum scrolling is both smoother and cheaper.
     const isTouch = window.matchMedia("(pointer: coarse)").matches;
-    if (prefersReduced || isTouch) return;
+    if (prefersReduced || isTouch || isPreviewEmbed()) return;
 
     // Light, responsive smoothing — prioritises snappy scroll over a heavy
     // floaty feel. `lerp` keeps the view tightly coupled to the wheel.

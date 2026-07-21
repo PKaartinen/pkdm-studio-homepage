@@ -27,6 +27,7 @@
 import { useEffect, useState } from "react";
 import type { ComponentType } from "react";
 import ShowcaseStaticPage from "./static-page";
+import { isPreviewEmbed } from "@/lib/previewEmbed";
 
 const GATE_QUERIES = [
   "(prefers-reduced-motion: reduce)",
@@ -44,6 +45,13 @@ export default function ShowcaseDeviceGate() {
   // Resolve + live-track the four media queries (mode resolves in an effect —
   // never during render — to keep SSR and first client render identical).
   useEffect(() => {
+    // Embed previews (admin heatmap iframe) always get the static page: a
+    // full-document-height iframe would size the fixed canvas beyond the
+    // GPU's max renderbuffer and crash the frame.
+    if (isPreviewEmbed()) {
+      setMode("static");
+      return;
+    }
     const mqls = GATE_QUERIES.map((q) => window.matchMedia(q));
     const resolve = () =>
       setMode(mqls.some((m) => m.matches) ? "static" : "3d");
