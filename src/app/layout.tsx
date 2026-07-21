@@ -7,6 +7,8 @@ import SmoothScroll from "@/components/SmoothScroll";
 import Background from "@/components/Background";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import HideOnAdmin from "@/components/HideOnAdmin";
+import Tracker from "@/components/Tracker";
 
 // DM Sans — body copy. Warm, readable, matches the live PKDM Studio site.
 const dmSans = DM_Sans({
@@ -84,17 +86,22 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSans.variable} ${spaceGrotesk.variable}`}>
       <body className="font-sans antialiased">
-        <SmoothScroll />
-        <Background />
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-ink-950"
-        >
-          Skip to content
-        </a>
-        <Nav />
+        <HideOnAdmin>
+          <SmoothScroll />
+          <Background />
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-ink-950"
+          >
+            Skip to content
+          </a>
+          <Nav />
+        </HideOnAdmin>
         {children}
-        <Footer />
+        <HideOnAdmin>
+          <Footer />
+        </HideOnAdmin>
+        <Tracker />
         <Analytics />
       </body>
     </html>

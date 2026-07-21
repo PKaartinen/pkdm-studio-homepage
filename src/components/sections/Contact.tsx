@@ -102,6 +102,12 @@ export default function Contact() {
 
       if (anyOk) {
         setStatus("success");
+        // Record the lead in our own first-party analytics (admin dashboard).
+        try {
+          window.__pkdmTrack?.("lead", { name, email, help, message });
+        } catch {
+          /* analytics must never break the form */
+        }
         form.reset();
       } else {
         throw new Error("All submissions failed");
