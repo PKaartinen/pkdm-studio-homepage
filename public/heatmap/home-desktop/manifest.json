@@ -1,0 +1,53 @@
+{
+  "width": 1280,
+  "viewport": 800,
+  "docHeight": 8360,
+  "slices": [
+    {
+      "file": "slice-00.webp",
+      "height": 800
+    },
+    {
+      "file": "slice-01.webp",
+      "height": 800
+    },
+    {
+      "file": "slice-02.webp",
+      "height": 800
+    },
+    {
+      "file": "slice-03.webp",
+      "height": 800
+    },
+    {
+      "file": "slice-04.webp",
+      "height": 800
+    },
+    {
+      "file": "slice-05.webp",
+      "height": 800
+    },
+    {
+      "file": "slice-06.webp",
+      "height": 800
+    },
+    {
+      "file": "slice-07.webp",
+      "height": 800
+    },
+    {
+      "file": "slice-08.webp",
+      "height": 800
+    },
+    {
+      "file": "slice-09.webp",
+      "height": 800
+    },
+    {
+      "file": "slice-10.webp",
+      "height": 360
+    }
+  ],
+  "base": "https://www.pkdmstudio.com",
+  "capturedAt": "2026-07-21T17:41:17.763Z"
+}
