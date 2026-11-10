@@ -169,7 +169,7 @@ export default function HeatmapPage() {
     <>
       <PageHeader
         title="Click heatmap"
-        description="Where visitors actually click, overlaid on what they saw. Hot spots that aren't links are opportunities — people expect something clickable there."
+        description="Where visitors actually click, overlaid on what they saw. Hot spots that aren't links are opportunities: people expect something clickable there."
       />
 
       <div className="mb-2 flex flex-wrap items-center gap-3">
@@ -209,7 +209,7 @@ export default function HeatmapPage() {
           The desktop homepage (3D experience) and mobile homepage (static page) are different
           experiences, so their heatmaps are shown per device.
           {useSlices && hasManifest
-            ? ` Desktop preview captured ${new Date((manifest as Manifest).capturedAt).toLocaleDateString("en-GB")} — re-run \`npm run heatmap:capture\` after homepage changes.`
+            ? ` Desktop preview captured ${new Date((manifest as Manifest).capturedAt).toLocaleDateString("en-GB")}; re-run \`npm run heatmap:capture\` after homepage changes.`
             : ""}
         </p>
       ) : (

@@ -42,7 +42,7 @@ export default function ProjectCard({
         <Link
           href={`/projects/${project.slug}`}
           className="relative block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent"
-          aria-label={`${project.name} — read the case study`}
+          aria-label={`${project.name}: read the case study`}
         >
           <BrowserBar url={host} compact />
           <div className="relative aspect-[16/10] overflow-hidden bg-ink-800">

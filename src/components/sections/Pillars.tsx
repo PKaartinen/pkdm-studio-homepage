@@ -14,7 +14,7 @@ export default function Pillars() {
               <span className="text-glow">clarity, and conversions</span>.
             </>
           }
-          description="Every business is unique, so every business website should be too. We treat your site as the modern-day business card — and a 24/7 sales rep."
+          description="Every business is unique, so every business website should be too. We treat your site as the modern-day business card, and a 24/7 sales rep."
         />
 
         <div className="mt-14 grid gap-5 md:grid-cols-3">

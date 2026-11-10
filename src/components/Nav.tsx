@@ -173,7 +173,7 @@ export default function Nav() {
                       Featured case study
                     </span>
                     <span className="mt-1 block text-sm font-semibold text-white">
-                      ClearPen — an AI product, built end to end
+                      ClearPen: an AI product, built end to end
                     </span>
                   </span>
                   <ArrowRight className="h-4 w-4 shrink-0 text-white/70" />

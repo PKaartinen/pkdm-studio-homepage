@@ -26,9 +26,9 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
 });
 
-const title = "PKDM Studio — Websites Built to Convert";
+const title = "PKDM Studio | Websites Built to Convert";
 const description =
-  "PKDM Studio is a founder-led web design & development studio. We build unique, conversion-focused websites — from marketing sites to AI web apps, marketplaces, and eCommerce — that build trust and are built to sell.";
+  "PKDM Studio is a founder-led web design & development studio. We build unique, conversion-focused websites that build trust and are built to sell, from marketing sites to AI web apps, marketplaces and eCommerce.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),

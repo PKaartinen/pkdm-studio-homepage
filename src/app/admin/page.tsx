@@ -74,7 +74,7 @@ export default async function AdminOverview({
         {daily.some((d) => d.sessions > 0) ? (
           <TrendChart points={daily} />
         ) : (
-          <EmptyState>No traffic recorded yet — data appears as soon as visitors arrive.</EmptyState>
+          <EmptyState>No traffic recorded yet. Data appears as soon as visitors arrive.</EmptyState>
         )}
       </Card>
 

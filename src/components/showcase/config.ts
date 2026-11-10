@@ -28,7 +28,7 @@ const pillarByTitle = (title: string) => {
  *  hero project). Tags are `name — category` verbatim. */
 export const featuredProjects = projects.filter((p) => p.featured);
 export const panelTag = (p: { name: string; category: string }) =>
-  `${p.name} — ${p.category}`;
+  `${p.name} · ${p.category}`;
 
 // --- Hero (source: Hero.tsx / voice.md) ------------------------------------
 export const hero = {
@@ -40,20 +40,20 @@ export const hero = {
   sub: "Your website should do more than look pretty. We design and build unique, conversion-focused websites that build trust and turn visitors into customers.",
   eyebrow: "Founder-led web design & development studio",
   reassurance:
-    "Get a reply within 24 hours — straight from the person doing the work.",
+    "Get a reply within 24 hours, straight from the person doing the work.",
   cta: "Let's talk about your website",
 } as const;
 
 // Mono annotations pinned to the 3D object (spec §3.1 — derived from hero lines)
 export const heroAnnotations = {
-  founderLed: "FOUNDER-LED — WEB DESIGN & DEVELOPMENT STUDIO",
-  reply: "REPLY — WITHIN 24 HOURS",
+  founderLed: "FOUNDER-LED · WEB DESIGN & DEVELOPMENT STUDIO",
+  reply: "REPLY WITHIN 24 HOURS",
 } as const;
 
 // --- Act 1 — Focus (source: Brand & Ops Manual / voice.md + content.ts pillars)
 export const act1 = {
   headline:
-    "Your website shouldn't just look good — it should answer 'why you?' in under 5 seconds.",
+    "Your website shouldn't just look good; it should answer 'why you?' in under 5 seconds.",
   /** In-canvas focus phrase — exact substring of the headline. */
   focusPhrase: "why you?",
   pillar: pillarByTitle("Strategic Clarity"),
@@ -64,7 +64,7 @@ export const act1 = {
 export const act2 = {
   headline: "Sites we've designed and shipped.",
   subline:
-    "Recent builds — client platforms and our own products, each built around the customer journey and a clear business goal.",
+    "Recent builds: client platforms and our own products, each built around the customer journey and a clear business goal.",
   /** ClearPen panel outbound link — always the homepage (F-4).
    *  www is ClearPen's canonical host (apex 307-redirects to it). */
   clearpenUrl: "https://www.clearpen.ai",
@@ -75,7 +75,7 @@ export const featuredCase = {
   href: `/projects/${heroProject.slug}`,
   image: heroProject.image.src,
   eyebrow: "Featured case study",
-  title: `${heroProject.name} — an AI product, built end to end`,
+  title: `${heroProject.name}: an AI product, built end to end`,
   scope: "Marketing site · members area · payments · funnels · NLP engine",
 } as const;
 

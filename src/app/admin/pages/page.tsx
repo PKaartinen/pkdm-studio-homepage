@@ -51,7 +51,7 @@ export default async function PagesView({
     <>
       <PageHeader
         title="Pages & scroll depth"
-        description="How far visitors scroll on each page, and how long they stay. Bars show the share of visits that reached each depth milestone — a steep drop-off tells you where people lose interest."
+        description="How far visitors scroll on each page, and how long they stay. Bars show the share of visits that reached each depth milestone; a steep drop-off tells you where people lose interest."
         range={range}
         basePath="/admin/pages"
       />

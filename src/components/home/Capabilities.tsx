@@ -26,7 +26,7 @@ const CAPABILITIES = [
   },
   {
     title: "AI products & pipelines",
-    body: "LLM features, multi-stage NLP pipelines and AI advisors — engineered, measured and shipped.",
+    body: "LLM features, multi-stage NLP pipelines and AI advisors that are engineered, measured and shipped.",
     proof: ["clearpen", "unifolio"],
     icon: "M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2M9 9h6v6H9z",
   },
@@ -38,7 +38,7 @@ const CAPABILITIES = [
   },
   {
     title: "Brand & launch",
-    body: "Identity, product renders and a launch site — a brand that looks established on day one.",
+    body: "Identity, product renders and a launch site, for a brand that looks established on day one.",
     proof: ["spray"],
     icon: "M12 3l2.6 5.6L20 9.3l-4 4.1.9 5.6L12 16.4 7.1 19l.9-5.6-4-4.1 5.4-.7z",
   },

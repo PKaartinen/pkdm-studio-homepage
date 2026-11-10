@@ -20,7 +20,7 @@ export default function Projects() {
                 <span className="text-glow">and shipped</span>.
               </>
             }
-            description="A selection of real client projects — each built around the customer journey and a clear business goal."
+            description="A selection of real client projects, each built around the customer journey and a clear business goal."
           />
           <Reveal>
             <MagneticButton href="/projects" variant="ghost">

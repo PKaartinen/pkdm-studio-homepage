@@ -34,7 +34,7 @@ export default function AdminError({ reset }: { error: Error; reset: () => void 
         Something went wrong loading this view
       </h2>
       <p className="mb-6 max-w-xl leading-relaxed">
-        If the database was just connected, the tables probably don&apos;t exist yet — click
+        If the database was just connected, the tables probably don&apos;t exist yet; click
         below to create them (safe to run any time). Otherwise, try reloading.
       </p>
       <div className="flex gap-3">

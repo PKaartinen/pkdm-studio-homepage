@@ -22,7 +22,7 @@ export type GlassVariant = {
 
 export const GLASS_VARIANTS: GlassVariant[] = [
   {
-    name: "V1 — Crystal",
+    name: "V1 · Crystal",
     note: "Thin, water-clear, restrained dispersion. Jewelry-grade.",
     thickness: 0.65,
     ior: 1.5,
@@ -36,7 +36,7 @@ export const GLASS_VARIANTS: GlassVariant[] = [
     envMapIntensity: 1.0,
   },
   {
-    name: "V2 — Cast",
+    name: "V2 · Cast",
     note: "Thick cast slab, heavier refraction, medium dispersion.",
     thickness: 1.5,
     ior: 1.45,
@@ -50,8 +50,8 @@ export const GLASS_VARIANTS: GlassVariant[] = [
     envMapIntensity: 1.1,
   },
   {
-    name: "V3 — Electric",
-    note: "High-IOR, maximum dispersion — fringes read loudest.",
+    name: "V3 · Electric",
+    note: "High-IOR, maximum dispersion; fringes read loudest.",
     thickness: 1.05,
     ior: 1.72,
     chromaticAberration: 0.95,
@@ -64,7 +64,7 @@ export const GLASS_VARIANTS: GlassVariant[] = [
     envMapIntensity: 1.25,
   },
   {
-    name: "V4 — Satin",
+    name: "V4 · Satin",
     note: "Slight satin surface, softened interior, calmer highlights.",
     thickness: 1.25,
     ior: 1.5,

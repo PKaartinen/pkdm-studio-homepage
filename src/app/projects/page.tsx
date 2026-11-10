@@ -15,7 +15,7 @@ import {
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Case studies from PKDM Studio — AI products, streaming platforms, members areas, payment funnels and launch sites, designed and engineered end to end.",
+    "Case studies from PKDM Studio: AI products, streaming platforms, members areas, payment funnels and launch sites, designed and engineered end to end.",
   alternates: { canonical: "/projects" },
 };
 
@@ -45,15 +45,14 @@ export default function ProjectsPage() {
           </Reveal>
           <Reveal delay={0.05}>
             <h1 className="display mt-5 max-w-4xl font-display text-4xl font-bold leading-[1.04] tracking-tight text-white sm:text-5xl md:text-7xl">
-              Products, platforms and sites —{" "}
+              Products, platforms and sites,{" "}
               <span className="text-glow">shipped</span>.
             </h1>
           </Reveal>
           <Reveal delay={0.1}>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-haze">
               From a full AI product to streaming platforms, members areas and
-              launch sites. Every project starts with a business goal — and
-              every recent one has a deep case study showing how it was built.
+              launch sites. Every project starts with a business goal, and every recent one has a deep case study showing how it was built.
             </p>
           </Reveal>
           <Reveal delay={0.14}>
@@ -86,7 +85,7 @@ export default function ProjectsPage() {
           </Reveal>
           <Reveal delay={0.05}>
             <p className="max-w-md text-sm text-haze">
-              Each card opens a full case study — scope, architecture, mobile
+              Each card opens a full case study: scope, architecture, mobile
               screens and the whole page in one scroll.
             </p>
           </Reveal>

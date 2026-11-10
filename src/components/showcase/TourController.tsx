@@ -246,7 +246,7 @@ function FpsReadout() {
       className="pointer-events-none fixed bottom-3 right-3 z-50 rounded bg-ink-950/80 px-2.5 py-1.5 font-mono text-[11px] tracking-[0.08em] text-accent-soft"
       aria-hidden="true"
     >
-      — FPS
+      FPS
     </div>
   );
 }

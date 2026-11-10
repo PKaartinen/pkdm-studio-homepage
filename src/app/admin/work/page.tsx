@@ -103,7 +103,7 @@ export default async function WorkPage() {
             className={`${inputCls} md:col-span-2`}
           />
           <select name="project_id" className={inputCls}>
-            <option value="">— no project —</option>
+            <option value="">No project</option>
             {projects.map((p) => (
               <option key={Number(p.id)} value={Number(p.id)}>
                 {String(p.name)}

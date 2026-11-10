@@ -26,17 +26,17 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const project = getProject(slug);
   if (!project) return { title: "Project not found" };
   return {
-    title: `${project.name} — ${project.category} case study`,
+    title: `${project.name}: ${project.category} case study`,
     description: project.summary,
     alternates: { canonical: `/projects/${project.slug}` },
     openGraph: {
-      title: `${project.name} — a PKDM Studio case study`,
+      title: `${project.name}, a PKDM Studio case study`,
       description: project.summary,
       images: [{ url: project.image.src, width: project.image.width, height: project.image.height }],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${project.name} — a PKDM Studio case study`,
+      title: `${project.name}, a PKDM Studio case study`,
       description: project.summary,
       images: [project.image.src],
     },
@@ -89,7 +89,7 @@ export default async function ProjectPage({ params }: Params) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
-    name: `${p.name} — ${p.category}`,
+    name: `${p.name}: ${p.category}`,
     description: p.summary,
     image: `${site.url}${p.image.src}`,
     url: `${site.url}/projects/${p.slug}`,
@@ -391,8 +391,7 @@ export default async function ProjectPage({ params }: Params) {
               <Reveal delay={0.05}>
                 <p className="mt-5 leading-relaxed text-haze">
                   Hover the window (or swipe inside it on a phone) to glide from
-                  the hero to the footer — every section, exactly as it ships
-                  today.
+                  the hero to the footer: every section, exactly as it ships today.
                 </p>
               </Reveal>
               <Reveal delay={0.08}>
@@ -423,8 +422,7 @@ export default async function ProjectPage({ params }: Params) {
               </div>
               <Reveal delay={0.05}>
                 <p className="max-w-sm text-sm leading-relaxed text-haze">
-                  Real captures at 390 px — the width most visitors actually
-                  arrive on.
+                  Real captures at 390 px, the width most visitors actually arrive on.
                 </p>
               </Reveal>
             </div>
@@ -473,7 +471,7 @@ export default async function ProjectPage({ params }: Params) {
             <SectionLabel n={no()}>Under the hood</SectionLabel>
             <Reveal>
               <h2 className="display mt-5 max-w-3xl font-display text-3xl font-bold leading-tight text-white md:text-4xl">
-                The details nobody sees — and everybody feels.
+                The details nobody sees, and everybody feels.
               </h2>
             </Reveal>
             <div className="mt-12 grid gap-4 md:grid-cols-2">
@@ -511,8 +509,7 @@ export default async function ProjectPage({ params }: Params) {
             </Reveal>
             <Reveal delay={0.05}>
               <p className="mt-4 max-w-sm text-sm leading-relaxed text-haze">
-                The right tools for this job — chosen per project, never by
-                habit.
+                The right tools for this job, chosen per project, never by habit.
               </p>
             </Reveal>
           </div>
@@ -546,8 +543,7 @@ export default async function ProjectPage({ params }: Params) {
                     Want a product like this, built for you?
                   </h2>
                   <p className="mt-3 max-w-2xl leading-relaxed text-haze">
-                    Full product builds — design, members area, payments,
-                    funnels and AI pipelines — taken on selectively for founders
+                    Full product builds covering design, members area, payments, funnels and AI pipelines, taken on selectively for founders
                     who need it done properly. Tell us what you&apos;re building.
                   </p>
                 </div>

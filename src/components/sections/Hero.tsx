@@ -77,7 +77,7 @@ export default function Hero() {
           </motion.div>
 
           <motion.p variants={item} className="text-sm text-haze/70">
-            Get a reply within 24 hours — straight from the person doing the work.
+            Get a reply within 24 hours, straight from the person doing the work.
           </motion.p>
 
           <motion.dl

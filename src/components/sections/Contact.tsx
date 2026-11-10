@@ -69,7 +69,7 @@ export default function Contact() {
     setErrorMsg("");
 
     const basePayload = {
-      subject: `New project enquiry — ${name}`,
+      subject: `New project enquiry: ${name}`,
       from_name: "PKDM Studio Website",
       name,
       email,
@@ -139,7 +139,7 @@ export default function Contact() {
                     <span className="text-glow">a project?</span>
                   </>
                 }
-                description="Tell us what you're building. You'll get a thoughtful reply within 24 hours — straight from Pietu, the person doing the work."
+                description="Tell us what you're building. You'll get a thoughtful reply within 24 hours, straight from Pietu, the person doing the work."
               />
               <div className="mt-8 space-y-4 text-sm text-haze">
                 <a

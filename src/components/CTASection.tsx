@@ -8,7 +8,7 @@ import { ArrowRight } from "./ui/icons";
  */
 export default function CTASection({
   title = "Need to start a project?",
-  description = "Tell us what you're building. You'll get a thoughtful reply within 24 hours — straight from Pietu, the person doing the work.",
+  description = "Tell us what you're building. You'll get a thoughtful reply within 24 hours, straight from Pietu, the person doing the work.",
 }: {
   title?: string;
   description?: string;

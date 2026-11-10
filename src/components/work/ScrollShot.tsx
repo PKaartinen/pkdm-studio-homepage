@@ -34,7 +34,7 @@ export default function ScrollShot({
         className="scroll-shot group relative"
         style={{ aspectRatio: String(frameRatio) }}
         tabIndex={0}
-        aria-label={`${shot.alt} — hover or focus to scroll through the page`}
+        aria-label={`${shot.alt}. Hover or focus to scroll through the page.`}
       >
         <div
           className="scroll-shot-img absolute inset-x-0 top-0 will-change-transform"

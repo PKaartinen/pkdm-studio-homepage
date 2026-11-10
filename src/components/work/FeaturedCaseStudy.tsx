@@ -151,7 +151,7 @@ export default function FeaturedCaseStudy({
       {/* Small print: the product's logo row */}
       <div className="relative mt-6 flex items-center gap-3 text-xs text-haze/60">
         <Image src="/clients/clearpen.svg" alt="" width={90} height={24} className="logo-mono h-4 w-auto" />
-        <span>Own product — designed, engineered and grown by PKDM Studio.</span>
+        <span>Our own product: designed, engineered and grown by PKDM Studio.</span>
       </div>
     </div>
   );

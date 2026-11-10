@@ -35,7 +35,7 @@ export default function AboutPage() {
             <span className="text-glow">24/7 sales rep</span>.
           </>
         }
-        description="PKDM Studio is run by Pietari ('Pietu') Kaartinen. You talk directly to the person doing the strategy, design and engineering — no account managers, no hand-offs."
+        description="PKDM Studio is run by Pietari ('Pietu') Kaartinen. You talk directly to the person doing the strategy, design and engineering. No account managers, no hand-offs."
       />
 
       {/* Founder */}
@@ -76,9 +76,7 @@ export default function AboutPage() {
                 </h2>
                 <p className="mt-5 leading-relaxed text-haze">
                   Pietu designs and engineers every project himself. Alongside
-                  client work he works as a product owner and manager in
-                  performance marketing — funnels, payments and analytics are
-                  his day job — and he builds and runs his own products.
+                  client work he works as a product owner and manager in performance marketing, where funnels, payments and analytics are his day job, and he builds and runs his own products.
                 </p>
                 <p className="mt-4 leading-relaxed text-haze">
                   That mix is the studio&apos;s edge. Every site is shaped by
@@ -162,8 +160,7 @@ export default function AboutPage() {
               </h2>
               <p className="mt-4 leading-relaxed text-haze">
                 Every business is unique, so every business website should be
-                unique too. A website is the modern-day business card — and a
-                24/7 sales rep. We design and build sites that feel trustworthy,
+                unique too. A website is the modern-day business card, and a 24/7 sales rep. We design and build sites that feel trustworthy,
                 explain your offer clearly, and push visitors towards the next
                 step.
               </p>
@@ -175,9 +172,7 @@ export default function AboutPage() {
                 Who we work with
               </h2>
               <p className="mt-4 leading-relaxed text-haze">
-                Digital-first businesses and founders in Europe — SaaS and AI
-                products, streaming and subscription platforms, DTC brands and
-                online services — who understand that design, UX, content and
+                Digital-first businesses and founders in Europe (SaaS and AI products, streaming and subscription platforms, DTC brands, online services) who understand that design, UX, content and
                 development are one system, not just &ldquo;making it look
                 pretty&rdquo;.
               </p>

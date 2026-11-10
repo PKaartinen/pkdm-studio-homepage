@@ -66,7 +66,7 @@ export default async function InsightPage({ params }: Params) {
         </div>
       </article>
 
-      <CTASection title="Want this done for your site?" description="We bake all of this into every build. Tell us about your project — reply within 24 hours." />
+      <CTASection title="Want this done for your site?" description="We bake all of this into every build. Tell us about your project; you'll get a reply within 24 hours." />
     </main>
   );
 }

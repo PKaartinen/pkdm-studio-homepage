@@ -12,14 +12,14 @@ export default function NotFound() {
   return (
     <main id="main" className="shell flex min-h-[100svh] flex-col items-start justify-center py-32">
       <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent">
-        404 — Page not found
+        404 · Page not found
       </p>
       <h1 className="display mt-5 max-w-2xl font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">
-        This page doesn&apos;t exist — or it moved.
+        This page doesn&apos;t exist, or it moved.
       </h1>
       <p className="mt-6 max-w-xl text-lg leading-relaxed text-haze">
         The link you followed may be outdated. Everything we&apos;ve shipped is
-        still here — just one step away.
+        still here, just one step away.
       </p>
       <div className="mt-10 flex flex-wrap items-center gap-4">
         <Link

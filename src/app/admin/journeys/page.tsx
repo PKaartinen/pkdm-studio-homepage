@@ -39,7 +39,7 @@ export default async function JourneysPage({
     <>
       <PageHeader
         title="Visitor journeys"
-        description="How individual visitors move through the site — entry page, path taken, time spent, and whether they converted into a lead."
+        description="How individual visitors move through the site: entry page, path taken, time spent, and whether they converted into a lead."
         range={range}
         basePath="/admin/journeys"
       />

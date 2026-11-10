@@ -242,7 +242,7 @@ export default function ShowcaseExperience({
                 {act1.headline}
               </h2>
               <p className="mt-6 max-w-xl text-haze">
-                {act1.pillar.title} — {act1.pillar.description}
+                {act1.pillar.title}: {act1.pillar.description}
               </p>
             </div>
           </div>
@@ -329,7 +329,7 @@ export default function ShowcaseExperience({
                   {finale.headline}
                 </h2>
                 <p className="mt-6 max-w-xl text-haze">
-                  {finale.pillar.title} — {finale.pillar.description}
+                  {finale.pillar.title}: {finale.pillar.description}
                 </p>
                 <p className="mt-4 max-w-xl text-sm text-haze/70">
                   {finale.reassurance}
@@ -458,7 +458,7 @@ function ContinueBand() {
               <path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </span>
-          Keep scrolling — the work, up close.
+          Keep scrolling: the work, up close.
         </p>
         <nav aria-label="On this page">
           <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.18em]">

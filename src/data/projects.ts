@@ -134,9 +134,9 @@ export const projects: Project[] = [
     status: "Live",
     role: "Product, brand, design, full-stack engineering & growth",
     summary:
-      "An AI writing platform built from nothing — brand, marketing site, members area, payments, A/B funnels and a proprietary humanization engine.",
+      "An AI writing platform built from nothing: brand, marketing site, members area, payments, A/B funnels and a proprietary humanization engine.",
     description:
-      "ClearPen refines AI-assisted drafts into natural, human-sounding prose and shows the detection score before and after, so writers can see exactly what changed and why. Every layer of it was designed and engineered in-house: the brand, the marketing site and SEO pages, the members area, Stripe billing, the paid-traffic funnels, the admin and analytics stack — and the multi-stage NLP engine that does the actual work.",
+      "ClearPen refines AI-assisted drafts into natural, human-sounding prose and shows the detection score before and after, so writers can see exactly what changed and why. Every layer of it was designed and engineered in-house: the brand, the marketing site and SEO pages, the members area, Stripe billing, the paid-traffic funnels, the admin and analytics stack, and the multi-stage NLP engine that does the actual work.",
     services: [
       "Product strategy",
       "Brand & UI design",
@@ -163,7 +163,7 @@ export const projects: Project[] = [
     ],
     url: "https://www.clearpen.ai",
     accent: "#19c39c",
-    image: d("/work/clearpen/hero.webp", "ClearPen homepage — Writing that reads like you"),
+    image: d("/work/clearpen/hero.webp", "ClearPen homepage: Writing that reads like you"),
     mobile: m("/work/clearpen/m-hero.webp", "ClearPen homepage on mobile"),
     full: img(
       "/work/clearpen/full.webp",
@@ -181,7 +181,7 @@ export const projects: Project[] = [
       {
         title: "Brand & marketing site",
         description:
-          "Identity, homepage, use-case and SEO landing pages, an MDX blog — plus a WebGL 3D homepage experiment.",
+          "Identity, homepage, use-case and SEO landing pages, an MDX blog, plus a WebGL 3D homepage experiment.",
       },
       {
         title: "Members area",
@@ -201,7 +201,7 @@ export const projects: Project[] = [
       {
         title: "Humanization engine",
         description:
-          "A proprietary multi-stage NLP pipeline, built from scratch — the core IP the whole product stands on.",
+          "A proprietary multi-stage NLP pipeline, built from scratch; the core IP the whole product stands on.",
       },
       {
         title: "Admin, email & analytics",
@@ -210,7 +210,7 @@ export const projects: Project[] = [
       },
     ],
     challenge:
-      "AI detectors are unreliable, and the people they misjudge most are often the ones writing honestly — non-native speakers, formal writers, anyone a little too clean. Most tools in the category hand back text and say nothing. ClearPen had to do the opposite: rewrite for natural rhythm while preserving meaning, citations and structure, then show its work.",
+      "AI detectors are unreliable, and the people they misjudge most are often the ones writing honestly: non-native speakers, formal writers, anyone a little too clean. Most tools in the category hand back text and say nothing. ClearPen had to do the opposite: rewrite for natural rhythm while preserving meaning, citations and structure, then show its work.",
     approach: [
       "I treated it as a product, not a page. The engine came first: months of benchmarking showed that no single LLM rewrite holds up on long documents, so the pipeline splits text into flow-preserving blocks and layers several specialised passes, each gated on meaning similarity.",
       "Around it sits a complete SaaS: Clerk auth synced to Postgres, Stripe billing with trials and packs, request history, citations, an onboarding tour, lifecycle email, and an admin stack that reads every funnel step from first-party events.",
@@ -220,7 +220,7 @@ export const projects: Project[] = [
       "ClearPen is live at clearpen.ai with 680+ registered users, paying subscribers on monthly and annual plans, and a release cadence of improvements every week. It is the clearest proof of what this studio does: take a product from a blank page to a business.",
     chapters: [
       {
-        eyebrow: "01 — The engine",
+        eyebrow: "01 · The engine",
         title: "A humanization engine, built from the ground up.",
         body: [
           "The heart of ClearPen is not a prompt. It is a multi-stage pipeline that works block by block, scores every sentence, rewrites only what needs it and verifies the result before anything reaches the user.",
@@ -247,7 +247,7 @@ export const projects: Project[] = [
             {
               label: "Rewrite",
               title: "Selective paraphrase",
-              body: "A self-hosted model reworks flagged sentences only — gated on meaning similarity.",
+              body: "A self-hosted model reworks flagged sentences only, gated on meaning similarity.",
             },
             {
               label: "Proofread",
@@ -264,10 +264,10 @@ export const projects: Project[] = [
         wide: true,
       },
       {
-        eyebrow: "02 — The members area",
+        eyebrow: "02 · The members area",
         title: "A dashboard people actually finish a task in.",
         body: [
-          "Paste, pick a tone and strength, and watch the run stream in: reading, restructuring, polishing — then a before/after score with every changed sentence highlighted.",
+          "Paste, pick a tone and strength, and watch the run stream in: reading, restructuring, polishing, then a before/after score with every changed sentence highlighted.",
           "Built mobile-first, with history, citations, billing, settings and a first-run tour that demos each feature before the user spends a single word.",
         ],
         bullets: [
@@ -289,11 +289,11 @@ export const projects: Project[] = [
         },
       },
       {
-        eyebrow: "03 — Funnels",
+        eyebrow: "03 · Funnels",
         title: "Multiple funnels, multiple offers, one source of truth.",
         body: [
           "Paid and affiliate traffic lands on a splitter that assigns visitors to a sell-first or a direct-to-trial funnel and keeps them there. Both run headless sign-up and a custom Stripe flow on a single screen, with Apple Pay, Google Pay and one-tap Google accounts.",
-          "Every step fires first-party events, so the admin dashboard compares funnels on real conversion, not guesses — and trial disclosures, renewal dates and one-click cancellation keep the payment account healthy.",
+          "Every step fires first-party events, so the admin dashboard compares funnels on real conversion, not guesses; trial disclosures, renewal dates and one-click cancellation keep the payment account healthy.",
         ],
         media: {
           type: "flow",
@@ -349,7 +349,7 @@ export const projects: Project[] = [
         wide: true,
       },
       {
-        eyebrow: "04 — Checkout",
+        eyebrow: "04 · Checkout",
         title: "Two checkouts, designed to be compared.",
         body: [
           "Funnel A sells first: a plan picker with the recommended trial pre-selected and every disclosure next to the button. Funnel B goes straight to a pre-loaded trial with account and card on one screen.",
@@ -357,30 +357,30 @@ export const projects: Project[] = [
         media: {
           type: "phones",
           shots: [
-            m("/work/clearpen/m-start.webp", "Funnel A — sell-first plan picker", "Funnel A · sell-first"),
-            m("/work/clearpen/m-trial.webp", "Funnel B — direct-to-trial checkout", "Funnel B · direct-to-trial"),
+            m("/work/clearpen/m-start.webp", "Funnel A: sell-first plan picker", "Funnel A · sell-first"),
+            m("/work/clearpen/m-trial.webp", "Funnel B: direct-to-trial checkout", "Funnel B · direct-to-trial"),
             m("/work/clearpen/m-pricing.webp", "ClearPen pricing on mobile", "Pricing"),
           ],
         },
       },
       {
-        eyebrow: "05 — The marketing site",
+        eyebrow: "05 · The marketing site",
         title: "A calm, honest site that explains the product in seconds.",
         body: [
           "The site leads with the false-positive problem, shows a real before/after, and keeps every claim provable. Use-case pages, a free detector and a blog do the SEO work; the pricing page does the converting.",
         ],
         media: {
           type: "duo",
-          back: d("/work/clearpen/changed.webp", "ClearPen — See exactly what changed"),
+          back: d("/work/clearpen/changed.webp", "ClearPen: See exactly what changed"),
           front: d("/work/clearpen/pricing.webp", "ClearPen pricing page"),
           url: "clearpen.ai",
         },
       },
       {
-        eyebrow: "06 — Experiments",
+        eyebrow: "06 · Experiments",
         title: "And when it called for it: a 3D homepage.",
         body: [
-          "For launch content we built a WebGL “Liquid Clarity” homepage — a glass drop that refracts the headline — on the same engineering canon that later powered this studio's own 3D homepage.",
+          "For launch content we built a WebGL “Liquid Clarity” homepage, a glass drop that refracts the headline, on the same engineering canon that later powered this studio's own 3D homepage.",
         ],
         media: {
           type: "browser",
@@ -404,15 +404,15 @@ export const projects: Project[] = [
       },
       {
         title: "Payment-safe by design",
-        body: "Clear trial disclosures, renewal emails and one-click cancellation — engineered to keep the Stripe account healthy.",
+        body: "Clear trial disclosures, renewal emails and one-click cancellation, engineered to keep the Stripe account healthy.",
       },
     ],
     gallery: [
-      d("/work/clearpen/superpowers.webp", "ClearPen — Four superpowers", "Feature story — four tools, one tap"),
-      d("/work/clearpen/compare.webp", "ClearPen — comparison table", "Honest comparison, no vague claims"),
-      d("/work/clearpen/funnel-start.webp", "ClearPen funnel A — sell-first", "Funnel A — sell-first checkout"),
-      d("/work/clearpen/detector.webp", "ClearPen free AI detector", "Free detector — the policy-safe top of funnel"),
-      d("/work/clearpen/checked.webp", "ClearPen — Built to be checked", "Trust section — billing rules in plain words"),
+      d("/work/clearpen/superpowers.webp", "ClearPen: Four superpowers", "Feature story: four tools, one tap"),
+      d("/work/clearpen/compare.webp", "ClearPen: comparison table", "Honest comparison, no vague claims"),
+      d("/work/clearpen/funnel-start.webp", "ClearPen funnel A, sell-first", "Funnel A: sell-first checkout"),
+      d("/work/clearpen/detector.webp", "ClearPen free AI detector", "Free detector: the policy-safe top of funnel"),
+      d("/work/clearpen/checked.webp", "ClearPen: Built to be checked", "Trust section: billing rules in plain words"),
       d("/work/clearpen/humanizer-landing.webp", "ClearPen AI humanizer landing page", "SEO landing page"),
     ],
     phones: [
@@ -436,11 +436,11 @@ export const projects: Project[] = [
     kind: "Client project",
     year: "2026",
     status: "Live",
-    role: "Marketing site, members area, payments & live data — design and build",
+    role: "Design and build of the marketing site, members area, payments and live data",
     summary:
-      "Live scores for 11 sports and 2,000+ leagues, 7 live TV channels and a full members area — designed and built end to end.",
+      "Live scores for 11 sports and 2,000+ leagues, 7 live TV channels and a full members area, designed and built end to end.",
     description:
-      "Liveside is a sports platform: live scores, match data, league tables and live TV channels in the browser. We built all of it — a conversion-led marketing site that runs on real live data, a React members app with a match centre and HLS video, and the sign-up and checkout flow that turns visitors into members.",
+      "Liveside is a sports platform: live scores, match data, league tables and live TV channels in the browser. We built all of it: a conversion-led marketing site that runs on real live data, a React members app with a match centre and HLS video, and the sign-up and checkout flow that turns visitors into members.",
     services: [
       "Product design",
       "Marketing site",
@@ -462,7 +462,7 @@ export const projects: Project[] = [
     ],
     url: "https://liveside.tv",
     accent: "#2fd96b",
-    image: d("/work/liveside/hero.webp", "Liveside homepage — Every sport. Every league. Live."),
+    image: d("/work/liveside/hero.webp", "Liveside homepage: Every sport. Every league. Live."),
     mobile: m("/work/liveside/m-hero.webp", "Liveside homepage on mobile"),
     full: img(
       "/work/liveside/full.webp",
@@ -485,12 +485,12 @@ export const projects: Project[] = [
       {
         title: "Members app",
         description:
-          "Live scores for 11 sports, match centre, standings, head-to-heads, game alerts, events and account — a React SPA on the same origin.",
+          "Live scores for 11 sports, match centre, standings, head-to-heads, game alerts, events and account; a React SPA on the same origin.",
       },
       {
         title: "Live TV",
         description:
-          "Seven channels streamed in the browser with adaptive HLS playback — light hls.js where it's needed, native on Safari.",
+          "Seven channels streamed in the browser with adaptive HLS playback: light hls.js where it's needed, native on Safari.",
       },
       {
         title: "Sign-up & checkout",
@@ -500,7 +500,7 @@ export const projects: Project[] = [
       {
         title: "Live data layer",
         description:
-          "One client normalises 11 sports APIs, caches aggressively and only polls while data is on screen — built to respect a shared daily quota.",
+          "One client normalises 11 sports APIs, caches aggressively and only polls while data is on screen, built to respect a shared daily quota.",
       },
       {
         title: "Static deploy",
@@ -509,7 +509,7 @@ export const projects: Project[] = [
       },
     ],
     challenge:
-      "Sports fans want everything at once — every league, every score, right now — and they decide in seconds whether a site is worth paying for. The product had to feel alive from the first frame, run on a static host, and stay inside a strict API budget shared across brands.",
+      "Sports fans want every league and every score, right now, and they decide in seconds whether a site is worth paying for. The product had to feel alive from the first frame, run on a static host, and stay inside a strict API budget shared across brands.",
     approach: [
       "We designed one dark, high-contrast system for both surfaces, so the marketing page already looks and behaves like the product: the hero is a real live match tracker, not a mock-up.",
       "Under it, a single sports client normalises eleven different APIs into one shape, caches in the browser, refreshes every 60 seconds only while a section is visible, and backs off politely when it hits a limit.",
@@ -519,11 +519,11 @@ export const projects: Project[] = [
       "Liveside is live at liveside.tv: one static origin serving the marketing site and the full members app, with real data on the homepage and a checkout ready to sell memberships.",
     chapters: [
       {
-        eyebrow: "01 — A homepage that's actually live",
+        eyebrow: "01 · A homepage that's actually live",
         title: "The hero isn't a mock-up. It's the product.",
         body: [
           "A ~18 KB script turns the static homepage into a live surface: real games per sport, a live count, goal and kick-off toasts, a ticker, live badges on every sport tile and a featured match with form, head-to-head and the league table.",
-          "If the first load ever fails, the original static hero quietly comes back — visitors never see a broken page.",
+          "If the first load ever fails, the original static hero quietly comes back, so visitors never see a broken page.",
         ],
         media: {
           type: "device",
@@ -533,10 +533,10 @@ export const projects: Project[] = [
         },
       },
       {
-        eyebrow: "02 — Data architecture",
+        eyebrow: "02 · Data architecture",
         title: "Eleven sports, one shape, one budget.",
         body: [
-          "Every sport API answers differently. One normalising client turns them into a single model the homepage and the app both read — and it's built to switch to a caching proxy with a one-line config change.",
+          "Every sport API answers differently. One normalising client turns them into a single model the homepage and the app both read, and it's built to switch to a caching proxy with a one-line config change.",
         ],
         media: {
           type: "flow",
@@ -572,10 +572,10 @@ export const projects: Project[] = [
         wide: true,
       },
       {
-        eyebrow: "03 — Live TV",
+        eyebrow: "03 · Live TV",
         title: "Seven channels in the browser. No box, no app.",
         body: [
-          "Channels play with adaptive HLS — a light player where Media Source Extensions exist, native playback on Safari — behind the same member session as the scores.",
+          "Channels play with adaptive HLS behind the same member session as the scores: a light player where Media Source Extensions exist, native playback on Safari.",
         ],
         media: {
           type: "browser",
@@ -584,7 +584,7 @@ export const projects: Project[] = [
         },
       },
       {
-        eyebrow: "04 — Members area",
+        eyebrow: "04 · Members area",
         title: "From the marketing page to the match centre in one origin.",
         body: [
           "The members app lives beside the marketing page on the same static origin. Log in once and the header swaps to “Open Liveside”; 163 deep links from the homepage land on the right league after sign-in.",
@@ -602,7 +602,7 @@ export const projects: Project[] = [
     highlights: [
       {
         title: "Data on a budget",
-        body: "Refresh only while visible, stop after 20 minutes idle, back off 30 s or 2 min on limits — so a shared 7,500-a-day quota goes a long way.",
+        body: "Refresh only while visible, stop after 20 minutes idle, back off 30 s or 2 min on limits, so a shared 7,500-a-day quota goes a long way.",
       },
       {
         title: "Charges that can't double",
@@ -618,12 +618,12 @@ export const projects: Project[] = [
       },
     ],
     gallery: [
-      d("/work/liveside/everything.webp", "Liveside — Everything live in one place", "One membership, five products"),
-      d("/work/liveside/sports.webp", "Liveside — 11 sports, 2,000+ leagues", "Sport tiles with live counts"),
-      d("/work/liveside/matchdata.webp", "Liveside — match data and game alerts", "Match data & game alerts"),
-      d("/work/liveside/events.webp", "Liveside — beyond the scoreboard", "Events coverage"),
-      d("/work/liveside/steps.webp", "Liveside — live in three steps", "Onboarding in three steps"),
-      d("/work/liveside/login.webp", "Liveside members log in", "Members area — log in"),
+      d("/work/liveside/everything.webp", "Liveside: Everything live in one place", "One membership, five products"),
+      d("/work/liveside/sports.webp", "Liveside: 11 sports, 2,000+ leagues", "Sport tiles with live counts"),
+      d("/work/liveside/matchdata.webp", "Liveside: match data and game alerts", "Match data & game alerts"),
+      d("/work/liveside/events.webp", "Liveside: beyond the scoreboard", "Events coverage"),
+      d("/work/liveside/steps.webp", "Liveside: live in three steps", "Onboarding in three steps"),
+      d("/work/liveside/login.webp", "Liveside members log in", "Members area: log in"),
     ],
     phones: [
       m("/work/liveside/m-hero.webp", "Liveside mobile homepage"),
@@ -647,9 +647,9 @@ export const projects: Project[] = [
     status: "In preview",
     role: "Product design, front-end & platform architecture",
     summary:
-      "A premium home for vertical micro-dramas: cinematic browsing, a binge-ready player and one clear paywall — none of the category's coin-store clutter.",
+      "A premium home for vertical micro-dramas: cinematic browsing, a binge-ready player and one clear paywall, without the category's coin-store clutter.",
     description:
-      "Short-drama apps taught a huge audience a simple loop: a series opens free, a later episode locks, you pay once and keep watching. Watchshort keeps the loop and raises the standard of everything around it — type, motion, a dark cinematic field and a fast first frame, so the story is the screen.",
+      "Short-drama apps taught a huge audience a simple loop: a series opens free, a later episode locks, you pay once and keep watching. Watchshort keeps the loop and raises the standard of everything around it: type, motion, a dark cinematic field and a fast first frame, so the story is the screen.",
     services: [
       "Product strategy",
       "UI/UX design",
@@ -666,7 +666,7 @@ export const projects: Project[] = [
     ],
     url: "https://watchshorttv.vercel.app",
     accent: "#e63946",
-    image: d("/work/watchshort/hero.webp", "Watchshort homepage — Midnight Contract"),
+    image: d("/work/watchshort/hero.webp", "Watchshort homepage: Midnight Contract"),
     mobile: m("/work/watchshort/m-hero.webp", "Watchshort homepage on mobile"),
     full: img(
       "/work/watchshort/full.webp",
@@ -684,7 +684,7 @@ export const projects: Project[] = [
       {
         title: "Cinematic homepage",
         description:
-          "One featured series, editorial rails, a Top 10 and a compact trope taxonomy — posters, a title and one trope per card.",
+          "One featured series, editorial rails, a Top 10 and a compact trope taxonomy; posters, a title and one trope per card.",
       },
       {
         title: "Browse & search",
@@ -703,7 +703,7 @@ export const projects: Project[] = [
       },
     ],
     challenge:
-      "The category's leaders wrap every story in a storefront: coin balances, reward centres, countdowns and sticker badges on every card. It works — but it feels cheap, and it buries the one thing people came for.",
+      "The category's leaders wrap every story in a storefront: coin balances, reward centres, countdowns and sticker badges on every card. It works, but it feels cheap, and it buries the one thing people came for.",
     approach: [
       "We wrote the premium rules down before drawing anything: titles set as real type, one trope per card in sentence case, motion that settles instead of begging for taps, and one accent colour reserved for the primary action and the paywall.",
       "The public site is static and fast, free episodes play without an account, and the paywall is a single, honest step when the free run ends.",
@@ -712,10 +712,10 @@ export const projects: Project[] = [
       "The preview is live and close to the final product: homepage, browse, series pages and pricing, ready for catalogue and payments to plug in.",
     chapters: [
       {
-        eyebrow: "01 — Browse",
+        eyebrow: "01 · Browse",
         title: "Rails that sell the story, not the store.",
         body: [
-          "Editorial shelves by trope, a Top 10 with oversized numerals, and posters that carry all the colour — the interface stays near-black and gets out of the way.",
+          "Editorial shelves by trope, a Top 10 with oversized numerals, and posters that carry all the colour; the interface stays near-black and gets out of the way.",
         ],
         media: {
           type: "duo",
@@ -725,7 +725,7 @@ export const projects: Project[] = [
         },
       },
       {
-        eyebrow: "02 — Mobile first",
+        eyebrow: "02 · Mobile first",
         title: "Built for a spare minute on a phone.",
         body: [
           "The category's viewer is an adult on a phone. Every screen was designed at phone width first: thumb-reachable actions, a fast first frame and the next episode already queued.",
@@ -747,11 +747,11 @@ export const projects: Project[] = [
       },
       {
         title: "One entitlement call",
-        body: "Locked playback waits on a single entitlement check, then starts — no spinners stacked on spinners.",
+        body: "Locked playback waits on a single entitlement check, then starts, with no spinners stacked on spinners.",
       },
     ],
     gallery: [
-      d("/work/watchshort/browse.webp", "Watchshort browse page", "Browse — spotlight + filters"),
+      d("/work/watchshort/browse.webp", "Watchshort browse page", "Browse: spotlight + filters"),
       d("/work/watchshort/pricing.webp", "Watchshort subscription", "One subscription, plainly priced"),
       d("/work/watchshort/apps.webp", "Watchshort apps", "Take the drama with you"),
     ],
@@ -778,9 +778,9 @@ export const projects: Project[] = [
     status: "Live",
     role: "Homepage redesign, members portal & checkout funnels",
     summary:
-      "A calm, editorial redesign for a privacy VPN — warm daylight instead of hacker-dark clichés, plain language, and a pricing story people trust.",
+      "A calm, editorial redesign for a privacy VPN: warm daylight instead of hacker-dark clichés, plain language, and a pricing story people trust.",
     description:
-      "VPN sites tend to look the same: neon on black, padlocks and fear. PrivateByRight's new homepage goes the other way — a family-friendly, daylight design with editorial type, real product UI and plain-language privacy promises. Alongside it we built the members portal and the checkout funnels that sell the plans.",
+      "VPN sites tend to look the same: neon on black, padlocks and fear. PrivateByRight's new homepage goes the other way: a family-friendly, daylight design with editorial type, real product UI and plain-language privacy promises. Alongside it we built the members portal and the checkout funnels that sell the plans.",
     services: [
       "Homepage redesign",
       "UI/UX design",
@@ -800,7 +800,7 @@ export const projects: Project[] = [
     ],
     url: "https://privatebyright.com",
     accent: "#2f6b4f",
-    image: d("/work/privatebyright/hero.webp", "PrivateByRight homepage — Protect your privacy."),
+    image: d("/work/privatebyright/hero.webp", "PrivateByRight homepage: Protect your privacy."),
     mobile: m("/work/privatebyright/m-hero.webp", "PrivateByRight homepage on mobile"),
     full: img(
       "/work/privatebyright/full.webp",
@@ -809,7 +809,7 @@ export const projects: Project[] = [
       "The full PrivateByRight homepage, top to bottom"
     ),
     stats: [
-      { value: "5", label: "Platforms — 3 live, 2 coming" },
+      { value: "5", label: "Platforms: 3 live, 2 coming" },
       { value: "4", label: "Plan lengths, one price story" },
       { value: "30-day", label: "Money-back promise up front" },
       { value: "100%", label: "Static, CDN-served" },
@@ -818,7 +818,7 @@ export const projects: Project[] = [
       {
         title: "Homepage redesign",
         description:
-          "A new visual direction — editorial serif headlines, soft daylight photography and the real app UI — that makes privacy feel everyday, not scary.",
+          "A new visual direction with editorial serif headlines, soft daylight photography and the real app UI, which makes privacy feel everyday, not scary.",
       },
       {
         title: "Pricing that explains itself",
@@ -837,7 +837,7 @@ export const projects: Project[] = [
       },
     ],
     challenge:
-      "Most people who need a VPN aren't technical. The old category look — dark, aggressive, full of jargon — speaks to the wrong crowd and makes a privacy product feel like something to be wary of.",
+      "Most people who need a VPN aren't technical. The category's old look is dark, aggressive and full of jargon; it speaks to the wrong crowd and makes a privacy product feel like something to be wary of.",
     approach: [
       "We rebuilt the homepage around reassurance: a warm, light palette, serif headlines with personality, and short, honest lines about what the app does and doesn't do.",
       "Pricing got the most care. Every plan states today's price and the renewal price side by side, so the deal reads as trustworthy rather than tricky.",
@@ -846,23 +846,23 @@ export const projects: Project[] = [
       "The redesigned homepage is live at privatebyright.com as a fully static build, with Android, Windows and macOS apps available and the members portal behind it.",
     chapters: [
       {
-        eyebrow: "01 — The new direction",
+        eyebrow: "01 · The new direction",
         title: "Privacy that feels like a sunny morning.",
         body: [
           "Instead of padlocks on black, we show the product in a lived-in setting with real UI, and let short sentences do the reassuring.",
         ],
         media: {
           type: "device",
-          desktop: d("/work/privatebyright/browsing.webp", "PrivateByRight — everyday browsing"),
+          desktop: d("/work/privatebyright/browsing.webp", "PrivateByRight: everyday browsing"),
           mobile: m("/work/privatebyright/m-browsing.webp", "PrivateByRight mobile"),
           url: "privatebyright.com",
         },
       },
       {
-        eyebrow: "02 — Pricing",
+        eyebrow: "02 · Pricing",
         title: "A deal you can read in one glance.",
         body: [
-          "Plan lengths on a single switch, today's price and the renewal price next to each other, and the money-back guarantee beside the button — no small-print surprises.",
+          "Plan lengths on a single switch, today's price and the renewal price next to each other, and the money-back guarantee beside the button; no small-print surprises.",
         ],
         media: {
           type: "phones",
@@ -875,9 +875,9 @@ export const projects: Project[] = [
       },
     ],
     gallery: [
-      d("/work/privatebyright/devices.webp", "PrivateByRight — one account, unlimited devices", "Apps — available now and in development"),
+      d("/work/privatebyright/devices.webp", "PrivateByRight: one account, unlimited devices", "Apps: available now and in development"),
       d("/work/privatebyright/pricing.webp", "PrivateByRight pricing", "Pricing with renewal terms up front"),
-      d("/work/privatebyright/giving.webp", "PrivateByRight — your VPN with purpose", "Giving back"),
+      d("/work/privatebyright/giving.webp", "PrivateByRight: your VPN with purpose", "Giving back"),
       d("/work/privatebyright/reviews.webp", "PrivateByRight reviews and blog", "Reviews & resources"),
     ],
     phones: [
@@ -902,9 +902,9 @@ export const projects: Project[] = [
     status: "Live",
     role: "Brand identity, product renders, site design & build",
     summary:
-      "A new nightlife brand — perfume machines for London clubs — launched with a showroom-style site: one machine, one price, one clear ask.",
+      "A new nightlife brand, perfume machines for London clubs, launched with a showroom-style site: one machine, one price, one clear ask.",
     description:
-      "SPRAY puts a premium perfume machine in nightclubs: choose a scent, tap your card, get a spray. We created the brand from a blank page — wordmark, product renders of the real machine, and a minimalist, product-as-hero website that speaks to venues first, with a layer for guests and perfume houses.",
+      "SPRAY puts a premium perfume machine in nightclubs: choose a scent, tap your card, get a spray. We created the brand from a blank page: wordmark, product renders of the real machine, and a minimalist, product-as-hero website that speaks to venues first, with a layer for guests and perfume houses.",
     services: [
       "Brand identity",
       "Art direction",
@@ -923,7 +923,7 @@ export const projects: Project[] = [
     ],
     url: "https://www.getspray.co.uk",
     accent: "#d8c3a5",
-    image: d("/work/spray/hero.webp", "SPRAY homepage — £1.50 a spray"),
+    image: d("/work/spray/hero.webp", "SPRAY homepage: £1.50 a spray"),
     mobile: m("/work/spray/m-hero.webp", "SPRAY homepage on mobile"),
     full: img(
       "/work/spray/full.webp",
@@ -960,32 +960,32 @@ export const projects: Project[] = [
       },
     ],
     challenge:
-      "Nightclub perfume machines exist, but they're coin-op and unbranded. SPRAY needed to look like a premium consumer brand on day one — and convince venue owners to install a machine before a single one was live.",
+      "Nightclub perfume machines exist, but they're coin-op and unbranded. SPRAY needed to look like a premium consumer brand on day one, and convince venue owners to install a machine before a single one was live.",
     approach: [
-      "We borrowed the discipline of premium product launches — one product per screen, almost no body copy, numbers set large — and built an original identity on top of it.",
+      "We borrowed the discipline of premium product launches: one product per screen, almost no body copy, numbers set large. Then we built an original identity on top of it.",
       "The site leads with the venue enquiry, keeps a short guest layer (what it is, where to find it) and gives perfume houses one section of their own.",
     ],
     outcome:
       "getspray.co.uk is live, indexable and collecting venue enquiries ahead of the first London placements.",
     chapters: [
       {
-        eyebrow: "01 — Choose. Pay. Spray.",
+        eyebrow: "01 · Choose. Pay. Spray.",
         title: "Three steps, told by scrolling.",
         body: [
-          "The machine stays centre stage while the steps advance with the scroll — the whole product explained without a paragraph.",
+          "The machine stays centre stage while the steps advance with the scroll; the whole product explained without a paragraph.",
         ],
         media: {
           type: "duo",
-          back: d("/work/spray/steps.webp", "SPRAY — Choose. Pay. Spray."),
-          front: d("/work/spray/scents.webp", "SPRAY — five scents, one spray"),
+          back: d("/work/spray/steps.webp", "SPRAY: Choose. Pay. Spray."),
+          front: d("/work/spray/scents.webp", "SPRAY: five scents, one spray"),
           url: "getspray.co.uk",
         },
       },
       {
-        eyebrow: "02 — Every screen",
+        eyebrow: "02 · Every screen",
         title: "Designed to work under club lighting, on a phone.",
         body: [
-          "Big type, high contrast and buttons you can hit with one thumb — because the guest layer is read standing next to the machine.",
+          "Big type, high contrast and buttons you can hit with one thumb, because the guest layer is read standing next to the machine.",
         ],
         media: {
           type: "phones",
@@ -998,8 +998,8 @@ export const projects: Project[] = [
       },
     ],
     gallery: [
-      d("/work/spray/venue.webp", "SPRAY — for your venue", "The venue pitch"),
-      d("/work/spray/venues.webp", "SPRAY venues page", "Venues — a fresh scent on demand"),
+      d("/work/spray/venue.webp", "SPRAY: for your venue", "The venue pitch"),
+      d("/work/spray/venues.webp", "SPRAY venues page", "Venues: a fresh scent on demand"),
     ],
     phones: [
       m("/work/spray/m-hero.webp", "SPRAY mobile hero"),
@@ -1043,7 +1043,7 @@ export const projects: Project[] = [
     ],
     url: "https://unifolio.io",
     accent: "#3b82f6",
-    image: d("/work/unifolio/hero.webp", "Unifolio homepage — Every university. One search."),
+    image: d("/work/unifolio/hero.webp", "Unifolio homepage: Every university. One search."),
     mobile: m("/work/unifolio/m-hero.webp", "Unifolio homepage on mobile"),
     full: img(
       "/work/unifolio/full.webp",
@@ -1061,7 +1061,7 @@ export const projects: Project[] = [
       {
         title: "Fit quiz",
         description:
-          "Five friendly steps — location, budget, interests, campus vibe, priorities — with autosave and a guest mode.",
+          "Five friendly steps covering location, budget, interests, campus vibe and priorities, with autosave and a guest mode.",
       },
       {
         title: "Ranking engine",

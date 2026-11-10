@@ -1,7 +1,7 @@
 {
   "generated": "2026-11-10",
   "task": "T-310 (refresh 2026-11: new featured set, ClearPen leads)",
-  "note": "Tags are `name — category` from src/data/projects.ts (featured: true, source order) — verified at module load by panels-manifest.ts. GPU estimate = width*height*4 bytes RGBA * 4/3 mipmap overhead.",
+  "note": "Tags are `name · category` from src/data/projects.ts (featured: true, source order), verified at module load by panels-manifest.ts. GPU estimate = width*height*4 bytes RGBA * 4/3 mipmap overhead.",
   "budget": {
     "totalGpuBytes": 20971518,
     "totalGpuMB": 20,
@@ -11,7 +11,7 @@
   "panels": [
     {
       "slug": "clearpen",
-      "tag": "ClearPen — AI SaaS Platform",
+      "tag": "ClearPen · AI SaaS Platform",
       "name": "ClearPen",
       "category": "AI SaaS Platform",
       "file": "/showcase/panels/clearpen.webp",
@@ -23,7 +23,7 @@
     },
     {
       "slug": "liveside",
-      "tag": "Liveside — Sports Streaming Platform",
+      "tag": "Liveside · Sports Streaming Platform",
       "name": "Liveside",
       "category": "Sports Streaming Platform",
       "file": "/showcase/panels/liveside.webp",
@@ -35,7 +35,7 @@
     },
     {
       "slug": "watchshort",
-      "tag": "Watchshort — Short-Drama Streaming",
+      "tag": "Watchshort · Short-Drama Streaming",
       "name": "Watchshort",
       "category": "Short-Drama Streaming",
       "file": "/showcase/panels/watchshort.webp",
@@ -47,7 +47,7 @@
     },
     {
       "slug": "privatebyright-vpn",
-      "tag": "PrivateByRight — VPN Product Site",
+      "tag": "PrivateByRight · VPN Product Site",
       "name": "PrivateByRight",
       "category": "VPN Product Site",
       "file": "/showcase/panels/privatebyright-vpn.webp",
@@ -59,7 +59,7 @@
     },
     {
       "slug": "spray",
-      "tag": "SPRAY — Brand Launch Site",
+      "tag": "SPRAY · Brand Launch Site",
       "name": "SPRAY",
       "category": "Brand Launch Site",
       "file": "/showcase/panels/spray.webp",
@@ -71,7 +71,7 @@
     },
     {
       "slug": "unifolio",
-      "tag": "Unifolio — University Matching Platform",
+      "tag": "Unifolio · University Matching Platform",
       "name": "Unifolio",
       "category": "University Matching Platform",
       "file": "/showcase/panels/unifolio.webp",

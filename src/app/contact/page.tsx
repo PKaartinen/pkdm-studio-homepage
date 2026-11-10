@@ -4,7 +4,7 @@ import Contact from "@/components/sections/Contact";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Tell PKDM Studio about your project. Get a thoughtful reply within 24 hours — straight from the founder.",
+    "Tell PKDM Studio about your project. Get a thoughtful reply within 24 hours, straight from the founder.",
   alternates: { canonical: "/contact" },
 };
 

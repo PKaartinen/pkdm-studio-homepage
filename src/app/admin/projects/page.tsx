@@ -38,7 +38,7 @@ export default async function ProjectsPage() {
 
   const clientOptions = (
     <>
-      <option value="">— no client —</option>
+      <option value="">No client</option>
       {clients.map((c) => (
         <option key={Number(c.id)} value={Number(c.id)}>
           {String(c.name)}
@@ -85,7 +85,7 @@ export default async function ProjectsPage() {
       </Card>
 
       {projects.length === 0 ? (
-        <EmptyState>No projects yet — add your first one above.</EmptyState>
+        <EmptyState>No projects yet. Add your first one above.</EmptyState>
       ) : (
         <div className="space-y-4">
           {projects.map((p) => {

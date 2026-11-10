@@ -64,7 +64,7 @@ export default function HomeContent({ id = "work" }: { id?: string }) {
                     More recent builds, <span className="text-glow">live today</span>.
                   </>
                 }
-                description="Streaming platforms, product sites and launches — each built around a clear business goal, then engineered to hold up."
+                description="Streaming platforms, product sites and launches, each built around a clear business goal, then engineered to hold up."
               />
             </div>
             <Reveal delay={0.1}>
@@ -109,8 +109,7 @@ export default function HomeContent({ id = "work" }: { id?: string }) {
                     See all {projects.length} projects
                   </p>
                   <p className="mt-2 max-w-sm text-sm text-haze">
-                    Products, platforms, launch sites and landing pages — with
-                    deep case studies for the recent work.
+                    Products, platforms, launch sites and landing pages, with deep case studies for the recent work.
                   </p>
                   <span className="mt-6 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition-all duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-ink-950">
                     <ArrowRight className="h-5 w-5" />
@@ -134,7 +133,7 @@ export default function HomeContent({ id = "work" }: { id?: string }) {
                   <span className="text-glow">whole product</span>.
                 </>
               }
-              description="Design and engineering as one system — and every capability below is backed by something live you can open today."
+              description="Design and engineering as one system, and every capability below is backed by something live you can open today."
             />
           </div>
           <div className="mt-14">
@@ -145,7 +144,7 @@ export default function HomeContent({ id = "work" }: { id?: string }) {
         {/* Stack ribbon */}
         <div className="mt-16 md:mt-20" aria-label="Tools we use">
           <p className="shell mb-6 font-mono text-[11px] uppercase tracking-[0.22em] text-haze/50">
-            The stack — chosen per project
+            The stack, chosen per project
           </p>
           <div className="group relative flex overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_10%,#000_90%,transparent)]">
             <ul className="flex shrink-0 animate-marquee items-center gap-3 pr-3 [--marquee-duration:60s] group-hover:[animation-play-state:paused] motion-reduce:animate-none">

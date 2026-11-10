@@ -11,7 +11,7 @@ import { services } from "@/data/content";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Strategy & UX, web design, modern web development, web apps and members areas, payments and funnels, AI features, content and ongoing growth — delivered as one connected system.",
+    "Strategy & UX, web design, modern web development, web apps and members areas, payments and funnels, AI features, content and ongoing growth, delivered as one connected system.",
   alternates: { canonical: "/services" },
 };
 
@@ -26,7 +26,7 @@ export default function ServicesPage() {
             <span className="text-glow">handled by one team</span>.
           </>
         }
-        description="Design, content, and development as one system — not separate pieces bolted together. Here's how we help."
+        description="Design, content, and development as one system, not separate pieces bolted together. Here's how we help."
       />
 
       <section className="shell pb-8">
@@ -60,7 +60,7 @@ export default function ServicesPage() {
                 <span className="text-glow">something live</span>.
               </>
             }
-            description="Don't take our word for it — each capability links to a real project you can open today."
+            description="Don't take our word for it; each capability links to a real project you can open today."
           />
           <div className="mt-14">
             <Capabilities />
@@ -72,7 +72,7 @@ export default function ServicesPage() {
 
       <CTASection
         title="Not sure which you need?"
-        description="Tell us about your business and goals — we'll recommend the right approach. Reply within 24 hours."
+        description="Tell us about your business and goals and we'll recommend the right approach. Reply within 24 hours."
       />
     </main>
   );

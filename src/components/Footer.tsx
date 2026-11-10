@@ -49,7 +49,7 @@ export default function Footer() {
             />
             <p className="mt-5 text-sm leading-relaxed text-haze">
               A founder-led web design & development studio. We build unique,
-              conversion-focused websites and products — from marketing sites
+              conversion-focused websites and products, from marketing sites
               to AI web apps, members areas and payment funnels.
             </p>
             <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1.5 text-xs text-white/85">

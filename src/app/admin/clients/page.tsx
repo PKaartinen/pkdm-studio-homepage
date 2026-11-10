@@ -27,7 +27,7 @@ export default async function ClientsPage() {
     <>
       <PageHeader
         title="Clients"
-        description="Your client book — contact details, status, and notes in one place."
+        description="Your client book: contact details, status, and notes in one place."
       />
 
       <Card title="Add a client" className="mb-4">
@@ -54,7 +54,7 @@ export default async function ClientsPage() {
       </Card>
 
       {clients.length === 0 ? (
-        <EmptyState>No clients yet — add your first one above.</EmptyState>
+        <EmptyState>No clients yet. Add your first one above.</EmptyState>
       ) : (
         <div className="space-y-4">
           {clients.map((c) => {
