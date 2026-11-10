@@ -88,6 +88,12 @@ const statements = [
     notes       text NOT NULL DEFAULT '',
     created_at  timestamptz NOT NULL DEFAULT now()
   )`,
+  `ALTER TABLE leads ADD COLUMN IF NOT EXISTS email_status text NOT NULL DEFAULT ''`,
+  `ALTER TABLE leads ADD COLUMN IF NOT EXISTS email_error text NOT NULL DEFAULT ''`,
+  `ALTER TABLE leads ADD COLUMN IF NOT EXISTS contacted_at timestamptz`,
+  `ALTER TABLE leads ADD COLUMN IF NOT EXISTS updated_at timestamptz`,
+  `ALTER TABLE leads ADD COLUMN IF NOT EXISTS client_id int`,
+  `CREATE INDEX IF NOT EXISTS leads_created_idx ON leads (created_at)`,
 
   // ---- CRM: clients / projects / work --------------------------------------
   `CREATE TABLE IF NOT EXISTS clients (

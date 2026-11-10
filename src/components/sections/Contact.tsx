@@ -7,23 +7,28 @@ import { ArrowRight } from "../ui/icons";
 import { site } from "@/data/site";
 
 // ---------------------------------------------------------------------------
-// Web3Forms delivery
+// Delivery
 // ---------------------------------------------------------------------------
-// Every submission must reach BOTH inboxes. On Web3Forms' free tier each
-// access key delivers to exactly one inbox, so the reliable approach is:
-//
-//   KEY_1  -> form configured to deliver to hello@pkdmstudio.com
-//   KEY_2  -> form configured to deliver to webco.owners@gmail.com
-//
-// We fire one submission per available key, so each configured inbox receives
-// every message. If only one key is set, the form still works and delivers to
-// that one inbox. (The PRO-only `ccemail` parameter is intentionally not used.)
+// 1. POST /api/contact: saves the lead for the admin dashboard and emails
+//    every inbox in CONTACT_TO through Resend (reply-to = the visitor).
+// 2. Fallback: if the server couldn't email (Resend not configured, or it
+//    failed), submit to Web3Forms from the browser, one request per key
+//    (on the free tier each key delivers to the one inbox it was made for).
 // ---------------------------------------------------------------------------
 const KEY_1 = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ?? "";
 const KEY_2 = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY_2 ?? "";
 
+function sessionId(): string {
+  try {
+    return sessionStorage.getItem("pkdm_sid") || "";
+  } catch {
+    return "";
+  }
+}
+
 const helpOptions = [
   "New website or redesign",
+  "Web app, members area or payments",
   "Landing page",
   "Website maintenance",
   "Something else",
@@ -54,65 +59,93 @@ export default function Contact() {
       return;
     }
 
-    const keys = [KEY_1, KEY_2].filter(Boolean);
-    if (keys.length === 0) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
       setStatus("error");
-      setErrorMsg(
-        "The contact form isn't configured yet. Please email " +
-          site.email +
-          " directly."
-      );
+      setErrorMsg("That email address doesn't look quite right.");
+      form.querySelector<HTMLInputElement>("#email")?.focus();
       return;
     }
 
     setStatus("loading");
     setErrorMsg("");
 
-    const basePayload = {
-      subject: `New project enquiry: ${name}`,
-      from_name: "PKDM Studio Website",
-      name,
-      email,
-      "What they need help with": help,
-      message,
-    };
-
+    // --- 1. Our own endpoint ------------------------------------------------
+    let stored = false;
+    let emailed = false;
+    let leadId: number | null = null;
     try {
-      // Fire one submission per key. On the free tier each key delivers to its
-      // own configured inbox, so adding a second key (KEY_2) is how you reach a
-      // second inbox — no PRO-only `ccemail` needed.
-      const submissions = keys.map((key) =>
-        fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            access_key: key,
-            ...basePayload,
-          }),
-        }).then((r) => r.json())
-      );
-
-      const results = await Promise.allSettled(submissions);
-      const anyOk = results.some(
-        (r) => r.status === "fulfilled" && r.value?.success
-      );
-
-      if (anyOk) {
-        setStatus("success");
-        // Record the lead in our own first-party analytics (admin dashboard).
-        try {
-          window.__pkdmTrack?.("lead", { name, email, help, message });
-        } catch {
-          /* analytics must never break the form */
-        }
-        form.reset();
-      } else {
-        throw new Error("All submissions failed");
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          help,
+          message,
+          path: window.location.pathname,
+          sid: sessionId(),
+        }),
+      });
+      const body = await res.json().catch(() => null);
+      if (res.status === 400 || res.status === 429) {
+        setStatus("error");
+        setErrorMsg(body?.error || "Please check the form and try again.");
+        return;
       }
+      stored = Boolean(body?.stored);
+      emailed = Boolean(body?.emailed);
+      leadId = typeof body?.leadId === "number" ? body.leadId : null;
     } catch {
+      /* network hiccup: fall through to the browser fallback */
+    }
+
+    // --- 2. Browser fallback (Web3Forms) -------------------------------------
+    let fallbackOk = false;
+    const keys = [KEY_1, KEY_2].filter(Boolean);
+    if (!emailed && keys.length) {
+      const results = await Promise.allSettled(
+        keys.map((key) =>
+          fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({
+              access_key: key,
+              subject: `New project enquiry: ${name}`,
+              from_name: "PKDM Studio Website",
+              name,
+              email,
+              "What they need help with": help,
+              message,
+            }),
+          }).then((r) => r.json())
+        )
+      );
+      fallbackOk = results.some((r) => r.status === "fulfilled" && r.value?.success);
+    }
+
+    if (stored || emailed || fallbackOk) {
+      setStatus("success");
+      // The form collapses into a shorter confirmation; make sure it's seen.
+      requestAnimationFrame(() => {
+        const el = document.getElementById("contact-success");
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        if (r.top < 80 || r.bottom > window.innerHeight) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      });
+      // Conversion event for journeys. The lead itself is already saved
+      // server-side; only send its details if the server couldn't store it.
+      try {
+        window.__pkdmTrack?.(
+          "lead",
+          leadId !== null ? { lead_id: leadId, help } : { name, email, help, message }
+        );
+      } catch {
+        /* analytics must never break the form */
+      }
+      form.reset();
+    } else {
       setStatus("error");
       setErrorMsg(
         "Something went wrong sending your message. Please try again or email " +
@@ -156,7 +189,11 @@ export default function Contact() {
             <div>
               {status === "success" ? (
                 <Reveal>
-                  <div className="flex h-full min-h-[320px] flex-col items-center justify-center gap-4 rounded-2xl border border-accent-soft/20 bg-accent/5 p-10 text-center">
+                  <div
+                    id="contact-success"
+                    role="status"
+                    className="flex h-full min-h-[320px] flex-col items-center justify-center gap-4 rounded-2xl border border-accent-soft/20 bg-accent/5 p-10 text-center"
+                  >
                     <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-ink-950">
                       <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none">
                         <path

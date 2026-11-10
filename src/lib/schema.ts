@@ -52,6 +52,13 @@ export const SCHEMA_STATEMENTS: string[] = [
     notes       text NOT NULL DEFAULT '',
     created_at  timestamptz NOT NULL DEFAULT now()
   )`,
+  // Added Nov 2026: server-side contact pipeline + lead workflow.
+  `ALTER TABLE leads ADD COLUMN IF NOT EXISTS email_status text NOT NULL DEFAULT ''`,
+  `ALTER TABLE leads ADD COLUMN IF NOT EXISTS email_error text NOT NULL DEFAULT ''`,
+  `ALTER TABLE leads ADD COLUMN IF NOT EXISTS contacted_at timestamptz`,
+  `ALTER TABLE leads ADD COLUMN IF NOT EXISTS updated_at timestamptz`,
+  `ALTER TABLE leads ADD COLUMN IF NOT EXISTS client_id int`,
+  `CREATE INDEX IF NOT EXISTS leads_created_idx ON leads (created_at)`,
 
   // ---- CRM ---------------------------------------------------------------------
   `CREATE TABLE IF NOT EXISTS clients (
@@ -100,4 +107,29 @@ export async function ensureSchema(): Promise<void> {
 export function isMissingTableError(err: unknown): boolean {
   const e = err as { code?: string; message?: string } | null;
   return e?.code === "42P01" || /relation .* does not exist/i.test(e?.message ?? "");
+}
+
+/** Missing table OR missing column: the database is behind this schema. */
+export function isSchemaDriftError(err: unknown): boolean {
+  const e = err as { code?: string; message?: string } | null;
+  return (
+    isMissingTableError(err) ||
+    e?.code === "42703" ||
+    /column .* does not exist/i.test(e?.message ?? "")
+  );
+}
+
+/**
+ * Runs `fn`; if it fails because the database is behind the schema (fresh
+ * database, or a column added in a later release), applies the schema once
+ * and retries. Zero cost on the happy path.
+ */
+export async function withSchema<T>(fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn();
+  } catch (err) {
+    if (!isSchemaDriftError(err)) throw err;
+    await ensureSchema();
+    return fn();
+  }
 }

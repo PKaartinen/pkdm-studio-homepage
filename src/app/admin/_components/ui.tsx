@@ -29,17 +29,47 @@ export function Stat({
   label,
   value,
   sub,
+  delta,
+  href,
+  invert,
 }: {
   label: string;
   value: string;
   sub?: string;
+  /** % change vs the previous period (null = no baseline) */
+  delta?: number | null;
+  href?: string;
+  /** true when a rise is bad news */
+  invert?: boolean;
 }) {
-  return (
-    <div className="rounded-2xl border border-white/[0.08] bg-ink-900/70 p-5">
-      <p className="text-xs uppercase tracking-wider text-haze">{label}</p>
+  const up = (delta ?? 0) > 0;
+  const good = invert ? !up : up;
+  const body = (
+    <>
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-xs uppercase tracking-wider text-haze">{label}</p>
+        {delta !== undefined && delta !== null && Math.abs(delta) >= 0.5 ? (
+          <span
+            className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${
+              good ? "bg-emerald-400/10 text-emerald-300" : "bg-red-400/10 text-red-300"
+            }`}
+            title="Compared with the previous period of the same length"
+          >
+            {up ? "▲" : "▼"} {Math.abs(delta) >= 100 ? Math.round(Math.abs(delta)) : Math.abs(delta).toFixed(0)}%
+          </span>
+        ) : null}
+      </div>
       <p className="mt-2 font-display text-3xl font-semibold text-white">{value}</p>
       {sub ? <p className="mt-1 text-xs text-haze/80">{sub}</p> : null}
-    </div>
+    </>
+  );
+  const cls = "block rounded-2xl border border-white/[0.08] bg-ink-900/70 p-5";
+  return href ? (
+    <Link href={href} className={`${cls} transition-colors hover:border-accent/30`}>
+      {body}
+    </Link>
+  ) : (
+    <div className={cls}>{body}</div>
   );
 }
 
@@ -131,26 +161,31 @@ export function PageHeader({
   description,
   range,
   basePath,
+  actions,
 }: {
   title: string;
   description?: string;
   range?: number;
   basePath?: string;
+  actions?: React.ReactNode;
 }) {
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-      <div>
+      <div className="min-w-0">
         <h1 className="font-display text-2xl font-semibold text-white">{title}</h1>
-        {description ? <p className="mt-1 text-sm text-haze">{description}</p> : null}
+        {description ? <p className="mt-1 max-w-2xl text-sm text-haze">{description}</p> : null}
       </div>
-      {range && basePath ? <RangePicker current={range} basePath={basePath} /> : null}
+      <div className="flex flex-wrap items-center gap-2">
+        {actions}
+        {range && basePath ? <RangePicker current={range} basePath={basePath} /> : null}
+      </div>
     </div>
   );
 }
 
 export function EmptyState({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-dashed border-white/10 p-10 text-center text-sm text-haze">
+    <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center text-sm text-haze">
       {children}
     </div>
   );

@@ -93,7 +93,9 @@ export async function POST(req: NextRequest) {
           ? new Date(ts)
           : new Date();
 
-      if (type === "lead") {
+      // Leads submitted through /api/contact are already stored; their
+      // tracked event only carries the lead id (for journeys / conversion).
+      if (type === "lead" && !data.lead_id && data.email) {
         await sql`
           INSERT INTO leads (name, email, help, message, source_path, session_id)
           VALUES (

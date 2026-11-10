@@ -1,4 +1,10 @@
-import { neon } from "@neondatabase/serverless";
+import { neon, neonConfig } from "@neondatabase/serverless";
+
+// Local development against a non-Neon Postgres: point the HTTP driver at a
+// Neon-compatible /sql proxy. Never active in production builds.
+if (process.env.NODE_ENV !== "production" && process.env.NEON_LOCAL_SQL_ENDPOINT) {
+  neonConfig.fetchEndpoint = process.env.NEON_LOCAL_SQL_ENDPOINT;
+}
 
 /**
  * Lazily-initialised Neon Postgres client.

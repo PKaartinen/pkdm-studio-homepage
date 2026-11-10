@@ -42,12 +42,13 @@ export async function overviewStats(days: Range) {
 
 export async function dailyTraffic(days: Range) {
   const rows = await sql`
-    SELECT date_trunc('day', started_at)::date AS day, count(*) AS sessions
+    SELECT to_char(date_trunc('day', started_at), 'YYYY-MM-DD') AS day, count(*) AS sessions
     FROM sessions
     WHERE started_at > now() - ${days + " days"}::interval
     GROUP BY 1 ORDER BY 1
   `;
-  // Fill gaps so the chart shows every day.
+  // Fill gaps so the chart shows every day. (`day` comes back as text: the
+  // driver would turn a SQL date into a JS Date, which never matches a key.)
   const map = new Map(rows.map((r) => [text(r.day).slice(0, 10), num(r.sessions)]));
   const out: { day: string; sessions: number }[] = [];
   for (let i = days - 1; i >= 0; i--) {
@@ -222,4 +223,111 @@ export function fmtDuration(ms: number): string {
   const s = Math.round(ms / 1000);
   if (s < 60) return `${s}s`;
   return `${Math.floor(s / 60)}m ${s % 60}s`;
+}
+
+// ---------------------------------------------------------------------------
+// Business view (overview page)
+// ---------------------------------------------------------------------------
+
+/** Headline counts for this period and the one before it (for deltas). */
+export async function periodCompare(days: Range) {
+  const cur = `${days} days`;
+  const prev = `${days * 2} days`;
+  const [row] = await sql`
+    SELECT
+      (SELECT count(*) FROM sessions WHERE started_at > now() - ${cur}::interval) AS sessions,
+      (SELECT count(*) FROM sessions WHERE started_at > now() - ${prev}::interval AND started_at <= now() - ${cur}::interval) AS sessions_prev,
+      (SELECT count(DISTINCT visitor_id) FROM sessions WHERE started_at > now() - ${cur}::interval) AS visitors,
+      (SELECT count(DISTINCT visitor_id) FROM sessions WHERE started_at > now() - ${prev}::interval AND started_at <= now() - ${cur}::interval) AS visitors_prev,
+      (SELECT count(*) FROM events WHERE type = 'pageview' AND created_at > now() - ${cur}::interval) AS pageviews,
+      (SELECT count(*) FROM events WHERE type = 'pageview' AND created_at > now() - ${prev}::interval AND created_at <= now() - ${cur}::interval) AS pageviews_prev,
+      (SELECT count(*) FROM leads WHERE created_at > now() - ${cur}::interval) AS leads,
+      (SELECT count(*) FROM leads WHERE created_at > now() - ${prev}::interval AND created_at <= now() - ${cur}::interval) AS leads_prev
+  `;
+  const pair = (k: string) => ({ now: num(row?.[k]), prev: num(row?.[`${k}_prev`]) });
+  return {
+    sessions: pair("sessions"),
+    visitors: pair("visitors"),
+    pageviews: pair("pageviews"),
+    leads: pair("leads"),
+  };
+}
+
+/** % change, or null when there's no baseline to compare against. */
+export function delta(now: number, prev: number): number | null {
+  if (!prev) return null;
+  return ((now - prev) / prev) * 100;
+}
+
+/** What needs doing today: unanswered leads, overdue work, deadlines. */
+export async function attention(today: string) {
+  const [row] = await sql`
+    SELECT
+      (SELECT count(*) FROM leads WHERE status = 'new') AS new_leads,
+      (SELECT count(*) FROM leads WHERE status = 'new' AND created_at < now() - interval '24 hours') AS overdue_leads,
+      (SELECT min(created_at) FROM leads WHERE status = 'new') AS oldest_new,
+      (SELECT count(*) FROM tasks WHERE status <> 'done' AND due_date < ${today}::date) AS overdue_tasks,
+      (SELECT count(*) FROM tasks WHERE status <> 'done' AND due_date = ${today}::date) AS today_tasks,
+      (SELECT count(*) FROM tasks WHERE status = 'doing') AS doing_tasks,
+      (SELECT count(*) FROM projects WHERE status NOT IN ('delivered', 'archived') AND due_date < ${today}::date) AS overdue_projects,
+      (SELECT count(*) FROM projects WHERE status NOT IN ('delivered', 'archived')
+         AND due_date >= ${today}::date AND due_date <= ${today}::date + 7) AS soon_projects,
+      (SELECT count(*) FROM projects WHERE status NOT IN ('delivered', 'archived')) AS active_projects
+  `;
+  const newest = await sql`
+    SELECT id, name, help, created_at FROM leads WHERE status = 'new'
+    ORDER BY created_at ASC LIMIT 4
+  `;
+  return {
+    newLeads: num(row?.new_leads),
+    overdueLeads: num(row?.overdue_leads),
+    oldestNew: row?.oldest_new ? text(row.oldest_new instanceof Date ? row.oldest_new.toISOString() : row.oldest_new) : null,
+    overdueTasks: num(row?.overdue_tasks),
+    todayTasks: num(row?.today_tasks),
+    doingTasks: num(row?.doing_tasks),
+    overdueProjects: num(row?.overdue_projects),
+    soonProjects: num(row?.soon_projects),
+    activeProjects: num(row?.active_projects),
+    waiting: newest.map((l) => ({
+      id: num(l.id),
+      name: text(l.name),
+      help: text(l.help),
+      createdAt: l.created_at instanceof Date ? l.created_at.toISOString() : text(l.created_at),
+    })),
+  };
+}
+
+/** Where leads come from: the source of the session that submitted. */
+export async function leadSources(days: Range, limit = 6) {
+  const rows = await sql`
+    SELECT
+      CASE
+        WHEN s.id IS NULL THEN 'Unknown (not tracked)'
+        WHEN s.utm_source <> '' THEN 'utm: ' || s.utm_source
+        WHEN s.referrer = '' THEN 'Direct / none'
+        ELSE regexp_replace(regexp_replace(s.referrer, '^https?://([^/]+).*$', '\\1'), '^www\\.', '')
+      END AS source,
+      count(*) AS leads
+    FROM leads l
+    LEFT JOIN sessions s ON s.id = l.session_id AND l.session_id <> ''
+    WHERE l.created_at > now() - ${days + " days"}::interval
+    GROUP BY 1 ORDER BY leads DESC LIMIT ${limit}
+  `;
+  return rows.map((r) => ({ source: text(r.source), leads: num(r.leads) }));
+}
+
+/** Sessions → sessions that saw /contact → leads. */
+export async function contactFunnel(days: Range) {
+  const [row] = await sql`
+    SELECT
+      (SELECT count(*) FROM sessions WHERE started_at > now() - ${days + " days"}::interval) AS sessions,
+      (SELECT count(DISTINCT session_id) FROM events
+         WHERE type = 'pageview' AND path = '/contact' AND created_at > now() - ${days + " days"}::interval) AS saw_contact,
+      (SELECT count(*) FROM leads WHERE created_at > now() - ${days + " days"}::interval) AS leads
+  `;
+  return {
+    sessions: num(row?.sessions),
+    sawContact: num(row?.saw_contact),
+    leads: num(row?.leads),
+  };
 }

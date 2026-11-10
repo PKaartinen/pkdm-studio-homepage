@@ -1,21 +1,20 @@
 import { hasDb, sql } from "@/lib/db";
-import { Card, EmptyState, PageHeader, btnCls, btnGhostCls, inputCls } from "../_components/ui";
+import { withSchema } from "@/lib/schema";
+import { mailConfigured, mailRecipients } from "@/lib/leadMail";
+import { PageHeader } from "../_components/ui";
+import { RefreshButton } from "../_components/Bits";
 import NoDb from "../_components/NoDb";
-import { convertLeadToClient, deleteLead, updateLead } from "../actions";
+import { iso, num, sourceOf, txt } from "../_lib/format";
+import LeadsBoard, { type LeadRow } from "./LeadsBoard";
 
 export const dynamic = "force-dynamic";
 
-const STATUSES = ["new", "contacted", "proposal", "won", "lost"] as const;
-
-const statusColor: Record<string, string> = {
-  new: "bg-accent/15 text-accent",
-  contacted: "bg-yellow-400/15 text-yellow-300",
-  proposal: "bg-purple-400/15 text-purple-300",
-  won: "bg-emerald-400/15 text-emerald-300",
-  lost: "bg-red-400/15 text-red-300",
-};
-
-export default async function LeadsPage() {
+export default async function LeadsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ lead?: string; status?: string }>;
+}) {
+  const params = await searchParams;
   if (!hasDb()) {
     return (
       <>
@@ -25,102 +24,95 @@ export default async function LeadsPage() {
     );
   }
 
-  const leads = await sql`SELECT * FROM leads ORDER BY created_at DESC LIMIT 200`;
+  const [rows, [stats]] = await withSchema(() =>
+    Promise.all([
+      sql`
+        SELECT l.*,
+          s.landing_path, s.referrer, s.utm_source, s.utm_campaign, s.device, s.browser, s.country,
+          (SELECT count(*) FROM events e WHERE e.session_id = l.session_id AND e.type = 'pageview') AS pages_viewed,
+          c.name AS client_name
+        FROM leads l
+        LEFT JOIN sessions s ON s.id = l.session_id AND l.session_id <> ''
+        LEFT JOIN clients c ON c.id = l.client_id
+        ORDER BY l.created_at DESC
+        LIMIT 500
+      `,
+      sql`
+        SELECT
+          avg(extract(epoch FROM (contacted_at - created_at))) FILTER (
+            WHERE contacted_at IS NOT NULL AND created_at > now() - interval '90 days'
+          ) AS avg_response_s,
+          count(*) FILTER (WHERE status = 'won' AND created_at > now() - interval '90 days') AS won_90,
+          count(*) FILTER (WHERE status IN ('won', 'lost') AND created_at > now() - interval '90 days') AS closed_90
+        FROM leads
+      `,
+    ])
+  );
+
+  const leads: LeadRow[] = rows.map((r) => ({
+    id: num(r.id),
+    name: txt(r.name),
+    email: txt(r.email),
+    help: txt(r.help),
+    message: txt(r.message),
+    notes: txt(r.notes),
+    status: txt(r.status) || "new",
+    sourcePath: txt(r.source_path),
+    createdAt: iso(r.created_at) ?? new Date().toISOString(),
+    contactedAt: iso(r.contacted_at),
+    emailStatus: txt(r.email_status),
+    emailError: txt(r.email_error),
+    clientId: r.client_id == null ? null : num(r.client_id),
+    clientName: txt(r.client_name),
+    session: r.landing_path
+      ? {
+          landing: txt(r.landing_path),
+          source: sourceOf(txt(r.referrer), txt(r.utm_source)),
+          campaign: txt(r.utm_campaign),
+          device: txt(r.device),
+          browser: txt(r.browser),
+          country: txt(r.country),
+          pages: num(r.pages_viewed),
+        }
+      : null,
+  }));
+
+  const avgResponseH = stats?.avg_response_s == null ? null : num(stats.avg_response_s) / 3600;
+  const closed = num(stats?.closed_90);
+  const winRate = closed ? (num(stats?.won_90) / closed) * 100 : null;
 
   return (
     <>
-      <PageHeader
-        title="Leads"
-        description="Every contact form submission is captured here automatically (alongside the email you already receive). Track each one from first contact to won or lost."
-      />
-
-      {leads.length === 0 ? (
-        <EmptyState>
-          No leads yet. New contact form submissions will appear here automatically.
-        </EmptyState>
-      ) : (
-        <div className="space-y-4">
-          {leads.map((lead) => {
-            const id = Number(lead.id);
-            const status = String(lead.status);
-            return (
-              <Card key={id}>
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <p className="font-display text-base font-semibold text-white">
-                        {String(lead.name) || "(no name)"}
-                      </p>
-                      <a
-                        href={`mailto:${String(lead.email)}`}
-                        className="text-sm text-accent hover:underline"
-                      >
-                        {String(lead.email)}
-                      </a>
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-semibold ${statusColor[status] ?? "bg-white/10 text-white"}`}
-                      >
-                        {status}
-                      </span>
-                      <span className="text-xs text-haze">
-                        {new Date(String(lead.created_at)).toLocaleString("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                        {String(lead.source_path) ? ` · via ${String(lead.source_path)}` : ""}
-                      </span>
-                    </div>
-                    {String(lead.help) ? (
-                      <p className="mt-2 text-xs uppercase tracking-wide text-haze">
-                        Needs: <span className="text-white/80">{String(lead.help)}</span>
-                      </p>
-                    ) : null}
-                    <p className="mt-2 whitespace-pre-wrap text-sm text-white/80">
-                      {String(lead.message)}
-                    </p>
-                  </div>
-
-                  <div className="w-full max-w-xs space-y-2">
-                    <form action={updateLead} className="space-y-2">
-                      <input type="hidden" name="id" value={id} />
-                      <select name="status" defaultValue={status} className={inputCls}>
-                        {STATUSES.map((st) => (
-                          <option key={st} value={st}>
-                            {st}
-                          </option>
-                        ))}
-                      </select>
-                      <textarea
-                        name="notes"
-                        defaultValue={String(lead.notes)}
-                        placeholder="Notes (calls, follow-ups…)"
-                        rows={2}
-                        className={inputCls}
-                      />
-                      <button className={`${btnCls} w-full`}>Save</button>
-                    </form>
-                    <div className="flex gap-2">
-                      <form action={convertLeadToClient} className="flex-1">
-                        <input type="hidden" name="id" value={id} />
-                        <button className="w-full rounded-lg border border-emerald-400/30 px-3 py-2 text-sm text-emerald-300 transition-colors hover:bg-emerald-400/10">
-                          → Client
-                        </button>
-                      </form>
-                      <form action={deleteLead}>
-                        <input type="hidden" name="id" value={id} />
-                        <button className={btnGhostCls}>Delete</button>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="font-display text-2xl font-semibold text-white">Leads</h1>
+          <p className="mt-1 max-w-2xl text-sm text-haze">
+            Every contact form enquiry lands here the moment it&apos;s sent. Reply inside 24 hours,
+            move it through the pipeline, and turn the good ones into clients.
+          </p>
         </div>
-      )}
+        <div className="flex items-center gap-2">
+          <a
+            href="/api/admin/leads/export"
+            className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-ink-900/70 px-3 py-1.5 text-xs text-haze transition-colors hover:text-white"
+            title="Download every lead as a CSV file"
+          >
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+            </svg>
+            Export CSV
+          </a>
+          <RefreshButton />
+        </div>
+      </div>
+
+      <LeadsBoard
+        leads={leads}
+        focusId={Number(params.lead) || null}
+        initialFilter={params.status ?? null}
+        mail={{ ready: mailConfigured(), recipients: mailRecipients().length }}
+        stats={{ avgResponseH, winRate }}
+      />
     </>
   );
 }
