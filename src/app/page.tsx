@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { DM_Mono } from "next/font/google";
 import ShowcaseDeviceGate from "@/components/showcase/device-gate";
 import ShowcaseStaticPage from "@/components/showcase/static-page";
+import HomeContent from "@/components/home/HomeContent";
 import { site } from "@/data/site";
 
 // ---------------------------------------------------------------------------
@@ -51,9 +52,13 @@ const jsonLd = {
 export default async function Home() {
   const ua = (await headers()).get("user-agent") ?? "";
   const content = MOBILE_UA.test(ua) ? (
-    <ShowcaseStaticPage />
+    <ShowcaseStaticPage>
+      <HomeContent />
+    </ShowcaseStaticPage>
   ) : (
-    <ShowcaseDeviceGate />
+    <ShowcaseDeviceGate>
+      <HomeContent />
+    </ShowcaseDeviceGate>
   );
 
   return (

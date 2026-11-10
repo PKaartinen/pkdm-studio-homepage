@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ACTS, clamp01 } from "./scroll-store";
+import { ACTS, clamp01, storyScrollMax } from "./scroll-store";
 import { splineTrack, MONEY_SHOTS, workPanelHoldProgress } from "./choreography";
 import { tourState } from "./tour-store";
 import { ACT_SECONDS, TOTAL_S, resolveTourSeconds } from "./tour-timing";
@@ -83,8 +83,7 @@ export default function TourController() {
           stops: showcaseStops(),
           totalSeconds: total,
           lenis: lenisStep,
-          getMax: () =>
-            document.documentElement.scrollHeight - window.innerHeight,
+          getMax: storyScrollMax,
           onActiveChange: (a) => {
             tourState.active = a;
           },
@@ -156,7 +155,7 @@ export default function TourController() {
       if (cancelled) return;
       tourState.active = true;
       lock();
-      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const max = storyScrollMax();
       const t0 = performance.now();
       // real-take instrumentation (shot-list timestamps read from a take)
       (window as unknown as { __tourT0?: number }).__tourT0 = t0;

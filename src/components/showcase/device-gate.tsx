@@ -25,7 +25,7 @@
 // ---------------------------------------------------------------------------
 
 import { useEffect, useState } from "react";
-import type { ComponentType } from "react";
+import type { ComponentType, ReactNode } from "react";
 import ShowcaseStaticPage from "./static-page";
 import { isPreviewEmbed } from "@/lib/previewEmbed";
 
@@ -38,9 +38,17 @@ const GATE_QUERIES = [
 
 type Mode = "pending" | "3d" | "static";
 
-export default function ShowcaseDeviceGate() {
+export default function ShowcaseDeviceGate({
+  children,
+}: {
+  /** Server-rendered homepage content (HomeContent) — passed through to
+   *  whichever variant mounts, so it is serialized exactly once. */
+  children?: ReactNode;
+}) {
   const [mode, setMode] = useState<Mode>("pending");
-  const [Experience, setExperience] = useState<ComponentType | null>(null);
+  const [Experience, setExperience] = useState<ComponentType<{
+    children?: ReactNode;
+  }> | null>(null);
 
   // Resolve + live-track the four media queries (mode resolves in an effect —
   // never during render — to keep SSR and first client render identical).
@@ -74,8 +82,9 @@ export default function ShowcaseDeviceGate() {
     };
   }, [mode, Experience]);
 
-  if (mode === "static") return <ShowcaseStaticPage />;
-  if (mode === "3d" && Experience) return <Experience />;
+  if (mode === "static")
+    return <ShowcaseStaticPage>{children}</ShowcaseStaticPage>;
+  if (mode === "3d" && Experience) return <Experience>{children}</Experience>;
   // "pending" (SSR + first client render) or "3d" while the chunk loads:
   // a stable full-height block over the layout's void gradient.
   return <div className="min-h-[100svh]" aria-hidden="true" />;

@@ -120,11 +120,33 @@ body {
    The STATIC homepage variant (.showcase-static-root — mobile / touch /
    reduced-motion) is a normal page and keeps the chrome, so the scoping
    below only kicks in while the 3D (or pending-gate) tree is rendered. */
-body:has(.showcase-root):not(:has(.showcase-static-root)) > header,
-body:has(.showcase-root):not(:has(.showcase-static-root)) > footer,
+/* 2026-11 refresh: the 3D homepage now continues into real content, so the
+   site Nav (navigation from the first frame) and Footer stay visible. Only
+   the decorative site Background is hidden — the 3D scene is the background. */
 body:has(.showcase-root):not(:has(.showcase-static-root))
   > div.pointer-events-none.fixed.-z-10 {
   display: none;
+}
+
+/* Fixed 3D story layers fade out once the story has been scrolled past.
+   The fade lives on the (non-positioned) wrapper — never on the layers
+   themselves, whose opacity is driven per frame by the scene. */
+.story-layers {
+  transition: opacity 0.5s ease, visibility 0s linear 0s;
+}
+.story-layers[data-past="true"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+}
+
+@keyframes showcase-continue {
+  0%, 100% { transform: translateY(-2px); }
+  50% { transform: translateY(3px); }
+}
+.showcase-continue-arrow {
+  animation: showcase-continue 1.8s ease-in-out infinite;
 }
 
 .showcase-root {
@@ -170,6 +192,122 @@ body:has(.showcase-root):not(:has(.showcase-static-root))
 }
 .showcase-scroll-dot {
   animation: showcase-scroll-dot 1.7s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------------------
+   Work / case-study details (2026-11 refresh)
+   --------------------------------------------------------------------------- */
+
+/* Hide scrollbars on swipe rows while keeping them scrollable */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hairline design-canvas grid texture */
+.bg-grid {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Floating capability chips */
+@keyframes float-chip {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+.float-chip {
+  animation: float-chip 5.5s ease-in-out infinite;
+}
+
+/* Tiny mouse-wheel dot */
+@keyframes scroll-dot {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  60% { transform: translateY(6px); opacity: 0.3; }
+}
+
+/* Full-page scroll-through browser (ScrollShot). Hover/focus glides the
+   page; touch + reduced motion get a native scrollable window instead. */
+.scroll-shot {
+  overflow: hidden;
+  outline: none;
+}
+.scroll-shot-img {
+  transform: translateY(0);
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.45, 0.05, 0.35, 1);
+}
+.scroll-shot-hint-touch {
+  display: none;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .scroll-shot:hover .scroll-shot-img,
+  .scroll-shot:focus-visible .scroll-shot-img {
+    transform: translateY(var(--shift));
+  }
+  .scroll-shot:hover .scroll-shot-hint,
+  .scroll-shot:focus-visible .scroll-shot-hint {
+    opacity: 0;
+  }
+  .scroll-shot:focus-visible {
+    box-shadow: inset 0 0 0 2px rgba(105, 237, 254, 0.6);
+  }
+}
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .scroll-shot {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scroll-shot-img {
+    position: relative;
+    transform: none !important;
+  }
+  .scroll-shot-hint {
+    display: none !important;
+  }
+}
+
+/* Pipeline diagram: a light pulse runs the rail; nodes ping in sequence */
+.pipeline-pulse {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--pl-accent), #fff, var(--pl-accent), transparent);
+  width: 28%;
+  animation: pipeline-x var(--pl-period) linear infinite;
+}
+@keyframes pipeline-x {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(460%); }
+}
+@media (max-width: 767px) {
+  .pipeline-pulse {
+    width: 100%;
+    height: 22%;
+    background: linear-gradient(180deg, transparent, var(--pl-accent), #fff, var(--pl-accent), transparent);
+    animation-name: pipeline-y;
+  }
+  @keyframes pipeline-y {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(560%); }
+  }
+}
+.pipeline-node {
+  animation: pipeline-ping var(--pl-period) ease-out infinite;
+}
+@keyframes pipeline-ping {
+  0%, 22%, 100% { box-shadow: 0 0 0 0 transparent; border-color: rgba(255, 255, 255, 0.15); }
+  6% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--pl-accent) 18%, transparent), 0 0 22px color-mix(in srgb, var(--pl-accent) 55%, transparent); border-color: var(--pl-accent); }
+}
+
+/* Flow diagram connectors: marching dashes */
+.flow-dash {
+  stroke-dasharray: 3 4;
+  animation: flow-dash 1.1s linear infinite;
+}
+@keyframes flow-dash {
+  to { stroke-dashoffset: -14; }
 }
 
 /* Respect reduced motion globally */

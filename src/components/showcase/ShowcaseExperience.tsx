@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ComponentType } from "react";
+import type { ComponentType, ReactNode } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import {
   hero,
   act1,
@@ -9,14 +11,16 @@ import {
   act3,
   finale,
   ctas,
-  footerLines,
-  navLinks,
-  site,
-  socialLinks,
+  featuredCase,
 } from "./config";
 import MagneticButton from "@/components/ui/MagneticButton";
-import { socialIcons } from "@/components/ui/icons";
-import { startScrollStore, subscribe } from "./scroll-store";
+import { ArrowRight } from "@/components/ui/icons";
+import {
+  setStoryElement,
+  startScrollStore,
+  storyScrollMax,
+  subscribe,
+} from "./scroll-store";
 import { clickPose, scrollHintOpacity, statsProgress } from "./choreography";
 import { syncState } from "./sync-store";
 import { tourState } from "./tour-store";
@@ -29,6 +33,7 @@ import PanelLinksLayer from "./PanelLinksLayer";
 type CanvasRootType = ComponentType<{
   onContextLost: () => void;
   variant?: number;
+  paused?: boolean;
 }>;
 
 /**
@@ -38,8 +43,18 @@ type CanvasRootType = ComponentType<{
  * (NO next/dynamic Suspense around the Canvas) + keyed context-loss recovery
  * remount. Dev renders identically to prod.
  */
-export default function ShowcaseExperience() {
+export default function ShowcaseExperience({
+  children,
+}: {
+  /** Server-rendered homepage content that follows the 3D story. */
+  children?: ReactNode;
+}) {
   const [CanvasRoot, setCanvasRoot] = useState<CanvasRootType | null>(null);
+  const storyRef = useRef<HTMLDivElement>(null);
+  // True once the visitor has scrolled past the end of the 3D story: every
+  // fixed story layer fades out and the WebGL loop pauses (zero GPU cost
+  // while reading the content below). Flips back on the way up.
+  const [past, setPast] = useState(false);
   const [canvasKey, setCanvasKey] = useState(0);
   const [variant, setVariant] = useState(0);
   const [alignQA, setAlignQA] = useState(false);
@@ -90,6 +105,28 @@ export default function ShowcaseExperience() {
   // The single scroll-damping source (scroll-store.ts) for DOM + 3D.
   useEffect(() => startScrollStore(), []);
 
+  useEffect(() => {
+    setStoryElement(storyRef.current);
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      // A little past the final frame, so the click + ripple fully land first
+      setPast(window.scrollY > storyScrollMax() + window.innerHeight * 0.35);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(check);
+    };
+    check();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      setStoryElement(null);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   // Material-variant switch for Checkpoint A (?variant=1..N) + ?align=1 QA
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -114,31 +151,39 @@ export default function ShowcaseExperience() {
       {/* T-317 — ?tour=1 scripted take + ?fps=1 readout */}
       <TourController />
 
-      {/* Fixed 3D layer behind the scrolling DOM */}
-      <div className="fixed inset-0 z-0" aria-hidden="true">
-        {CanvasRoot && (
-          <CanvasRoot
-            key={canvasKey}
-            onContextLost={handleContextLost}
-            variant={variant}
-          />
-        )}
+      {/* Every fixed story layer lives in this wrapper so it can fade out (and
+          stop catching pointer events) once the story is over. */}
+      <div className="story-layers" data-past={past ? "true" : "false"}>
+        {/* Fixed 3D layer behind the scrolling DOM */}
+        <div className="fixed inset-0 z-0" aria-hidden="true">
+          {CanvasRoot && (
+            <CanvasRoot
+              key={canvasKey}
+              onContextLost={handleContextLost}
+              variant={variant}
+              paused={past}
+            />
+          )}
+        </div>
+
+        {/* CSS vignette (postprocessing banned) */}
+        <div className="showcase-vignette" aria-hidden="true" />
+
+        {/* 3D-pinned mono annotations (DOM text, transform-only tracking) */}
+        <AnnotationLayer />
+
+        {/* Act 2 — panel tags pinned beneath the glass work panels */}
+        <PanelTagsLayer />
+
+        {/* Act 2 — clickable panel overlays → internal /projects/[slug] pages */}
+        <PanelLinksLayer />
+
+        {/* T-313 — the real DOM CTA, pixel-aligned over the 3D button */}
+        <FinaleCta />
       </div>
 
-      {/* CSS vignette (postprocessing banned) */}
-      <div className="showcase-vignette" aria-hidden="true" />
-
-      {/* 3D-pinned mono annotations (DOM text, transform-only tracking) */}
-      <AnnotationLayer />
-
-      {/* Act 2 — panel tags pinned beneath the glass work panels */}
-      <PanelTagsLayer />
-
-      {/* Act 2 — clickable panel overlays → internal /projects/[slug] pages */}
-      <PanelLinksLayer />
-
       {/* Scrolling DOM story — native scroll, selectable text */}
-      <div className="relative z-10">
+      <div ref={storyRef} className="relative z-10">
         {/* Hero */}
         <section className="relative flex min-h-[100svh] flex-col justify-center pb-16">
           <div className="shell">
@@ -214,13 +259,45 @@ export default function ShowcaseExperience() {
               {/* §3b.4 — CTAs under the Act 2 text (canonical strings only).
                   Stacked column: stays inside the left copy lane, clear of
                   the panel queue (9:16-crop and panel-crowding checked). */}
-              <div className="mt-8 flex flex-col items-start gap-4">
-                <MagneticButton href={ctas.viewAllProjectsHref} variant="ghost">
-                  {ctas.viewAllProjects}
-                </MagneticButton>
+              {/* 2026-11: ClearPen is the hero project — a compact featured
+                  case-study card leads the act's CTAs. */}
+              <Link
+                href={featuredCase.href}
+                className="group mt-8 flex max-w-[27rem] items-center gap-4 rounded-2xl border border-white/10 bg-ink-950/85 p-2.5 pr-4 backdrop-blur-md transition-colors duration-300 hover:border-accent/40"
+              >
+                <span className="relative h-[4.25rem] w-[6.8rem] shrink-0 overflow-hidden rounded-xl border border-white/10">
+                  <Image
+                    src={featuredCase.image}
+                    alt=""
+                    fill
+                    sizes="110px"
+                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                  />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-accent-soft">
+                    {featuredCase.eyebrow}
+                  </span>
+                  <span className="mt-1 block text-sm font-semibold leading-snug text-white">
+                    {featuredCase.title}
+                  </span>
+                  <span className="mt-0.5 block truncate text-xs text-haze">
+                    {featuredCase.scope}
+                  </span>
+                </span>
+                <ArrowRight className="h-4 w-4 shrink-0 text-white/70 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
                 <MagneticButton href={ctas.contactHref}>
                   {ctas.contact}
                 </MagneticButton>
+                <Link
+                  href={ctas.viewAllProjectsHref}
+                  className="group inline-flex items-center gap-1.5 text-sm font-semibold text-white/85 transition-colors hover:text-white"
+                >
+                  {ctas.viewAllProjects}
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </Link>
               </div>
             </div>
           </div>
@@ -264,16 +341,24 @@ export default function ShowcaseExperience() {
               <MagneticButton href={ctas.contactHref}>{finale.cta}</MagneticButton>
             </div>
 
-            {/* T-313 — footer band: lights up as the click ripple reaches it */}
-            <FooterBand />
+            {/* T-313 band — lights up as the click ripple reaches it. Since
+                the 2026-11 refresh it hands over to the content below
+                instead of closing the page. */}
+            <ContinueBand />
           </div>
         </section>
       </div>
 
-      {/* T-313 — the real DOM CTA, screen-fixed + pixel-aligned over the 3D
-          glass button through the whole click act (B2-Q4). Real link,
-          canonical copy, real click-through. */}
-      <FinaleCta />
+      {/* The rest of the homepage — slides up over the (now static) scene */}
+      {children && (
+        <div className="relative z-10">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none h-[14svh] bg-gradient-to-b from-transparent to-ink-950"
+          />
+          <div className="bg-ink-950">{children}</div>
+        </div>
+      )}
     </main>
   );
 }
@@ -322,13 +407,13 @@ function FinaleCta() {
 }
 
 /**
- * T-313 — the footer band. Compact single band pinned to the bottom of the
- * finale's final viewport (page height unchanged — act math stays exact).
- * Links/socials/email flow from site.ts via the config re-exports; it
- * "lights up" as the click ripple rolls out (opacity + hairline glow driven
- * by the same clickPose the 3D scene reads — lockstep by construction).
+ * T-313 band, refreshed 2026-11. Pinned to the bottom of the finale's final
+ * viewport (page height unchanged — act math stays exact). It still "lights
+ * up" as the click ripple rolls out (opacity + hairline glow from the same
+ * clickPose the 3D scene reads), but now it invites the visitor on into the
+ * real content below instead of acting as the page footer.
  */
-function FooterBand() {
+function ContinueBand() {
   const bandRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
 
@@ -342,6 +427,12 @@ function FooterBand() {
       }),
     []
   );
+
+  const chapters = [
+    { label: "Case study", href: "#work" },
+    { label: "Selected work", href: "#selected-work" },
+    { label: "What we build", href: "#capabilities" },
+  ];
 
   return (
     <div
@@ -361,60 +452,26 @@ function FooterBand() {
         }}
       />
       <div className="shell flex flex-col gap-4 py-5 md:flex-row md:items-center md:justify-between">
-        <div className="flex items-center gap-5">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo/wordmark.svg"
-            alt="PKDM Studio"
-            className="h-6 w-auto"
-          />
-          <span className="hidden text-xs text-haze/60 lg:inline">
-            {footerLines.copyright}
+        <p className="flex items-center gap-3 text-sm text-white/90">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15">
+            <svg viewBox="0 0 24 24" className="showcase-continue-arrow h-4 w-4" fill="none" aria-hidden="true">
+              <path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </span>
-        </div>
-
-        <nav aria-label="Footer">
-          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="text-sm text-haze transition-colors hover:text-white"
-                >
-                  {link.label}
+          Keep scrolling — the work, up close.
+        </p>
+        <nav aria-label="On this page">
+          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.18em]">
+            {chapters.map((c, i) => (
+              <li key={c.href}>
+                <a href={c.href} className="text-haze transition-colors hover:text-white">
+                  <span className="mr-1.5 text-accent-soft/80">{String(i + 1).padStart(2, "0")}</span>
+                  {c.label}
                 </a>
               </li>
             ))}
           </ul>
         </nav>
-
-        <div className="flex items-center gap-4">
-          <ul className="flex items-center gap-2.5">
-            {socialLinks.map((s) => {
-              const Icon = socialIcons[s.platform];
-              if (!Icon || !s.href) return null;
-              return (
-                <li key={s.platform}>
-                  <a
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.platform}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-haze transition-colors hover:border-accent-soft/40 hover:text-white"
-                  >
-                    <Icon className="h-4 w-4" />
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-          <a
-            href={`mailto:${site.email}`}
-            className="text-sm text-haze transition-colors hover:text-white"
-          >
-            {site.email}
-          </a>
-        </div>
       </div>
     </div>
   );

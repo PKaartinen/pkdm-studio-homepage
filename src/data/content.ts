@@ -110,31 +110,40 @@ export function getInsight(slug: string) {
   return insights.find((i) => i.slug === slug);
 }
 
-export const processSteps = [
+export const processSteps: {
+  title: string;
+  description: string;
+  deliverable?: string;
+}[] = [
   {
     title: "Goal Alignment Session",
     description:
       "A focused call to understand your business, audience, and what a successful site actually looks like for you.",
+    deliverable: "A shared definition of success.",
   },
   {
     title: "Research & Proposal",
     description:
       "We research your market and competitors, then send a clear written proposal with scope and milestones.",
+    deliverable: "A written scope, timeline and milestones.",
   },
   {
     title: "Design Process",
     description:
       "Custom design in Figma, shaped around your goals — reviewed together until it feels right.",
+    deliverable: "Designs you approve before any build.",
   },
   {
     title: "Development & Build",
     description:
       "We turn the design into a fast, responsive site on the right stack for the job — with the integrations you need.",
+    deliverable: "A live preview link at every checkpoint.",
   },
   {
     title: "Launch & Support",
     description:
       "We launch, test everything, and stay on hand for maintenance and improvements as you grow.",
+    deliverable: "A QA'd launch and a handoff guide.",
   },
 ];
 

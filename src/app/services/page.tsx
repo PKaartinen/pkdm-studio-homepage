@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/ui/Reveal";
+import SectionHeading from "@/components/ui/SectionHeading";
+import SpotlightCard from "@/components/ui/SpotlightCard";
 import CTASection from "@/components/CTASection";
-import { services, processSteps } from "@/data/content";
+import Process from "@/components/sections/Process";
+import Capabilities from "@/components/home/Capabilities";
+import { services } from "@/data/content";
 
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Strategy & UX, web design, modern web development, conversion landing pages, content, UI/UX systems, and ongoing growth — delivered as one connected system.",
+    "Strategy & UX, web design, modern web development, web apps and members areas, payments and funnels, AI features, content and ongoing growth — delivered as one connected system.",
   alternates: { canonical: "/services" },
 };
 
@@ -29,51 +33,47 @@ export default function ServicesPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service, i) => (
             <Reveal key={service.title} delay={(i % 3) * 0.06}>
-              <div className="h-full rounded-2xl border border-white/[0.07] bg-white/[0.02] p-7 transition-colors duration-300 hover:border-accent/25">
-                <span className="text-sm font-semibold text-accent">
+              <SpotlightCard className="h-full rounded-2xl border border-white/[0.07] bg-white/[0.02] p-7 transition-colors duration-300 hover:border-accent/25">
+                <span className="relative font-mono text-xs text-accent">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <h2 className="mt-4 text-xl font-semibold tracking-tight text-white">
+                <h2 className="relative mt-4 text-xl font-semibold tracking-tight text-white">
                   {service.title}
                 </h2>
-                <p className="mt-3 text-sm leading-relaxed text-haze">
+                <p className="relative mt-3 text-sm leading-relaxed text-haze">
                   {service.description}
                 </p>
-              </div>
+              </SpotlightCard>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* Process */}
-      <section className="shell py-20 md:py-28">
-        <Reveal>
-          <h2 className="text-2xl font-semibold tracking-tight text-white md:text-3xl">
-            A clear path from idea to launch
-          </h2>
-        </Reveal>
-        <ol className="mt-10 space-y-4">
-          {processSteps.map((step, i) => (
-            <Reveal key={step.title} delay={i * 0.05}>
-              <li className="flex items-start gap-5 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-6">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-ink-800 text-base font-bold text-accent">
-                  {i + 1}
-                </span>
-                <div>
-                  <h3 className="text-lg font-semibold tracking-tight text-white">
-                    {step.title}
-                  </h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-haze">
-                    {step.description}
-                  </p>
-                </div>
-              </li>
-            </Reveal>
-          ))}
-        </ol>
+      {/* Capability proof */}
+      <section className="mt-20 border-y border-white/[0.05] bg-white/[0.012] py-24 md:mt-28 md:py-32">
+        <div className="shell">
+          <SectionHeading
+            eyebrow="What we build"
+            title={
+              <>
+                Every service, backed by{" "}
+                <span className="text-glow">something live</span>.
+              </>
+            }
+            description="Don't take our word for it — each capability links to a real project you can open today."
+          />
+          <div className="mt-14">
+            <Capabilities />
+          </div>
+        </div>
       </section>
 
-      <CTASection title="Not sure which you need?" description="Tell us about your business and goals — we'll recommend the right approach. Reply within 24 hours." />
+      <Process />
+
+      <CTASection
+        title="Not sure which you need?"
+        description="Tell us about your business and goals — we'll recommend the right approach. Reply within 24 hours."
+      />
     </main>
   );
 }

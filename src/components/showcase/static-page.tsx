@@ -7,20 +7,19 @@
 //   - also rendered by device-gate.tsx (client) for iPadOS-as-Mac /
 //     reduced-motion / small-window desktops — it compiles in both worlds.
 //
-// This is a full, clean homepage — not a bare poster placeholder. It renders
-// zero client JS of its own (server components only: real H1, pillars, the
-// featured work grid, stats, and the finale CTA). The site chrome (Nav /
-// Background / Footer) from the root layout IS visible on this variant —
-// globals.css only hides chrome for the 3D showcase (see .showcase-static-root
-// scoping there).
+// This is a full, clean homepage — not a bare poster placeholder. Its intro
+// renders zero client JS of its own (real H1, a recently-shipped strip, the
+// 3D poster teaser, pillars and stats); the shared HomeContent (featured case
+// study, selected work, capabilities, process, CTA) follows as children. The
+// site chrome (Nav / Background / Footer) from the root layout is visible.
 //
-// ALL copy comes from showcase/config.ts (canonical re-exports) — nothing
-// re-typed.
+// Story copy comes from showcase/config.ts (canonical re-exports).
 // ---------------------------------------------------------------------------
 
 import Link from "next/link";
-import ProjectCard from "@/components/ProjectCard";
-import { hero, act1, act2, act3, finale, ctas, featuredProjects } from "./config";
+import Image from "next/image";
+import type { ReactNode } from "react";
+import { hero, act1, act3, finale, ctas, featuredProjects } from "./config";
 
 /** Poster variants generated from the approved hero at rest (prod capture,
  *  1440×900 @ DPR2). Files live in public/showcase/poster/. Shown here as a
@@ -47,15 +46,24 @@ function PrimaryCta({ href, label }: { href: string; label: string }) {
   );
 }
 
-export default function ShowcaseStaticPage() {
+export default function ShowcaseStaticPage({
+  children,
+}: {
+  /** The shared homepage content (HomeContent), rendered after the intro. */
+  children?: ReactNode;
+}) {
   return (
     <main id="main" className="showcase-static-root relative">
       {/* Hero — real text (H1 is DOM text, not baked into an image) */}
-      <section className="shell pb-16 pt-32 md:pt-40">
-        <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent">
+      <section className="shell pb-14 pt-32 md:pt-40">
+        <p className="inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-accent">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+          </span>
           {hero.eyebrow}
         </p>
-        <h1 className="display mt-5 font-display text-[2.6rem] font-bold leading-[1.05] tracking-tight text-white sm:text-6xl">
+        <h1 className="display mt-6 font-display text-[2.7rem] font-bold leading-[1.03] tracking-tight text-white sm:text-6xl md:text-7xl">
           {hero.h1Line1}
           <br />
           <span className="text-glow">{hero.h1Line2}</span>
@@ -67,11 +75,33 @@ export default function ShowcaseStaticPage() {
           <PrimaryCta href={ctas.contactHref} label={hero.cta} />
           <p className="text-sm text-haze/70">{hero.reassurance}</p>
         </div>
+
+        {/* Recent work strip — tiny thumbnails, straight into case studies */}
+        <div className="mt-10 border-t border-white/[0.06] pt-6">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-haze/50">
+            Recently shipped
+          </p>
+          <ul className="no-scrollbar -mx-5 mt-4 flex gap-2.5 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:px-0">
+            {featuredProjects.map((p) => (
+              <li key={p.slug} className="shrink-0">
+                <Link
+                  href={`/projects/${p.slug}`}
+                  className="flex items-center gap-2.5 rounded-full border border-white/[0.09] bg-white/[0.02] py-1.5 pl-1.5 pr-4 text-sm text-white/90 transition-colors hover:border-white/25"
+                >
+                  <span className="relative h-7 w-7 overflow-hidden rounded-full border border-white/10">
+                    <Image src={p.image.src} alt="" fill sizes="28px" className="object-cover object-top" />
+                  </span>
+                  {p.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
       {/* Desktop-experience teaser — the baked poster of the 3D hero */}
       <section className="shell pb-16">
-        <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-ink-800/40">
+        <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-ink-800/40">
           {/* eslint-disable-next-line @next/next/no-img-element -- hand-encoded
               WebP variants with explicit srcset; next/image would re-encode. */}
           <img
@@ -85,88 +115,48 @@ export default function ShowcaseStaticPage() {
             decoding="async"
             className="showcase-static-poster"
           />
+          <span className="absolute bottom-3 left-3 rounded-full border border-white/10 bg-ink-950/80 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-white/80 backdrop-blur">
+            Interactive 3D · on desktop
+          </span>
         </div>
-        <p className="mt-3 text-xs text-haze/60">
-          The full interactive experience is waiting on desktop.
-        </p>
       </section>
 
-      {/* Why us — the answer in under 5 seconds + canonical pillars */}
-      <section className="shell pb-16">
+      {/* Why us — the answer in under 5 seconds + canonical pillars + stats */}
+      <section className="shell pb-20">
         <h2 className="display max-w-2xl font-display text-2xl font-bold leading-snug text-white md:text-3xl">
           {act1.headline}
         </h2>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {[act1.pillar, act3.pillar, finale.pillar].map((p) => (
+          {[act1.pillar, act3.pillar, finale.pillar].map((p, i) => (
             <div
               key={p.title}
               className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-6"
             >
-              <h3 className="text-base font-semibold text-white">{p.title}</h3>
+              <span className="font-mono text-[11px] text-accent-soft/80">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 className="mt-3 text-base font-semibold text-white">{p.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-haze">
                 {p.description}
               </p>
             </div>
           ))}
         </div>
-      </section>
-
-      {/* The Work — featured projects, same canonical set as the 3D panels */}
-      <section className="shell pb-16">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <h2 className="display font-display text-2xl font-bold text-white md:text-3xl">
-              {act2.headline}
-            </h2>
-            <p className="mt-3 max-w-xl text-haze">{act2.subline}</p>
-          </div>
-        </div>
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
-          {featuredProjects.map((p) => (
-            <ProjectCard key={p.slug} project={p} />
-          ))}
-        </div>
-        <div className="mt-8">
-          <Link
-            href={ctas.viewAllProjectsHref}
-            className="group inline-flex items-center gap-2 text-sm font-semibold text-accent transition-colors hover:text-accent-soft"
-          >
-            {ctas.viewAllProjects}
-            <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">
-              →
-            </span>
-          </Link>
-        </div>
-      </section>
-
-      {/* Stats strip */}
-      <section className="shell pb-16">
-        <dl className="grid grid-cols-3 gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-6 text-center">
+        <dl className="mt-4 grid grid-cols-3 gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-6 text-center">
           {act3.stats.map((s) => (
-            <div key={s.label}>
+            <div key={s.label} className="flex flex-col-reverse gap-1">
+              <dt className="text-[10px] uppercase tracking-[0.14em] text-haze/70 sm:text-xs">
+                {s.label}
+              </dt>
               <dd className="display font-display text-2xl font-bold text-white md:text-3xl">
                 {s.value}
               </dd>
-              <dt className="mt-1 text-xs uppercase tracking-[0.14em] text-haze/70">
-                {s.label}
-              </dt>
             </div>
           ))}
         </dl>
       </section>
 
-      {/* Finale CTA */}
-      <section className="shell pb-24">
-        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-8 md:p-12">
-          <h2 className="display font-display text-3xl font-bold text-white md:text-4xl">
-            {finale.headline}
-          </h2>
-          <div className="mt-8 flex flex-col items-start gap-3">
-            <PrimaryCta href={ctas.contactHref} label={finale.cta} />
-            <p className="text-sm text-haze/70">{finale.reassurance}</p>
-          </div>
-        </div>
-      </section>
+      {children}
     </main>
   );
 }

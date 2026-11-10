@@ -14,7 +14,12 @@ export default function PageHero({
   description?: string;
 }) {
   return (
-    <header className="shell pt-36 pb-10 md:pt-44 md:pb-16">
+    <header className="relative">
+      <div
+        aria-hidden="true"
+        className="bg-grid pointer-events-none absolute inset-0 opacity-40 [mask-image:radial-gradient(60%_70%_at_50%_0%,#000,transparent)]"
+      />
+      <div className="shell relative pt-36 pb-10 md:pt-44 md:pb-16">
       <Reveal>
         <span className="inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-accent">
           <span className="h-1.5 w-1.5 rounded-full bg-accent" />
@@ -33,6 +38,7 @@ export default function PageHero({
           </p>
         </Reveal>
       )}
+      </div>
     </header>
   );
 }

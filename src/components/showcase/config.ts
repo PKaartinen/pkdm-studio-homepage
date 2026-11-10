@@ -12,7 +12,7 @@
 // ---------------------------------------------------------------------------
 
 import { pillars, stats } from "@/data/content";
-import { projects } from "@/data/projects";
+import { projects, heroProject } from "@/data/projects";
 import { navLinks, site, socialLinks } from "@/data/site";
 
 // Re-exports from src/data/* (canonical sources — do not duplicate)
@@ -24,7 +24,8 @@ const pillarByTitle = (title: string) => {
   return p;
 };
 
-/** The six featured projects, equal treatment (F-6). Tags are `name — category` verbatim. */
+/** The six featured projects (F-6; 2026-11 refresh: ClearPen leads as the
+ *  hero project). Tags are `name — category` verbatim. */
 export const featuredProjects = projects.filter((p) => p.featured);
 export const panelTag = (p: { name: string; category: string }) =>
   `${p.name} — ${p.category}`;
@@ -63,10 +64,19 @@ export const act1 = {
 export const act2 = {
   headline: "Sites we've designed and shipped.",
   subline:
-    "A selection of real client projects — each built around the customer journey and a clear business goal.",
+    "Recent builds — client platforms and our own products, each built around the customer journey and a clear business goal.",
   /** ClearPen panel outbound link — always the homepage (F-4).
    *  www is ClearPen's canonical host (apex 307-redirects to it). */
   clearpenUrl: "https://www.clearpen.ai",
+} as const;
+
+/** 2026-11 — the hero project's compact card in the Act 2 copy lane. */
+export const featuredCase = {
+  href: `/projects/${heroProject.slug}`,
+  image: heroProject.image.src,
+  eyebrow: "Featured case study",
+  title: `${heroProject.name} — an AI product, built end to end`,
+  scope: "Marketing site · members area · payments · funnels · NLP engine",
 } as const;
 
 // --- Act 3 — The Build (source: content.ts pillars + stats + company.md)

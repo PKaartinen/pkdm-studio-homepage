@@ -14,9 +14,12 @@ import Scene from "./scene/Scene";
 export default function CanvasRoot({
   onContextLost,
   variant = 0,
+  paused = false,
 }: {
   onContextLost: () => void;
   variant?: number;
+  /** Stop rendering while the story is scrolled out of view (2026-11). */
+  paused?: boolean;
 }) {
   const [glEl, setGlEl] = useState<HTMLCanvasElement | null>(null);
 
@@ -34,6 +37,7 @@ export default function CanvasRoot({
     <Canvas
       // Perf canon: DPR clamp 1–1.5 (spec §4).
       dpr={[1, 1.5]}
+      frameloop={paused ? "never" : "always"}
       gl={{
         antialias: true,
         alpha: true,

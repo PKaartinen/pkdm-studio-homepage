@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { navLinks } from "@/data/site";
+import { navLinks, site } from "@/data/site";
 import MagneticButton from "./ui/MagneticButton";
 import { ArrowRight } from "./ui/icons";
 
@@ -154,6 +154,33 @@ export default function Nav() {
                   Let&apos;s Talk
                   <ArrowRight />
                 </MagneticButton>
+              </motion.div>
+
+              {/* Featured case study + direct email */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55 }}
+                className="mt-12 flex flex-col gap-4 border-t border-white/[0.08] pt-8"
+              >
+                <Link
+                  href="/projects/clearpen"
+                  onClick={() => setOpen(false)}
+                  className="group flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                >
+                  <span>
+                    <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-accent-soft">
+                      Featured case study
+                    </span>
+                    <span className="mt-1 block text-sm font-semibold text-white">
+                      ClearPen — an AI product, built end to end
+                    </span>
+                  </span>
+                  <ArrowRight className="h-4 w-4 shrink-0 text-white/70" />
+                </Link>
+                <a href={`mailto:${site.email}`} className="text-sm text-haze">
+                  {site.email}
+                </a>
               </motion.div>
             </div>
           </motion.div>

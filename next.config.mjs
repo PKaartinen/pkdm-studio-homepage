@@ -25,6 +25,10 @@ const nextConfig = {
       { source: "/articles", destination: "/insights", permanent: true },
       { source: "/about-us", destination: "/about", permanent: true },
       { source: "/contact-us", destination: "/contact", permanent: true },
+      // Retired case studies (removed 2026-11 — no longer representative of
+      // the studio's work). Send old links to the projects index, not a 404.
+      { source: "/projects/skillful-traders", destination: "/projects", permanent: true },
+      { source: "/projects/ecommerce-lander", destination: "/projects", permanent: true },
     ];
   },
 };

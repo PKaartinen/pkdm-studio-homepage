@@ -12,11 +12,11 @@ A true multi-page site (App Router):
 
 | Route | Description |
 |---|---|
-| `/` | Homepage — hero, clients, services, featured work, process, insights, testimonials, contact |
+| `/` | Homepage — desktop: the 3D "Click" story, then the content below it (featured ClearPen case study, clients, selected work, capabilities, process, CTA). Phones / touch / reduced motion: the static intro + the same content. |
 | `/about` | Founder story, beliefs, pillars, process |
 | `/services` | Full services + process |
-| `/projects` | All projects |
-| `/projects/[slug]` | Per-project case study (hero, overview, gallery, live link, next project) |
+| `/projects` | Featured case study, recent work, earlier work, and a hover-preview project index |
+| `/projects/[slug]` | Deep case study — meta, device hero, stats, story, scope, build chapters (diagrams, phones, screen recording), full-page scroll-through, mobile screens, lightbox gallery, engineering notes, stack |
 | `/insights` | Article list |
 | `/insights/[slug]` | Article page |
 | `/contact` | Contact form |
@@ -110,6 +110,38 @@ All content lives in plain config/data files — no need to touch components:
 | Site name, email, address, **nav links**, **social links** | `src/data/site.ts` |
 | **Projects** (cards, slugs, galleries, **live URLs**), client logos | `src/data/projects.ts` |
 | Services, pillars, **insights/articles**, process steps, testimonials, stats | `src/data/content.ts` |
+
+### Projects & case studies
+
+`src/data/projects.ts` is the single source for project cards, the six 3D
+homepage panels and every `/projects/[slug]` case study. Each project can carry:
+
+- `image` / `mobile` / `full` — desktop hero, phone hero and a full-page
+  capture (the full page powers the hover-to-scroll browser window);
+- `stats`, `scope`, `challenge` / `approach` / `outcome`, `highlights`
+  (engineering notes) and `stack`;
+- `chapters` — alternating story blocks whose `media` can be a `browser`,
+  `duo`, `device`, `phones`, `phoneVideo`, `pipeline` or `flow` diagram;
+- `gallery` (captioned, opens in a lightbox) and `phones`.
+
+Every section of the case-study template renders only when its data exists,
+so a project with just an image and a description still gets a clean page.
+
+**Facts only:** numbers come from each project's code, docs or live site — no
+invented metrics, and never PKDM pricing.
+
+**Featured + hero:** `featured: true` projects (in source order) are the six 3D
+work panels and the "recent work" set; exactly one project has `hero: true`
+(ClearPen) and gets the featured case-study module on the homepage and
+`/projects`. If you change the featured set or a featured project's
+`name`/`category`, regenerate `public/showcase/panels/` (1024×640 WebP per
+panel + `manifest.json`) — `panels-manifest.ts` throws on any mismatch.
+
+**Screenshots** live in `public/work/<slug>/` — desktop captures at
+2400×1500 (1440×900 viewport), phone captures at 780×1688 (390×844), full
+pages 1440 wide. They were captured from the live sites on 2026-11-10 with
+headless Chrome (analytics requests blocked so the capture visits don't
+pollute the projects' own data).
 
 ### Project live URLs
 

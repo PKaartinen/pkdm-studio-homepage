@@ -86,8 +86,33 @@ export function subscribe(fn: Listener) {
   };
 }
 
+// ---------------------------------------------------------------------------
+// Story range (2026-11 homepage refresh). The 3D story no longer ends the
+// page: real DOM content (case study, work, services, process, footer) follows
+// the finale. Progress must therefore be measured against the STORY element,
+// not the whole document — otherwise every act boundary would drift as soon
+// as content is added below. ShowcaseExperience registers its story wrapper;
+// without one (e.g. tooling) we fall back to the full document, which is
+// identical to the pre-refresh behaviour.
+// ---------------------------------------------------------------------------
+let storyEl: HTMLElement | null = null;
+
+/** Register the element whose bottom edge marks the end of the 3D story. */
+export function setStoryElement(el: HTMLElement | null) {
+  storyEl = el;
+}
+
+/** Max scrollY of the story (progress === 1 at this scroll position). */
+export function storyScrollMax() {
+  if (storyEl) {
+    const r = storyEl.getBoundingClientRect();
+    return r.bottom + window.scrollY - window.innerHeight;
+  }
+  return document.documentElement.scrollHeight - window.innerHeight;
+}
+
 function readTarget() {
-  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const max = storyScrollMax();
   state.target = max > 0 ? clamp01(window.scrollY / max) : 0;
 }
 
